@@ -4,8 +4,9 @@ from dash.dependencies import Input, Output, State
 
 from signUp import layout as signUpLayout
 from logIn import layout as logInLayout
+from welcome import layout as welcomeLayout
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__,suppress_callback_exceptions=True)
 
 
 app.layout = html.Div([
@@ -22,11 +23,12 @@ app.layout = html.Div([
 
 
 @app.callback(
-    [Output('page-content', 'children'),
+    [Output('page-content', 'children',allow_duplicate=True),
      Output('url', 'pathname')],
     [Input('signUpButton', 'n_clicks'),
      Input('logInButton', 'n_clicks')],
-    [State('url', 'pathname')]
+    [State('url', 'pathname')],
+    prevent_initial_call=True
 )
 def switch_layout(signUp_clicks, logIn_clicks, current_path):
     ctx = dash.callback_context
@@ -41,6 +43,39 @@ def switch_layout(signUp_clicks, logIn_clicks, current_path):
         return logInLayout, '/login'
     else:
         return dash.no_update, current_path
+
+
+#dealing with log In page.
+@app.callback(
+    [Output('page-content', 'children',allow_duplicate=True),
+    Output('failed','children')],
+    [Input('logInSubmitButton','n_clicks')],
+    [State('usernameInput','value'),
+     State('passwordInput','value'),
+     State('memberType','value'),
+     State('url','pathname')],
+    prevent_initial_call = True,
+    
+)
+
+def validateUser(n_clicks,username,password,memberType,pathname):
+    #if we're in the login page
+    if pathname == '/login':
+        if n_clicks:
+            
+            #now to validate if it exits
+            if (username == 'admin' and password == 'admin'):
+                print(memberType)
+                return welcomeLayout,dash.no_update
+            
+            #not validated
+            else:
+                print(memberType)
+                return dash.no_update, "FAILED"
+    else:
+        print("nothing has happened")
+        return dash.no_update,dash.no_update
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)

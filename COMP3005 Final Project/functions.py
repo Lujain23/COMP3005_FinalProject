@@ -1,6 +1,7 @@
 import psycopg2
 
 
+#returns the cursor to execute
 def connectToDatabase():
     try:
         #would change depending on the user
@@ -13,10 +14,13 @@ def connectToDatabase():
                                     password = password,
                                     user = "postgres",
                                     port = "5432")
+        
         print("Connected to Database!")
 
+        connection.cursor()
+
         #make it return the connection? still thinking of how it would be used.
-        return connection
+        return  connection.cursor()
    
     except psycopg2.Error as e:
         print(e)
@@ -28,19 +32,38 @@ def disconnectDatabase(connection):
         print("Connection Closed.")
 
 
-def testingSelect(connection):
-    cur = connection.cursor()
-    cur.execute("SELECT * from students")
-    ans = cur.fetchall()
+def testingSelect(cursor):
+    cursor.execute("SELECT * from students")
+    ans = cursor.fetchall()
     
+    print(ans)
     for row in ans:
         print("name is: " + row[1] + " " + row[2])
 
+def validateUser(cursor,username,password,memberType):
+    query = "SELECT * FROM %s WHERE email = %s AND passwd = %s"
+    #query = "SELECT * FROM students where first_name = %s AND last_name = %s" #testing
+    cursor.execute(query,(memberType,username,password))
+    #cursor.execute(query,(username,password)) #testing
+    ans = cursor.fetchall()
+
+    if(len(ans) == 1):
+        print("exists")
+    else:
+        print("no no no")
+    
+
+
 
 def main():
-    connection = connectToDatabase()
-    testingSelect(connection)
+    cursor = connectToDatabase()
+    #testingSelect(cursor)
+
+
+    validateUser(cursor,'Jim','Beam','students')
+    validateUser(cursor,'hey','Beam','students')
+    
+
+
 
 main()
-
-#would have to create function handlers

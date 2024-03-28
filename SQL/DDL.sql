@@ -11,7 +11,6 @@ CREATE TABLE profile(
 	gender VARCHAR(15) NOT NULL,
 	height INTEGER check (height>0),
 	weight INTEGER  check (weight>0),
-	goal_type VARCHAR(255),
 	target_weight INTEGER check(target_weight>0),
 	exercise_routine TEXT,
 	foreign key (email) references members(email)
@@ -19,13 +18,11 @@ CREATE TABLE profile(
 );
 
 CREATE TABLE trainer(
-	
 	email VARCHAR(255) NOT NULL UNIQUE,
 	first_name VARCHAR(255),
 	passwd VARCHAR(15) NOT NULL,
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
-
 	primary key(email)
 );
 
@@ -35,7 +32,8 @@ CREATE TABLE schedule(
 	trainer_email VARCHAR(255) NOT NULL,
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
-	type_session VARCHAR(15) NOT NULL,
+	type_session VARCHAR(15) NOT NULL, -- Group/solo
+	class_type VARCHAR(20) NOT NULL, -- Cardio, weight-lifting
 	foreign key (member_email) references members(email)
 		on delete set null,
 	foreign key (trainer_email) references trainer(email)

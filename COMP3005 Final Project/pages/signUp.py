@@ -21,6 +21,10 @@ layout= html.Div(
                     html.Td(dcc.Input(id='emailInput', type='email', style=textFieldStyle))
                 ]),
                 html.Tr([
+                    html.Td(html.Label("Password")),
+                    html.Td(dcc.Input(id='passwordInput', type='text', style=textFieldStyle))
+                ]),
+                html.Tr([
                     html.Td(html.Label("First Name")),
                     html.Td(dcc.Input(id='nameInput', type='text', style=textFieldStyle))
                 ]),

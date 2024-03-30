@@ -4,7 +4,11 @@ from dash.dependencies import Input, Output, State
 
 dash.register_page(__name__)
 
-from pages.member.welcome import layout as welcomeLayout
+globalUsername  = ''
+globalType = ''
+
+from pages.member.member import mainLayout as mainLayout
+import pages.member.member as member
 
 #layout for user log in
 layout = html.Div(
@@ -46,7 +50,7 @@ layout = html.Div(
 
 #dealing with log In page.
 @callback(
-    [Output('page-content', 'children'),
+    [Output('page-content', 'children',allow_duplicate=True),
     Output('failed','children'),
     Output('url','pathname',allow_duplicate=True)],
     [Input('logInSubmitButton','n_clicks')],
@@ -60,11 +64,15 @@ layout = html.Div(
 def validateUser(n_clicks,username,password,memberType):
     #if we're in the login page
         if n_clicks:
-            
+            global globalUsername, globalType
+            globalUsername = username
+            globalType = memberType
             #now to validate if it exits
+            #need to create like a statement thing of whcih "welcome" it opens to  TO DO
             if (username == 'admin' and password == 'admin'):
                 new_url = '/' + memberType + '/welcome'
-                return welcomeLayout,dash.no_update,new_url
+                new_url = '/welcome'
+                return mainLayout,dash.no_update,new_url
             
             #not validated
             else:
@@ -72,3 +80,33 @@ def validateUser(n_clicks,username,password,memberType):
                 return dash.no_update,"Incorrect. Please try again." ,'/login'
 
 
+
+#functions for the buttons
+            
+#join class
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('joinClassButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def join_class(n_clicks):
+    if n_clicks:
+        print("HEY")
+        return 'Joined class!'
+
+
+#update Information
+@callback(
+     Output('buttonsTable','children'),
+     Input('updateInfoButton','n_clicks'),
+     prevent_initial_call = True
+
+)
+
+def update_information(n_clicks):
+    if n_clicks:
+        print(globalUsername) #would have to change by getting the username value being used
+
+        values = [('johnAdams@gmail.com','John',20,'male',150,50,60,'something')]
+
+        return member.generateLayout(values)

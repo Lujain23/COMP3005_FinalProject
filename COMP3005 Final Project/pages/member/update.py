@@ -14,19 +14,7 @@ from dash import html,dcc
     
     '''
 values = [('johnAdams@gmail.com','John',20,'male',150,50,60,'something')]
-def generateLayout(values):
-    return  html.Div([
-        html.H1("Editable Text Fields"),
-        dcc.Input(id='email', type='text', value=values[0][0]),
-        dcc.Input(id='first_name', type='text', value=values[0][1]),
-        dcc.Input(id='age', type='text', value=str(values[0][2])),
-        dcc.Input(id='gender', type='text', value=values[0][3]),
-        dcc.Input(id='height', type='text', value=str(values[0][4])),
-        dcc.Input(id='weight', type='text', value=str(values[0][5])),
-        dcc.Input(id='target_weight', type='text', value=str(values[0][6])),
-        dcc.Input(id='exercise_routine', type='text', value=values[0][7]),      
-        html.Div(id='output-message')
-    ])
+
 # import dash
 # from dash import dcc, html, Input, Output, State
 

@@ -1,11 +1,6 @@
 CREATE TABLE members(
 	email VARCHAR(255) NOT NULL,
 	passwd VARCHAR(15) NOT NULL,
-	primary key(email)
-);
-
-CREATE TABLE profile(
-	email VARCHAR(255) NOT NULL,
 	first_name VARCHAR(15) NOT NULL,
 	age INTEGER check (age > 0),
 	gender VARCHAR(15) NOT NULL,
@@ -13,8 +8,6 @@ CREATE TABLE profile(
 	weight INTEGER  check (weight>0),
 	target_weight INTEGER check(target_weight>0),
 	exercise_routine TEXT,
-	foreign key (email) references members(email)
-		on delete set null
 );
 
 CREATE TABLE trainer(

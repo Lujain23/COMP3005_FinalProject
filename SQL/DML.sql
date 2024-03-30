@@ -1,14 +1,8 @@
 -- Populate members table
-INSERT INTO members (email, passwd) VALUES 
-	('spongebob@squarepants.com', 'KrabbyPatty@12'),
-	('plankton@chumbucket.org', 'secretFormula'),
-	('Fred@yahoo.ca', 'myLeg!');
-
--- Populate profile table
-INSERT INTO profile (email, first_name, age, gender, height, weight, target_weight, exercise_routine) VALUES 
-	('spongebob@squarepants.com', 'Spongebob', '18', 'M', 150, 24, 30, 'Plushie lifting'),
-	('plankton@chumbucket.org', 'Plankton', '75', 'M', 4, 1, 1, 'Formula chasing'),
-	('Fred@yahoo.ca', 'Fred', '30', 'M', 160, 40, 38, 'Leg breaking');
+INSERT INTO members (email, passwd, first_name, age, gender, height, weight, target_weight, exercise_routine) VALUES 
+	('spongebob@squarepants.com','KrabbyPatty@12', 'Spongebob', '18', 'M', 150, 24, 30, 'Plushie lifting'),
+	('plankton@chumbucket.org','secretFormula', 'Plankton', '75', 'M', 4, 1, 1, 'Formula chasing'),
+	('Fred@yahoo.ca', 'myLeg!', 'Fred', '30', 'M', 160, 40, 38, 'Leg breaking');
 
 -- populate trainer table
 INSERT INTO trainer (email, first_name, passwd, start_time, end_time) VALUES 

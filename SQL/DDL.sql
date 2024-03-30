@@ -20,16 +20,26 @@ CREATE TABLE trainer(
 );
 
 CREATE TABLE schedule(
+	schedule_id SERIAL NOT NULL,
 	room_used INTEGER NOT NULL,
-	member_email VARCHAR(255) NOT NULL,
 	trainer_email VARCHAR(255) NOT NULL,
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
 	type_session VARCHAR(15) NOT NULL, -- Group/solo
 	class_type VARCHAR(20) NOT NULL, -- Cardio, weight-lifting
+	primary key(schedule_id),
 	foreign key (member_email) references members(email)
 		on delete set null,
 	foreign key (trainer_email) references trainer(email)
+		on delete set null
+);
+
+CREATE TABLE scheduleStudents(
+	schedule_id INTEGER NOT NULL,
+	member_email VARCHAR(255) NOT NULL,
+	foreign key (member_email) references members(email)
+		on delete set null,
+	foreign key (schedule_id) references schedule(schedule_id)
 		on delete set null
 );
 

@@ -41,23 +41,46 @@ def testingSelect(cursor):
         print("name is: " + row[1] + " " + row[2])
 
 def validateUser(cursor,username,password,memberType):
-    query = "SELECT * FROM %s WHERE email = %s AND passwd = %s"
-    #query = "SELECT * FROM students where first_name = %s AND last_name = %s" #testing
-    cursor.execute(query,(memberType,username,password))
-    #cursor.execute(query,(username,password)) #testing
+    #query = "SELECT * FROM %s WHERE email = %s AND passwd = %s"
+    query = "SELECT * FROM students where first_name = %s AND last_name = %s" #testing
+    #cursor.execute(query,(memberType,username,password))
+    cursor.execute(query,(username,password)) #testing
     ans = cursor.fetchall()
 
     if(len(ans) == 1):
         print("exists")
     else:
         print("no no no")
+
+#Member Functions
+def addMember():
+    return
+def updateMemberInformation():
+    return
+def printDashboard():
+    return
+def joinClass():
+    return
+def rescheduleClass():
+    return
+def cancelClass():
+    return
+
+#Trainer Functions
+def setAvailability():
+    return
+
+def getMember():
+    return
+
+#staff functions
     
 
 
 
 def main():
     cursor = connectToDatabase()
-    #testingSelect(cursor)
+    testingSelect(cursor)
 
 
     validateUser(cursor,'Jim','Beam','students')

@@ -5,9 +5,9 @@ import psycopg2
 def connectToDatabase():
     try:
         #would change depending on the user
-        password = "comp3005"
+        password = "admin"
         #database = "GymManagementSystem"
-        database = "COMP3005_A3_database"
+        database = "COMP3005FinalProject"
 
         connection = psycopg2.connect( database = database,
                                     host = "localhost",
@@ -53,8 +53,11 @@ def validateUser(cursor,username,password,memberType):
         print("no no no")
 
 #Member Functions
-def addMember():
-    return
+def addMember(cursor, email, passwd, first_name, age, gender, height, weight, target_weight, exercise_routine):
+    query = "INSERT INTO members (email, passwd, first_name, age, gender, height, weight, target_weight, exercise_routine) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, (email, passwd, first_name, age, gender, height, weight, target_weight, exercise_routine))
+    print(cursor.fetchall())
+    return  
 def updateMemberInformation():
     return
 def printDashboard():
@@ -80,12 +83,13 @@ def getMember():
 
 def main():
     cursor = connectToDatabase()
-    testingSelect(cursor)
+    #testingSelect(cursor)
 
 
-    validateUser(cursor,'Jim','Beam','students')
-    validateUser(cursor,'hey','Beam','students')
+    #validateUser(cursor,'Jim','Beam','students')
+    #validateUser(cursor,'hey','Beam','students')
     
+    addMember(cursor, 'test', 'test', 'test', 2, 'M', 5, 2, 5, 'round')
 
 
 

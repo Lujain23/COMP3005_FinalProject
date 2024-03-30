@@ -8,6 +8,7 @@ CREATE TABLE members(
 	weight INTEGER  check (weight>0),
 	target_weight INTEGER check(target_weight>0),
 	exercise_routine TEXT,
+	primary key(email)
 );
 
 CREATE TABLE trainer(
@@ -28,8 +29,6 @@ CREATE TABLE schedule(
 	type_session VARCHAR(15) NOT NULL, -- Group/solo
 	class_type VARCHAR(20) NOT NULL, -- Cardio, weight-lifting
 	primary key(schedule_id),
-	foreign key (member_email) references members(email)
-		on delete set null,
 	foreign key (trainer_email) references trainer(email)
 		on delete set null
 );

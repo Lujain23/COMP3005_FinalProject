@@ -64,6 +64,10 @@ layout= html.Div(
         id='confirmRegister',
         message='Register Successful! Please log in.',
         ),
+        dcc.ConfirmDialog(
+        id='warning',
+        message='Please fill all fields.',
+        ),
     ]
 )
 
@@ -71,6 +75,7 @@ layout= html.Div(
 @callback(
    
     [Output('confirmRegister','displayed'),
+     Output('warning','displayed'),
     Output('url','pathname')],
    [Input('registerButton','n_clicks')],
    [State('emailInput','value'),
@@ -89,5 +94,7 @@ def registerMember(n_clicks,email,password,firstName,age,gender,height,weight,ta
     if n_clicks:
         if (email and password and firstName and age and gender and height and weight and target): #makes sure all fields has values
             if(handler.addMember(email,password,firstName,age,gender,height,weight,target,exceriseRoutine)):
-                return True,'/'
+                return True,False,'/'
+        else:
+            return False,True,'signup'
         

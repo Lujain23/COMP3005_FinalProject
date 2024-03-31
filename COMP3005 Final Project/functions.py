@@ -40,19 +40,37 @@ def testingSelect(cursor):
     for row in ans:
         print("name is: " + row[1] + " " + row[2])
 
-def validateUser(cursor,username,password,memberType):
-    #query = "SELECT * FROM %s WHERE email = %s AND passwd = %s"
-    query = "SELECT * FROM students where first_name = %s AND last_name = %s" #testing
-    #cursor.execute(query,(memberType,username,password))
-    cursor.execute(query,(username,password)) #testing
-    ans = cursor.fetchall()
+def validateUser(connection,username,password,memberType):
+    cursor = connection.cursor()
+    ans = []
+    try:
+        query = "SELECT * FROM {} WHERE email = %s AND passwd = %s".format(memberType)
+        cursor.execute(query,(username,password))
+        ans = cursor.fetchall()
+        if(len(ans) == 1):
+            print("exists")
+            return True
+        else:
+            print("no no no")
+            return False
+    except psycopg2.DatabaseError as e:
+        print("Error in ValidateUser!")
 
-    if(len(ans) == 1):
-        print("exists")
-    else:
-        print("no no no")
+
 
 #Member Functions
+def selectMember(connection,email):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT * FROM members WHERE email = %s"
+        cursor.execute(query,(email,))
+        ans = cursor.fetchall()
+        return ans
+    except psycopg2.DatabaseError as e:
+        print("Error selecting member!")
+    return
+
+
 def addMember(connection, email, passwd, first_name, age, gender, height, weight, target_weight, exercise_routine):
     cursor = connection.cursor()
     try:
@@ -151,4 +169,6 @@ def main():
     #printDashboard(connection, 'test')
     #joinClass(connection, 1, 'test', 'trainerTest', '09:00:00', '10:00:00', 'solo', 'cardio')
     getMember(connection, 'testING')
-main()
+    #print(validateUser(connection,'lujain@gmail.com','lujain','members'))
+    print(selectMember(connection,'lujain@gmail.com'))
+#main()

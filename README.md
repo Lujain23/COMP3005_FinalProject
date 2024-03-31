@@ -6,3 +6,6 @@ Group: Treesta Wang, Lujain Sharafeldin
 - pip install dash
 - pip3 install psycopg2-binary
 
+# Important Notes
+- make sure to change password in COMP3005 Final Project/function.py
+

@@ -64,32 +64,36 @@ def generateLayout(values):
                     html.Td(dcc.Input(id='emailInput', type='email', style=textFieldStyle,value=values[0][0],readOnly= True))
                 ]),
                 html.Tr([
+                    html.Td(html.Label("Password")),
+                    html.Td(dcc.Input(id='passwordInput', type='text', style=textFieldStyle,value=values[0][1]))
+                ]),
+                html.Tr([
                     html.Td(html.Label("First Name")),
-                    html.Td(dcc.Input(id='nameInput', type='text', style=textFieldStyle,value=values[0][1]))
+                    html.Td(dcc.Input(id='nameInput', type='text', style=textFieldStyle,value=values[0][2]))
                 ]),
                 html.Tr([
                     html.Td(html.Label("Age")),
-                    html.Td(dcc.Input(id='ageInput', type='number', style=textFieldStyle,value=values[0][2]))
+                    html.Td(dcc.Input(id='ageInput', type='number', style=textFieldStyle,value=values[0][3]))
                 ]),
                 html.Tr([
                     html.Td(html.Label("Gender")),
-                    html.Td(dcc.Input(id='genderInput', type='text', style=textFieldStyle,value=values[0][3]))
+                    html.Td(dcc.Input(id='genderInput', type='text', style=textFieldStyle,value=values[0][4]))
                 ]),
                 html.Tr([
                     html.Td(html.Label("Height (rounded to the nearest m)")),
-                    html.Td(dcc.Input(id='heightInput', type='number', style=textFieldStyle,value=values[0][4]))
+                    html.Td(dcc.Input(id='heightInput', type='number', style=textFieldStyle,value=values[0][5]))
                 ]),
                 html.Tr([
                     html.Td(html.Label("Weight (rounded to the nearest kg)")),
-                    html.Td(dcc.Input(id='weightInput', type='number', style=textFieldStyle,value=values[0][5]))
+                    html.Td(dcc.Input(id='weightInput', type='number', style=textFieldStyle,value=values[0][6]))
                 ]),
                 html.Tr([
                     html.Td(html.Label("Target Weight (rounded to the nearest kg)")),
-                    html.Td(dcc.Input(id='targetInput', type='number', style=textFieldStyle,value=values[0][6]))
+                    html.Td(dcc.Input(id='targetInput', type='number', style=textFieldStyle,value=values[0][7]))
                 ]),
                 html.Tr([
                     html.Td(html.Label("Exercise Routine")),
-                    html.Td(dcc.Input(id='exerciseRoutineInput', type='text', style=textFieldStyle,value=values[0][7]))
+                    html.Td(dcc.Input(id='exerciseRoutineInput', type='text', style=textFieldStyle,value=values[0][8]))
                 ]),
                 html.Tr([
                     html.Td(),

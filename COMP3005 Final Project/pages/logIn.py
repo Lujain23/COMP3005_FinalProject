@@ -7,8 +7,9 @@ dash.register_page(__name__)
 globalUsername  = ''
 globalType = ''
 
-from pages.member.member import mainLayout as mainLayout
-import pages.member.member as member
+
+import pages.memberLayouts as member
+import buttonHandler as handler
 
 #layout for user log in
 layout = html.Div(
@@ -29,9 +30,9 @@ layout = html.Div(
                         dcc.Dropdown(
                             id='memberType',
                             options=[
-                                {'label': 'Member', 'value': 'member'},
+                                {'label': 'Member', 'value': 'members'},
                                 {'label': 'Trainer', 'value': 'trainer'},
-                                {'label': 'Staff', 'value': 'staff'}
+                                {'label': 'Staff', 'value': 'admin_staff'}
                             ],
 
                         ),
@@ -67,16 +68,21 @@ def validateUser(n_clicks,username,password,memberType):
             global globalUsername, globalType
             globalUsername = username
             globalType = memberType
+
             #now to validate if it exits
             #need to create like a statement thing of whcih "welcome" it opens to  TO DO
-            if (username == 'admin' and password == 'admin'):
-                new_url = '/' + memberType + '/welcome'
-                new_url = '/welcome'
-                return mainLayout,dash.no_update,new_url
-            
-            #not validated
+            if (handler.validateUser(username,password,memberType)):
+                
+                if(memberType == 'members'):
+                    new_url = 'members'
+                elif (memberType == 'trainer'):
+                    new_url = 'trainer'
+                elif(memberType == 'admin_staff'):
+                    new_url = 'admin'
+                                
+                return member.mainLayout,dash.no_update,new_url
+                #not validated
             else:
-                print(memberType)
                 return dash.no_update,"Incorrect. Please try again." ,'/login'
 
 
@@ -104,11 +110,14 @@ def join_class(n_clicks):
 
 def update_information(n_clicks):
     if n_clicks:
-        print(globalUsername) #would have to change by getting the username value being used
+        print("current user: ", globalUsername) #would have to change by getting the username value being used
 
         values = [('johnAdams@gmail.com','John',20,'male',150,50,60,'something')]
 
+        values = handler.selectMember(globalUsername)
+ 
         return member.generateLayout(values)
+        
     else:
         return dash.no_update
     
@@ -117,12 +126,22 @@ def update_information(n_clicks):
     Output('confirmUpdate','displayed'),
     Output('page-content', 'children',allow_duplicate=True),
     Input('updateButton','n_clicks'),
+    State('emailInput', 'value'),
+    State('passwordInput', 'value'),
+    State('nameInput', 'value'),
+    State('ageInput', 'value'),
+    State('genderInput', 'value'),
+    State('heightInput', 'value'),
+    State('weightInput', 'value'),
+    State('targetInput', 'value'),
+    State('exerciseRoutineInput', 'value'),
     prevent_initial_call = True
 )
 
-def update_information_done(n_clicks):
+def update_information_done(n_clicks,email,password,firstName,age,gender,height,weight,target,exceriseRoutine):
     if n_clicks:
         #will have to call the function that updates the values //SQL
-        return True,mainLayout 
+        handler.updateMember(email,password,firstName,age,gender,height,weight,target,exceriseRoutine)
+        return True,member.mainLayout 
     else:
         return False,dash.no_update    

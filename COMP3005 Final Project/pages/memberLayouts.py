@@ -22,6 +22,7 @@ mainLayout = html.Div(
     html.Div(
         id = 'buttonsTable',
         children=[
+        html.H1('Hello Member!'),
         html.H1('Welcome to the Health and Fitness Club!'),
         html.Table([
             html.Tr([

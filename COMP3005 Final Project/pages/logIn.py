@@ -9,8 +9,11 @@ globalType = ''
 
 
 import pages.memberLayouts as member
-import buttonHandler as handler
+import pages.trainerLayouts as trainer
+import pages.staffLayouts as staff
 
+import buttonHandler as handler
+textFieldStyle ={'width': '100%', 'height': '30px','fontSize': '20px'}
 #layout for user log in
 layout = html.Div(
      children=[
@@ -20,11 +23,11 @@ layout = html.Div(
                 id='page-content',
                 children=[
                     html.Div([
-                        html.H1("Log In Page"),
-                        dcc.Input(id='usernameInput', type='text', placeholder='Enter username'),
+                        html.H1("Log In Page",style={'fontSize':'50px'}),
+                        dcc.Input(id='usernameInput', type='text', placeholder='Enter username',style=textFieldStyle),
                         html.Br(),
                         html.Br(),
-                        dcc.Input(id='passwordInput', type='password', placeholder='Enter password'),
+                        dcc.Input(id='passwordInput', type='password', placeholder='Enter password',style=textFieldStyle),
                         html.Br(),
                         html.Br(),
                         dcc.Dropdown(
@@ -34,11 +37,12 @@ layout = html.Div(
                                 {'label': 'Trainer', 'value': 'trainer'},
                                 {'label': 'Staff', 'value': 'admin_staff'}
                             ],
+                            style=textFieldStyle
 
                         ),
                         html.Br(),
                         html.Br(),
-                        html.Button('Submit', id='logInSubmitButton'),
+                        html.Button('Submit', id='logInSubmitButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
                         html.Div(id="failed")
                     ])
                 ]  
@@ -75,12 +79,15 @@ def validateUser(n_clicks,username,password,memberType):
                 
                 if(memberType == 'members'):
                     new_url = 'members'
+                    return member.mainLayout,dash.no_update,new_url
                 elif (memberType == 'trainer'):
                     new_url = 'trainer'
+                    return trainer.mainLayout,dash.no_update,new_url
                 elif(memberType == 'admin_staff'):
                     new_url = 'admin'
+                    return staff.mainLayout,dash.no_update,new_url
                                 
-                return member.mainLayout,dash.no_update,new_url
+                
                 #not validated
             else:
                 return dash.no_update,"Incorrect. Please try again." ,'/login'
@@ -111,8 +118,6 @@ def join_class(n_clicks):
 def update_information(n_clicks):
     if n_clicks:
         print("current user: ", globalUsername) #would have to change by getting the username value being used
-
-        values = [('johnAdams@gmail.com','John',20,'male',150,50,60,'something')]
 
         values = handler.selectMember(globalUsername)
  

@@ -150,3 +150,44 @@ def update_information_done(n_clicks,email,password,firstName,age,gender,height,
         return True,member.mainLayout 
     else:
         return False,dash.no_update    
+
+
+''' TRAINER VIEW'''
+#get member button clicked
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('getMemberButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def getMember(n_clicks):
+    if n_clicks:
+        return trainer.getMemberLayout
+
+
+#submit button in get member layout called
+@callback(
+    Output('memberTableBody', 'children', allow_duplicate=True),
+    Input('submitGetMemberButton', 'n_clicks'),
+    State('nameInput','value'),
+    prevent_initial_call=True
+)
+def submitGetMember(n_clicks,memberToSearch):
+    dataStyle = {'fontSize':'18px', 'color': 'blue'}
+    if n_clicks:
+        data = []
+        data = handler.getMember(memberToSearch)
+
+        tableRows = [] 
+
+        for currentMember in data:
+            first_name, age, gender, height, weight, target_weight, exercise_routine = currentMember
+            currRow = html.Tr([html.Td(first_name,style=dataStyle), 
+                               html.Td(age,style=dataStyle), 
+                               html.Td(gender,style=dataStyle), 
+                               html.Td(height,style=dataStyle),
+                                html.Td(weight,style=dataStyle), 
+                                 html.Td(target_weight,style=dataStyle),
+                                   html.Td(exercise_routine,style=dataStyle)])
+            tableRows.append(currRow)
+
+        return tableRows

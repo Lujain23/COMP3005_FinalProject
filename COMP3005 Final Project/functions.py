@@ -146,10 +146,10 @@ def getMember(connection, first_name):
         query = "SELECT first_name, age, gender, height, weight, target_weight, exercise_routine FROM members WHERE first_name = %s"
         cursor.execute(query, (first_name,))
         result = cursor.fetchall()
-        print(result)
+        return result
     except psycopg2.DatabaseError as e:
         print("Error getting member!")
-    return
+    return 
 
 #staff functions
     

@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output, State
 dash.register_page(__name__)
 
 textFieldStyle ={'width': '100%', 'height': '30px'}
+import buttonHandler as handler
 
 # #have to create divs for each texfield to be under each other
 
@@ -12,7 +13,7 @@ layout= html.Div(
     style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center', 'height': '100vh'},
     id='page-content',
     children=[
-        dcc.Location(id = 'url',refresh=False),
+        dcc.Location(id = 'url'),
         html.Div([
             html.H1("User Registration Form"),
             html.Table([
@@ -58,36 +59,35 @@ layout= html.Div(
                 ])
                                 
             ], style={'margin-bottom': '10px', 'width': '100%'})
-        ], style={'width': '50%'})
+        ], style={'width': '50%'}),
+        dcc.ConfirmDialog(
+        id='confirmRegister',
+        message='Register Successful! Please log in.',
+        ),
     ]
 )
 
-successLayout = html.Div([
-    html.H1("Registeration Successful!"),
-    html.H1("You will be redirected to the Main Menu and can log in."),
-])
-
 #when submit button is clicked
 @callback(
-   [Output('url','pathname'),
-    Output('page-content','children',allow_duplicate=True)],
+   
+    [Output('confirmRegister','displayed'),
+    Output('url','pathname')],
    [Input('registerButton','n_clicks')],
    [State('emailInput','value'),
+    State('passwordInput','value'),
     State('nameInput','value'),
     State('ageInput','value'),
     State('genderInput','value'),
     State('heightInput','value'),
     State('weightInput','value'),
     State('targetInput','value'),
-    State('exerciseRoutineInput','value'),
+    State('exerciseRoutineInput','value')
     ],
     prevent_initial_call=True
 )
-def registerMember(n_clicks,email,firstName,age,gender,height,weight,target,exceriseRoutie):
+def registerMember(n_clicks,email,password,firstName,age,gender,height,weight,target,exceriseRoutine):
     if n_clicks:
-        if (email and firstName and age and gender and height and weight and target):
-            return '/',successLayout
-        else:
-            return '/signup',dash.no_update
+        if (email and password and firstName and age and gender and height and weight and target): #makes sure all fields has values
+            if(handler.addMember(email,password,firstName,age,gender,height,weight,target,exceriseRoutine)):
+                return True,'/'
         
-#after signing up successfully, to alert the user register successful and to sign in again

@@ -5,7 +5,8 @@ import psycopg2
 def connectToDatabase():
     try:
         #would change depending on the user
-        password = "admin"
+        password = "admin" #trista
+        password = "comp3005" #lujain
         database = "GymManagementSystem"
         #database = "COMP3005FinalProject"
 
@@ -17,7 +18,6 @@ def connectToDatabase():
         
         print("Connected to Database!")
 
-        connection.cursor()
 
         #make it return the connection? still thinking of how it would be used.
         return  connection

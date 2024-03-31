@@ -12,7 +12,7 @@ import pages.member.member as member
 
 #layout for user log in
 layout = html.Div(
-     [
+     children=[
           dcc.Location(id='url',refresh=False),
           html.Div(
                 style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center', 'height': '100vh'},
@@ -80,8 +80,8 @@ def validateUser(n_clicks,username,password,memberType):
                 return dash.no_update,"Incorrect. Please try again." ,'/login'
 
 
-
-#functions for the buttons
+''' MEMBER VIEW'''
+#functions for the buttons for MEMBER
             
 #join class
 @callback(
@@ -91,16 +91,15 @@ def validateUser(n_clicks,username,password,memberType):
 )
 def join_class(n_clicks):
     if n_clicks:
-        print("HEY")
         return 'Joined class!'
 
 
-#update Information
+#Update Called
+    #first function to generate the textfields
 @callback(
-     Output('buttonsTable','children'),
+     Output('buttonsTable','children',allow_duplicate=True),
      Input('updateInfoButton','n_clicks'),
      prevent_initial_call = True
-
 )
 
 def update_information(n_clicks):
@@ -110,3 +109,20 @@ def update_information(n_clicks):
         values = [('johnAdams@gmail.com','John',20,'male',150,50,60,'something')]
 
         return member.generateLayout(values)
+    else:
+        return dash.no_update
+    
+# second function for when the updaye is called
+@callback(
+    Output('confirmUpdate','displayed'),
+    Output('page-content', 'children',allow_duplicate=True),
+    Input('updateButton','n_clicks'),
+    prevent_initial_call = True
+)
+
+def update_information_done(n_clicks):
+    if n_clicks:
+        #will have to call the function that updates the values //SQL
+        return True,mainLayout 
+    else:
+        return False,dash.no_update    

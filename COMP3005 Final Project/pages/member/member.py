@@ -61,7 +61,7 @@ def generateLayout(values):
             html.Table([
                 html.Tr([
                     html.Td(html.Label("Email")),
-                    html.Td(dcc.Input(id='emailInput', type='email', style=textFieldStyle,value=values[0][0]))
+                    html.Td(dcc.Input(id='emailInput', type='email', style=textFieldStyle,value=values[0][0],readOnly= True))
                 ]),
                 html.Tr([
                     html.Td(html.Label("First Name")),
@@ -97,7 +97,11 @@ def generateLayout(values):
                 ])
                                 
             ], style={'margin-bottom': '10px', 'width': '100%'})
-        ], style={'width': '50%'})
+        ], style={'width': '50%'}),
+        dcc.ConfirmDialog(
+        id='confirmUpdate',
+        message='Update Successful! Will go back to Main Menu.',
+        ),
     ]
 )
     return  layout

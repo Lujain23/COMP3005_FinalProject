@@ -28,7 +28,6 @@ app.layout = html.Div([
     prevent_initial_call=True
 )
 def switch_layout(signUp_clicks, logIn_clicks, current_path):
-    print(current_path)
     ctx = dash.callback_context
     triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
 

@@ -56,8 +56,6 @@ def validateUser(connection,username,password,memberType):
     except psycopg2.DatabaseError as e:
         print("Error in ValidateUser!")
 
-
-
 #Member Functions
 def selectMember(connection,email):
     cursor = connection.cursor()
@@ -137,6 +135,8 @@ def cancelClass(connection, schedule_id):
     return
 
 #Trainer Functions
+# "timing during the week and its start and end dates"
+# Should we add start and end dates to the trainer table?
 def setAvailability():
     return
 
@@ -152,7 +152,34 @@ def getMember(connection, first_name):
     return 
 
 #staff functions
-    
+# "Room booking management entails assigning a room to a class or any other event, such as a birthday party
+# For room booking, administrators can inquire about:
+#   The designated room
+#   The type of event (class, birthday, etc.)
+#   The room management component must, based on the event schedule, verify room availability. If the room is not available, it prompts the administrator to select an alternative option."
+# Admin makes the bookings right? Members and trainers can't? (If someone wants to book something, the admin must do it on their behalf)
+
+def roomBooking():
+    # We could have a room table with room_id, start_time, end_time, date, eventType and then add to the room's schedule if the times don't overlap
+    return
+
+# "Class scheduling involves assigning members and trainers to a class, then determining its timing during the week and its start and end dates."
+# Literally what. Does the staff make the class schedules? How would that work?
+def classScheduling():
+    return
+
+def equipmentMaintenenceMonitoring(connection, equipment_name):
+    cursor = connection.cursor()
+    # Just update date in equipment
+    try:
+        query = "UPDATE equipment_maintenence SET last_checked = %s WHERE equipment_name = %s"
+        cursor.execute(query, (equipment_name, ))
+        connection.commit()
+    except psycopg2.DatabaseError as e:
+        print("Error monitoring equipment!")
+    return 
+
+
 
 
 

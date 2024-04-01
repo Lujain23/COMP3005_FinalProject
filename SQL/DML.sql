@@ -1,4 +1,3 @@
--- Populate members table
 INSERT INTO members (email, passwd, first_name, age, gender, height, weight, target_weight, exercise_routine) VALUES 
 	('spongebob@squarepants.com','KrabbyPatty@12', 'Spongebob', '18', 'M', 150, 24, 30, 'Plushie lifting'),
 	('plankton@chumbucket.org','secretFormula', 'Plankton', '75', 'M', 4, 1, 1, 'Formula chasing'),
@@ -9,6 +8,9 @@ INSERT INTO trainer (email, first_name, passwd, start_time, end_time) VALUES
 	('SandyCheeks@gmail.com', 'Sandy', 'i<3Texas', '5:00:00', '17:00:00'),
 	('Karen@Computer.com', 'Karen', 'Plankton!', '9:00:00', '19:00:00'),
 	('LarryLobster@gmail.com', 'Larry', 'MuscleBeach', '6:00:00', '14:00:00');
+
+INSERT INTO room(room_id, eventType) VALUES
+	(1, 'event');
 
 -- Populate schedule table
 INSERT INTO schedule (schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type) VALUES 

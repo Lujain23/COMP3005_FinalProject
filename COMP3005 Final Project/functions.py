@@ -1,14 +1,14 @@
 import psycopg2
-
+from datetime import date 
 
 #returns the cursor to execute
 def connectToDatabase():
     try:
         #would change depending on the user
-        password = "admin" #trista
+        #password = "admin" #trista
         password = "comp3005" #lujain
-        database = "GymManagementSystem"
-        #database = "COMP3005FinalProject"
+        #database = "GymManagementSystem"
+        database = "COMP3005FinalProject"
 
         connection = psycopg2.connect( database = database,
                                     host = "localhost",
@@ -33,12 +33,12 @@ def disconnectDatabase(connection):
 
 
 def testingSelect(cursor):
-    cursor.execute("SELECT * from students")
+    cursor.execute("SELECT * from equipment_maintenence")
     ans = cursor.fetchall()
     
     print(ans)
     for row in ans:
-        print("name is: " + row[1] + " " + row[2])
+        print("name is: " + row[2])
 
 def validateUser(connection,username,password,memberType):
     cursor = connection.cursor()
@@ -91,6 +91,8 @@ def updateMemberInformation(connection, email, passwd, first_name, age, gender, 
 
 def printDashboard(connection, email):
     # Displaying exercise routines, fitness achievements, health statistics
+    # TODO: "Health statistics are designed to display various statistics based on health metrics. For instance,
+    # you can showcase the minimum, maximum, and average values for each metric. Typically, statistics are retrieved using aggregate functions."
     cursor = connection.cursor()
     try:
         # Fitness achievements???????????????
@@ -135,7 +137,7 @@ def cancelClass(connection, schedule_id):
     return
 
 #Trainer Functions
-# "timing during the week and its start and end dates"
+# TODO: "timing during the week and its start and end dates"
 # Should we add start and end dates to the trainer table?
 def setAvailability():
     return
@@ -152,7 +154,7 @@ def getMember(connection, first_name):
     return 
 
 #staff functions
-# "Room booking management entails assigning a room to a class or any other event, such as a birthday party
+# TODO: "Room booking management entails assigning a room to a class or any other event, such as a birthday party
 # For room booking, administrators can inquire about:
 #   The designated room
 #   The type of event (class, birthday, etc.)
@@ -163,7 +165,7 @@ def roomBooking():
     # We could have a room table with room_id, start_time, end_time, date, eventType and then add to the room's schedule if the times don't overlap
     return
 
-# "Class scheduling involves assigning members and trainers to a class, then determining its timing during the week and its start and end dates."
+# TODO: "Class scheduling involves assigning members and trainers to a class, then determining its timing during the week and its start and end dates."
 # Literally what. Does the staff make the class schedules? How would that work?
 def classScheduling():
     return
@@ -173,7 +175,7 @@ def equipmentMaintenenceMonitoring(connection, equipment_name):
     # Just update date in equipment
     try:
         query = "UPDATE equipment_maintenence SET last_checked = %s WHERE equipment_name = %s"
-        cursor.execute(query, (equipment_name, ))
+        cursor.execute(query, (date.today(), equipment_name))
         connection.commit()
     except psycopg2.DatabaseError as e:
         print("Error monitoring equipment!")
@@ -195,7 +197,10 @@ def main():
     #updateMemberInformation(connection, 'test', 'test', 'testING', 4, 'M', '5', '2', '5', 'rotund')
     #printDashboard(connection, 'test')
     #joinClass(connection, 1, 'test', 'trainerTest', '09:00:00', '10:00:00', 'solo', 'cardio')
-    getMember(connection, 'testING')
+    #getMember(connection, 'testING')
     #print(validateUser(connection,'lujain@gmail.com','lujain','members'))
-    print(selectMember(connection,'lujain@gmail.com'))
-#main()
+    #print(selectMember(connection,'lujain@gmail.com'))
+    equipmentMaintenenceMonitoring(connection, 'Treadmill')
+    #testingSelect(connection.cursor())
+    
+main()

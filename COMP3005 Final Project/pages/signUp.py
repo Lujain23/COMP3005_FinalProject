@@ -38,7 +38,7 @@ layout= html.Div(
                     html.Td(dcc.Input(id='genderInput', type='text', style=textFieldStyle))
                 ]),
                 html.Tr([
-                    html.Td(html.Label("Height (rounded to the nearest m)")),
+                    html.Td(html.Label("Height (rounded to the nearest cm)")),
                     html.Td(dcc.Input(id='heightInput', type='number', style=textFieldStyle))
                 ]),
                 html.Tr([

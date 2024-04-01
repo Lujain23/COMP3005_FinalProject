@@ -19,7 +19,24 @@ CREATE TABLE trainer(
 	end_time TIME NOT NULL,
 	primary key(email)
 );
-
+CREATE TABLE room(
+	room_id SERIAL NOT NULL,
+	eventType VARCHAR(255) NOT NULL,	
+	primary key(room_id)
+);
+--for events
+CREATE TABLE eventInfo(
+	event_id SERIAL NOT NULL,
+	room_used INTEGER NOT NULL,
+	attendees INTEGER NOT NULL,
+	start_time TIME NOT NULL,
+	end_time TIME NOT NULL,
+	primary key(event_id),
+	foreign key(room_used) references room(room_id)
+		on delete set null
+	
+);
+--for class
 CREATE TABLE schedule(
 	schedule_id SERIAL NOT NULL,
 	room_used INTEGER NOT NULL,
@@ -30,6 +47,8 @@ CREATE TABLE schedule(
 	class_type VARCHAR(20) NOT NULL, -- Cardio, weight-lifting
 	primary key(schedule_id),
 	foreign key (trainer_email) references trainer(email)
+		on delete set null,
+	foreign key(room_used) references room(room_id)
 		on delete set null
 );
 

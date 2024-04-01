@@ -1,14 +1,15 @@
 import psycopg2
 from datetime import date 
+import math
 
 #returns the cursor to execute
 def connectToDatabase():
     try:
         #would change depending on the user
-        #password = "admin" #trista
-        password = "comp3005" #lujain
-        #database = "GymManagementSystem"
-        database = "COMP3005FinalProject"
+        password = "admin" #trista
+        #password = "comp3005" #lujain
+        database = "GymManagementSystem"
+        #database = "COMP3005FinalProject"
 
         connection = psycopg2.connect( database = database,
                                     host = "localhost",
@@ -90,12 +91,9 @@ def updateMemberInformation(connection, email, passwd, first_name, age, gender, 
     return
 
 def printDashboard(connection, email):
-    # Displaying exercise routines, fitness achievements, health statistics
-    # TODO: "Health statistics are designed to display various statistics based on health metrics. For instance,
-    # you can showcase the minimum, maximum, and average values for each metric. Typically, statistics are retrieved using aggregate functions."
     cursor = connection.cursor()
     try:
-        # Fitness achievements???????????????
+        # Getting info
         query = "SELECT exercise_routine FROM members WHERE email = %s"
         cursor.execute(query, (email,))
         exercise_routine = cursor.fetchall()
@@ -105,6 +103,24 @@ def printDashboard(connection, email):
         query = "SELECT weight FROM members WHERE email = %s"
         cursor.execute(query, (email,))
         weight = cursor.fetchall()
+        query = "SELECT target_weight FROM members WHERE email = %s"
+        cursor.execute(query, (email,))
+        target_weight = cursor.fetchall()
+        # Calculate BMI
+        BMI = round(weight[0][0] / (((height[0][0])/100)**2),2)
+        isOverweight = BMI > 24.9
+        weightChange = abs(weight[0][0] - target_weight[0][0])
+        if weightChange == 0:
+            achievement = "Congrats! You're achieved your target weight"
+        else:
+            achievement = "No achievement"
+
+        # exercise_routine -> String of like "formula chasing"
+        # height, weight, target_weight, BMI -> ints
+        # isOverweight -> boolean
+        # weightChange -> int
+        # achievement -> String (achievement/none)
+        return exercise_routine[0][0], height[0][0], weight[0][0], target_weight[0][0], BMI, isOverweight, weightChange, achievement
     except psycopg2.DatabaseError as e:
         print("Error printing dashboard!")
     return
@@ -195,12 +211,12 @@ def main():
     
     #addMember(connection, 'test', 'test', 'test', 2, 'M', 5, 2, 5, 'round')
     #updateMemberInformation(connection, 'test', 'test', 'testING', 4, 'M', '5', '2', '5', 'rotund')
-    #printDashboard(connection, 'test')
+    print(printDashboard(connection, 'spongebob@squarepants.com'))
     #joinClass(connection, 1, 'test', 'trainerTest', '09:00:00', '10:00:00', 'solo', 'cardio')
     #getMember(connection, 'testING')
     #print(validateUser(connection,'lujain@gmail.com','lujain','members'))
     #print(selectMember(connection,'lujain@gmail.com'))
-    equipmentMaintenenceMonitoring(connection, 'Treadmill')
+    #equipmentMaintenenceMonitoring(connection, 'Treadmill')
     #testingSelect(connection.cursor())
     
 main()

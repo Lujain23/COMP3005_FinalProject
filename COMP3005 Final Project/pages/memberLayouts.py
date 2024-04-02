@@ -1,5 +1,5 @@
 from dash import  html,dcc
-
+import buttonHandler as handler
 
 #this is the welcome page for the member
 
@@ -30,12 +30,11 @@ mainLayout = html.Div(
                 html.Td(html.Button('Join Class',id='joinClassButton',n_clicks=0, style=rowStyle))
             ]),
             html.Tr([
-                html.Td(html.Button('Print Fitness and Routine',id='printExerciseButton',n_clicks=0, style=rowStyle)),
+                html.Td(html.Button('Print Dashboard',id='printDashboardButton',n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Reschedule Class',id='rescheduleClassButton',n_clicks=0, style=rowStyle)),
 
             ]),  
             html.Tr([
-                html.Td(html.Button('Print Health Statistics',id='printHealthButton',n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Cancel Class',id='cancelClassButton',n_clicks=0, style=rowStyle))
             ]),             
         ], style = {'margin':'auto'}
@@ -44,9 +43,115 @@ mainLayout = html.Div(
 ])
 
 #layout for "join class"
+dataStyle = {'fontSize':'18px', 'color': 'blue'}
+def joinClassLayout(data):
+
+    tableRows =[]
+
+    for currClass in data:
+        schedule_id, room_used, trainer_email, start_time, end_time, session_type, class_type = currClass
+        currRow = html.Tr([html.Td(schedule_id,style=dataStyle), 
+                               html.Td(room_used,style=dataStyle), 
+                               html.Td(trainer_email,style=dataStyle), 
+                               html.Td(start_time,style=dataStyle),
+                                html.Td(end_time,style=dataStyle), 
+                                 html.Td(session_type,style=dataStyle),
+                                   html.Td(class_type,style=dataStyle)])
+        tableRows.append(currRow)
+
+    columnStyle = {'fontSize':'20px','padding': '15px'}
+    joinClassLayout = html.Div(
+        id='page-content',
+        children=[
+            html.Div(
+                id='tableContainer',
+                children=[
+                    html.Label('Available Classes:', style={'fontSize': '30px'}),
+                    html.Table([
+                        html.Thead(html.Tr([
+                            html.Th('Schedule ID', style=columnStyle),  
+                            html.Th('Room Used', style=columnStyle),
+                            html.Th('Trainer Email', style=columnStyle),
+                            html.Th('Start Time', style=columnStyle),
+                            html.Th('End Time', style=columnStyle),
+                            html.Th('Session type', style=columnStyle),
+                            html.Th('Class Type', style=columnStyle)
+                        ])),
+                        html.Tbody(id='classTableBody'),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                ],
+                style={'textAlign': 'center'}  
+        ),  # End of second div
+        html.Div(
+        id='classToJoinContainer',
+        children=[
+            html.Label("Enter Schedule ID (just ID)",style={'font-size': '16px','margin-right':'10px'}),
+            dcc.Input(id='scheduleIdInput', type='number', style={'width': '100px', 'margin-right': '10px','padding': '10px 20px'}),
+            html.Button('Join Cass', id='joinButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}),
+        ],
+        style={'textAlign': 'center', 'margin': '20px auto'} 
+    ),
+    dcc.ConfirmDialog(
+    id='joinSuccessful',
+    message='Join Successful! Will go back to Main Menu.',
+    ),
+        
+    ])
+    return joinClassLayout
 
 
 #layout for printDashboard
+boxStyle = {
+    'width': '30%',
+    'padding': '20px',
+    'border': '2px solid #a2d2ff',
+    'border-radius': '10px',
+    'margin': '10px',
+    'box-shadow': '0px 0px 10px 0px rgba(0,0,0,0.1)',
+}
+def generatePrintDashboardLayout(exercise_routine, height, weight, target_weight, BMI, isOverweight, weightChange, achievement):
+    if(isOverweight):
+        overweightSentence = "You are overweight."
+    else:
+        overweightSentence = "You are not overweight."
+
+    line1 = f'Height: {height}'
+    line2 = f'Current Weight : {weight}'
+    line3 = f'Target Weight: {target_weight}'
+    line4 =f'BMI:  {BMI}'
+    line5 = overweightSentence
+    line6 =  f'You are {weightChange} kg away from your target weight.'
+
+    printDashboardLayout = html.Div([
+        html.Div([
+            html.H2('Exercise Routine', style={'color': '#a2d2ff', 'margin-bottom': '10px'}),
+            html.P(exercise_routine, style={'font-size': '18px'}),
+        ], style=boxStyle),
+
+        html.Div([
+            html.H2('Fitness Achievement', style={'color': '#a2d2ff', 'margin-bottom': '10px'}),
+            html.P(achievement, style={'font-size': '18px'}),
+        ], style=boxStyle),
+
+        html.Div([
+            html.H2('Health Statistics', style={'color': '#a2d2ff', 'margin-bottom': '10px'}),
+            html.P(line1, style={'font-size': '18px'}),
+            html.P(line2, style={'font-size': '18px'}),
+            html.P(line3, style={'font-size': '18px'}),
+            html.P(line4, style={'font-size': '18px'}),
+            html.P(line5, style={'font-size': '18px'}),
+            html.P(line6, style={'font-size': '18px'}),
+
+        ], style=boxStyle),
+        #  html.Button('Go Back',id='goBackButton',n_clicks=0, style=rowStyle),
+    ], style={'display': 'flex', 'justify-content': 'space-between'}
+    )
+
+    
+    return printDashboardLayout
 
 #layout for cancel class
 

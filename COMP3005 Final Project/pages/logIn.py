@@ -43,6 +43,9 @@ layout = html.Div(
                         html.Br(),
                         html.Br(),
                         html.Button('Submit', id='logInSubmitButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
+                        html.Br(),
+                        html.Br(),
+                        html.Button('Go Back', id='logInReturnButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
                         html.Div(id="failed")
                     ])
                 ]  
@@ -93,10 +96,25 @@ def validateUser(n_clicks,username,password,memberType):
                 return dash.no_update,"Incorrect. Please try again." ,'/login'
 
 
+#wanna see f this works first COME BACK
+# @callback(
+#     Output('buttonsTable','children',allow_duplicate=True),
+#     Input('goBackButton','n_clicks'),
+#     prevent_initial_call = True
+# )
+# def goBack(n_clicks):
+#     print("imni")
+#     if (n_clicks != 0):
+#         print("?")
+#         return member.mainLayout
+#     else:
+#         return layout
+
 ''' MEMBER VIEW'''
 #functions for the buttons for MEMBER
             
-#join class
+#join class 
+    #first function to generate the layout
 @callback(
     Output('buttonsTable', 'children', allow_duplicate=True),
     Input('joinClassButton', 'n_clicks'),
@@ -104,8 +122,36 @@ def validateUser(n_clicks,username,password,memberType):
 )
 def join_class(n_clicks):
     if n_clicks:
-        return 'Joined class!'
+        return member.joinClassLayout(handler.printAvailableClasses())
+    else:
+        dash.no_update
 
+#second function to actually JOIN CLASS when button clicked
+@callback(
+    Output('joinSuccessful','displayed'),
+    Output('page-content', 'children',allow_duplicate=True),
+    Input('joinButton','n_clicks'),
+    State('scheduleIdInput', 'value'),
+    prevent_initial_call = True
+)
+#GO BACK BUTTON FUNCTIONALITY
+# def update_information_done(n_clicks,scheduleID):
+#     if n_clicks:
+#         #will have to call the function that updates the values //SQL
+#         return member.mainLayout 
+#     else:
+#         return dash.no_update    
+
+def joinClass(n_clicks,scheduleID):
+    if n_clicks:
+        if(scheduleID):
+            handler.joinClass(scheduleID,globalUsername)
+            return True,member.mainLayout
+        else:
+            False,dash.no_update
+    else:
+        
+        return False,dash.no_update
 
 #Update Called
     #first function to generate the textfields
@@ -151,6 +197,18 @@ def update_information_done(n_clicks,email,password,firstName,age,gender,height,
     else:
         return False,dash.no_update    
 
+#print dashboard
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('printDashboardButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def printDashboard(n_clicks):
+    if n_clicks:
+        exercise_routine, height, weight, target_weight, BMI, isOverweight, weightChange, achievement = handler.printDashboard(globalUsername)
+        return member.generatePrintDashboardLayout(exercise_routine, height, weight, target_weight, BMI, isOverweight, weightChange, achievement)
+        
+    
 
 ''' TRAINER VIEW'''
 #get member button clicked

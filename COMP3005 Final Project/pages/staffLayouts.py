@@ -1,13 +1,5 @@
 from dash import  html,dcc
-'''
-addClass()
-removeClass()
-modifyClass()
-printMaintenance() -> print statement of all items and the last time they were checked
-addEquipment() -> adding the equipment that was checked, default date would be current date
-updateMaintenanceCheck() -> update the maintenance date 
-printReceipt()
-'''
+
 rowStyle = {'fontSize':'20px','textAlign': 'center', 'width':'200px','height':'100px'}
 #layout for the main buttons
 mainLayout = html.Div(
@@ -31,7 +23,8 @@ mainLayout = html.Div(
                 html.Td(html.Button('Update Maintenance Check',id='updateMaintenanceButton',n_clicks=0, style=rowStyle))
             ]),   
             html.Tr([
-                html.Td(),
+                html.Td(html.Button('Add Room Booking', id='addRoomBookingButton', n_clicks=0, style=rowStyle)),
+                html.Td(html.Button('Print Used Rooms',id='printUsedRoomsButton',n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Print Receipt', id='printReceiptButton', n_clicks=0, style=rowStyle))
             ]),  
                 

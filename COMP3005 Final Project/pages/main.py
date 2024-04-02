@@ -16,10 +16,3 @@ layout = html.Div([
         ], style={'textAlign': 'center', 'margin': 'auto', 'width': '50%'})
     ]),
 ])
-
-
-
-
-
-
-

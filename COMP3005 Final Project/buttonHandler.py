@@ -23,6 +23,18 @@ def updateMember(email,password,firstName,age,gender,height,weight,target,exceri
     function.updateMemberInformation(con,email,password,firstName,age,gender,height,weight,target,exceriseRoutine)
     return True
 
+def printDashboard(email):
+    con = function.connectToDatabase()
+    return function.printDashboard(con,email)
+
+def printAvailableClasses():
+    con = function.connectToDatabase()
+    return function.printAvailableClasses(con)
+
+def joinClass(scheduleID,email):
+    con = function.connectToDatabase()
+    function.joinClass(con, scheduleID, email)
+    return True
 
 '''TRAINER'''
 def getMember(firstName):

@@ -55,7 +55,11 @@ layout= html.Div(
                 ]),
                 html.Tr([
                     html.Td(),
-                    html.Td(html.Button('Register', id='registerButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}))
+                    html.Td(html.Button('Register', id='registerButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})),
+                ]),
+                html.Tr([
+                    html.Td(),
+                    html.Td(html.Button('Go Back', id='signUpReturnButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}))
                 ])
                                 
             ], style={'margin-bottom': '10px', 'width': '100%'})

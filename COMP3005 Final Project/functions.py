@@ -135,10 +135,6 @@ def joinClass(connection, schedule_id, member_email):
         print("Error joining class!")
     return
 
-def rescheduleClass(connection):
-    cursor = connection.cursor()
-    return
-
 def cancelClass(connection, schedule_id, member_email):
     cursor = connection.cursor()
     try:
@@ -159,7 +155,15 @@ def printAvailableClasses(connection):
     except psycopg2.DatabaseError as e:
         print("Error printing available classes!")
     return
-def printMembersClasses():
+
+def printMembersClasses(connection, member_email):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT * FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NOT NULL AND member_email = %s"
+        cursor.execute(query, (member_email, ))
+        return(cursor.fetchall())
+    except psycopg2.DatabaseError as e:
+        print("Error printing classes member joins!")   
     return
 
 #Trainer Functions
@@ -267,14 +271,19 @@ def equipmentMaintenenceMonitoring(connection, equipment_name):
         print("Error monitoring equipment!")
     return 
 
-def addEquipment(connection):
+def addEquipment(connection, equipment_name, room_id):
     cursor = connection.cursor()
+    try:
+        query = "INSERT INTO equipment_maintenence (equipment_name, room_id) VALUES (%s, %s)"
+        cursor.execute(query, (equipment_name, room_id))
+        connection.commit()
+    except psycopg2.DatabaseError as e:
+        print("Error adding equipment!") 
     return
 
 def main():
     connection = connectToDatabase()
     #testingSelect(cursor)
-
 
     #validateUser(cursor,'Jim','Beam','students')
     #validateUser(cursor,'hey','Beam','students')
@@ -291,5 +300,8 @@ def main():
     #roomBooking(connection, 1, 15, '8:00:00', '9:00:00')
     #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'group', 'cardio')
     #joinClass(connection, 6, 'plankton@chumbucket.org')
-    print(printAvailableClasses(connection))
+    #print(printAvailableClasses(connection))
+    #print(printMembersClasses(connection, 'plankton@chumbucket.org'))
+    #cancelClass(connection, 7, 'plankton@chumbucket.org')
+    addEquipment(connection, 'skipping rope', 4)
 main()

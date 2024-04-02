@@ -107,6 +107,7 @@ def validateUser(n_clicks,username,password,memberType):
 )
 def join_class(n_clicks):
     if n_clicks:
+        print(handler.printAvailableClasses())
         return member.classLayout(handler.printAvailableClasses(),'Available Classes:','Join Successful! Will go back to Main Menu.')
     else:
         dash.no_update
@@ -141,29 +142,29 @@ def joinClass(n_clicks,scheduleID):
 )
 def cancel_class(n_clicks):
     if n_clicks:
+        print("CANCEL: ",handler.printMembersClass(globalUsername))
         return member.classLayout(handler.printMembersClass(globalUsername),'Enrolled Classes:','Cancel Successful! Will go back to Main Menu.')
     else:
         return dash.no_update
 
 #second function to actually cancel
-# @callback(
-#     Output('successful','displayed',allow_duplicate=True),
-#     Output('page-content', 'children',allow_duplicate=True),
-#     Input('submitChangeButton','n_clicks'),
-#     State('scheduleIdInput', 'value'),
-#     prevent_initial_call = True
-# )
+@callback(
+    Output('page-content','children'),
+    Input('submitChangeButton','n_clicks'),
+    State('scheduleIdInput','value'),
+    prevent_initial_call = True
+)
 
-# def cancelClass(n_clicks,scheduleID):
-#     if n_clicks:
-#         if(scheduleID):
-#             handler.cancelClass(scheduleID,globalUsername)
-#             return True,member.mainLayout
-#         else:
-#             False,dash.no_update
-#     else:
+def cancelClass(n_clicks,scheduleID):
+    if (n_clicks):
+        if(scheduleID):
+            handler.cancelClass(scheduleID,globalUsername)
+            return True,member.mainLayout
+        else:
+            False,dash.no_update
+    else:
         
-#         return False,dash.no_update 
+        return False,dash.no_update  
 
 #first function to generate the textfields
 @callback(

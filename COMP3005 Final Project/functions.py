@@ -148,7 +148,7 @@ def cancelClass(connection, schedule_id, member_email):
 def printAvailableClasses(connection):
     cursor = connection.cursor()
     try:
-        query = "SELECT * FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NULL OR type_session = 'group'"
+        query = "SELECT stu.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NULL OR type_session = 'group'"
         cursor.execute(query)
         return(cursor.fetchall())
 

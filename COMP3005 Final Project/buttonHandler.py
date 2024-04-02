@@ -36,6 +36,16 @@ def joinClass(scheduleID,email):
     function.joinClass(con, scheduleID, email)
     return True
 
+def cancelClass(scheduleID,email):
+    con = function.connectToDatabase()
+    function.cancelClass(con,scheduleID,email)
+    return True
+
+def printMembersClass(email):
+    con = function.connectToDatabase()
+    return function.printMembersClasses(con,email)
+    
+
 '''TRAINER'''
 def getMember(firstName):
     con = function.connectToDatabase()

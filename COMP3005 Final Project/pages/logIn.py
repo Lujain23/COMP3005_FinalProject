@@ -95,26 +95,11 @@ def validateUser(n_clicks,username,password,memberType):
             else:
                 return dash.no_update,"Incorrect. Please try again." ,'/login'
 
-
-#wanna see f this works first COME BACK
-# @callback(
-#     Output('buttonsTable','children',allow_duplicate=True),
-#     Input('goBackButton','n_clicks'),
-#     prevent_initial_call = True
-# )
-# def goBack(n_clicks):
-#     print("imni")
-#     if (n_clicks != 0):
-#         print("?")
-#         return member.mainLayout
-#     else:
-#         return layout
-
 ''' MEMBER VIEW'''
 #functions for the buttons for MEMBER
             
 #join class 
-    #first function to generate the layout
+#first function to generate the layout
 @callback(
     Output('buttonsTable', 'children', allow_duplicate=True),
     Input('joinClassButton', 'n_clicks'),
@@ -122,25 +107,18 @@ def validateUser(n_clicks,username,password,memberType):
 )
 def join_class(n_clicks):
     if n_clicks:
-        return member.joinClassLayout(handler.printAvailableClasses())
+        return member.classLayout(handler.printAvailableClasses(),'Available Classes:','Join Successful! Will go back to Main Menu.')
     else:
         dash.no_update
 
-#second function to actually JOIN CLASS when button clicked
+#second function to actually join
 @callback(
-    Output('joinSuccessful','displayed'),
+    Output('successful','displayed',allow_duplicate=True),
     Output('page-content', 'children',allow_duplicate=True),
-    Input('joinButton','n_clicks'),
+    Input('submitChangeButton','n_clicks'),
     State('scheduleIdInput', 'value'),
     prevent_initial_call = True
 )
-#GO BACK BUTTON FUNCTIONALITY
-# def update_information_done(n_clicks,scheduleID):
-#     if n_clicks:
-#         #will have to call the function that updates the values //SQL
-#         return member.mainLayout 
-#     else:
-#         return dash.no_update    
 
 def joinClass(n_clicks,scheduleID):
     if n_clicks:
@@ -151,10 +129,43 @@ def joinClass(n_clicks,scheduleID):
             False,dash.no_update
     else:
         
-        return False,dash.no_update
+        return False,dash.no_update  
 
-#Update Called
-    #first function to generate the textfields
+
+#cancel class
+    #first function to generate the layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('cancelClassButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def cancel_class(n_clicks):
+    if n_clicks:
+        return member.classLayout(handler.printMembersClass(globalUsername),'Enrolled Classes:','Cancel Successful! Will go back to Main Menu.')
+    else:
+        return dash.no_update
+
+#second function to actually cancel
+# @callback(
+#     Output('successful','displayed',allow_duplicate=True),
+#     Output('page-content', 'children',allow_duplicate=True),
+#     Input('submitChangeButton','n_clicks'),
+#     State('scheduleIdInput', 'value'),
+#     prevent_initial_call = True
+# )
+
+# def cancelClass(n_clicks,scheduleID):
+#     if n_clicks:
+#         if(scheduleID):
+#             handler.cancelClass(scheduleID,globalUsername)
+#             return True,member.mainLayout
+#         else:
+#             False,dash.no_update
+#     else:
+        
+#         return False,dash.no_update 
+
+#first function to generate the textfields
 @callback(
      Output('buttonsTable','children',allow_duplicate=True),
      Input('updateInfoButton','n_clicks'),
@@ -172,7 +183,7 @@ def update_information(n_clicks):
     else:
         return dash.no_update
     
-# second function for when the updaye is called
+# second function for when the update is called
 @callback(
     Output('confirmUpdate','displayed'),
     Output('page-content', 'children',allow_duplicate=True),
@@ -208,7 +219,19 @@ def printDashboard(n_clicks):
         exercise_routine, height, weight, target_weight, BMI, isOverweight, weightChange, achievement = handler.printDashboard(globalUsername)
         return member.generatePrintDashboardLayout(exercise_routine, height, weight, target_weight, BMI, isOverweight, weightChange, achievement)
         
-    
+
+#the return "go back" to the main page button  
+@callback(
+    Output('page-content', 'children', allow_duplicate=True),
+    Input('goBackButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def printDashboard(n_clicks):
+    if n_clicks:
+        return member.mainLayout
+    else:
+        return dash.no_update
+        
 
 ''' TRAINER VIEW'''
 #get member button clicked
@@ -249,3 +272,5 @@ def submitGetMember(n_clicks,memberToSearch):
             tableRows.append(currRow)
 
         return tableRows
+
+'''STAFF VIEW'''

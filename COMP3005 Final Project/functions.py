@@ -304,4 +304,4 @@ def main():
     print(printMembersClasses(connection, 'plankton@chumbucket.org'))
     #cancelClass(connection, 7, 'plankton@chumbucket.org')
     #addEquipment(connection, 'skipping rope', 4)
-main()
+#main()

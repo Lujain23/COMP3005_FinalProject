@@ -44,8 +44,8 @@ mainLayout = html.Div(
 
 #layout for "join class"
 dataStyle = {'fontSize':'18px', 'color': 'blue'}
-def joinClassLayout(data):
-
+def classLayout(data,heading,message):
+    print(data)
     tableRows =[]
 
     for currClass in data:
@@ -66,7 +66,7 @@ def joinClassLayout(data):
             html.Div(
                 id='tableContainer',
                 children=[
-                    html.Label('Available Classes:', style={'fontSize': '30px'}),
+                    html.Label(heading, style={'fontSize': '30px'}),
                     html.Table([
                         html.Thead(html.Tr([
                             html.Th('Schedule ID', style=columnStyle),  
@@ -77,7 +77,7 @@ def joinClassLayout(data):
                             html.Th('Session type', style=columnStyle),
                             html.Th('Class Type', style=columnStyle)
                         ])),
-                        html.Tbody(id='classTableBody'),
+                        html.Tbody(id='classTableBody',children=tableRows),
                         ],
 
                         style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
@@ -90,13 +90,14 @@ def joinClassLayout(data):
         children=[
             html.Label("Enter Schedule ID (just ID)",style={'font-size': '16px','margin-right':'10px'}),
             dcc.Input(id='scheduleIdInput', type='number', style={'width': '100px', 'margin-right': '10px','padding': '10px 20px'}),
-            html.Button('Join Cass', id='joinButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}),
+            html.Button('Submit', id='submitChangeButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}),
+            html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}),
         ],
         style={'textAlign': 'center', 'margin': '20px auto'} 
     ),
     dcc.ConfirmDialog(
-    id='joinSuccessful',
-    message='Join Successful! Will go back to Main Menu.',
+    id='successful',
+    message=message,
     ),
         
     ])
@@ -146,11 +147,14 @@ def generatePrintDashboardLayout(exercise_routine, height, weight, target_weight
             html.P(line6, style={'font-size': '18px'}),
 
         ], style=boxStyle),
-        #  html.Button('Go Back',id='goBackButton',n_clicks=0, style=rowStyle),
-    ], style={'display': 'flex', 'justify-content': 'space-between'}
-    )
+        html.Div([
+            html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}),
 
-    
+        ])
+        
+    ], style={'display': 'flex', 'justify-content': 'space-between'},
+    )
+        
     return printDashboardLayout
 
 #layout for cancel class
@@ -186,7 +190,7 @@ def generateLayout(values):
                     html.Td(dcc.Input(id='genderInput', type='text', style=textFieldStyle,value=values[0][4]))
                 ]),
                 html.Tr([
-                    html.Td(html.Label("Height (rounded to the nearest m)")),
+                    html.Td(html.Label("Height (rounded to the nearest cm)")),
                     html.Td(dcc.Input(id='heightInput', type='number', style=textFieldStyle,value=values[0][5]))
                 ]),
                 html.Tr([

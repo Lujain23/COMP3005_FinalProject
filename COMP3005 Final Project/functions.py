@@ -139,17 +139,27 @@ def rescheduleClass(connection):
     cursor = connection.cursor()
     return
 
-def cancelClass(connection, schedule_id):
+def cancelClass(connection, schedule_id, member_email):
     cursor = connection.cursor()
     try:
-        query = "DELETE FROM schedule WHERE schedule_id = %s"
-        cursor.execute(query, (schedule_id, ))
-        connection.commit()
-        query = "DELETE FROM scheduleStudents WHERE schedule_id = %s"
-        cursor.execute(query, (schedule_id, ))
+        query = "DELETE FROM scheduleStudents WHERE schedule_id = %s AND member_email = %s"
+        cursor.execute(query, (schedule_id, member_email))
         connection.commit()
     except psycopg2.DatabaseError as e:
         print("Error cancelling class!")
+    return
+
+def printAvailableClasses(connection):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT * FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NULL OR type_session = 'group'"
+        cursor.execute(query)
+        return(cursor.fetchall())
+
+    except psycopg2.DatabaseError as e:
+        print("Error printing available classes!")
+    return
+def printMembersClasses():
     return
 
 #Trainer Functions
@@ -179,7 +189,7 @@ def getMember(connection, first_name):
 
 # helper function
 def findOverlaps(cursor, room_id, start_time, end_time):
-    # Convert to date time obj
+    # Convert to date time object
     start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
     end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
 
@@ -257,6 +267,10 @@ def equipmentMaintenenceMonitoring(connection, equipment_name):
         print("Error monitoring equipment!")
     return 
 
+def addEquipment(connection):
+    cursor = connection.cursor()
+    return
+
 def main():
     connection = connectToDatabase()
     #testingSelect(cursor)
@@ -275,6 +289,7 @@ def main():
     #testingSelect(connection.cursor())
     #setAvailability(connection, 'SandyCheeks@gmail.com', '5:00:00', '17:00:00')
     #roomBooking(connection, 1, 15, '8:00:00', '9:00:00')
-    #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'cardio', 'solo')
-    joinClass(connection, 6, 'plankton@chumbucket.org')
+    #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'group', 'cardio')
+    #joinClass(connection, 6, 'plankton@chumbucket.org')
+    print(printAvailableClasses(connection))
 main()

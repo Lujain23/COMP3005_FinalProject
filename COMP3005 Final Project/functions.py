@@ -1,5 +1,5 @@
 import psycopg2
-from datetime import date 
+from datetime import date, datetime
 import math
 
 #returns the cursor to execute
@@ -125,11 +125,11 @@ def printDashboard(connection, email):
         print("Error printing dashboard!")
     return
 
-def joinClass(connection, room_used, member_email, trainer_email, start_time, end_time, type_session, class_type):
+def joinClass(connection, schedule_id, member_email):
     cursor = connection.cursor()
     try:
-        query = "INSERT INTO schedule (room_used, member_email, trainer_email, start_time, end_time, type_session, class_type) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (room_used, member_email, trainer_email, start_time, end_time, type_session, class_type))
+        query = "INSERT INTO scheduleStudents (schedule_id, member_email) VALUES (%s, %s);"
+        cursor.execute(query, (schedule_id, member_email))
         connection.commit()
     except psycopg2.DatabaseError as e:
         print("Error joining class!")
@@ -153,9 +153,15 @@ def cancelClass(connection, schedule_id):
     return
 
 #Trainer Functions
-# TODO: "timing during the week and its start and end dates"
-# Should we add start and end dates to the trainer table?
-def setAvailability():
+# Just changing start_time, end_time
+def setAvailability(connection, email, start_time, end_time):
+    cursor = connection.cursor()
+    try:
+        query = "UPDATE trainer SET start_time = %s, end_time = %s WHERE email = %s"
+        cursor.execute(query, (start_time, end_time, email))
+        connection.commit()
+    except psycopg2.DatabaseError as e:
+        print("Error setting availability!")
     return
 
 def getMember(connection, first_name):
@@ -170,20 +176,74 @@ def getMember(connection, first_name):
     return 
 
 #staff functions
-# TODO: "Room booking management entails assigning a room to a class or any other event, such as a birthday party
-# For room booking, administrators can inquire about:
-#   The designated room
-#   The type of event (class, birthday, etc.)
-#   The room management component must, based on the event schedule, verify room availability. If the room is not available, it prompts the administrator to select an alternative option."
-# Admin makes the bookings right? Members and trainers can't? (If someone wants to book something, the admin must do it on their behalf)
 
-def roomBooking():
-    # We could have a room table with room_id, start_time, end_time, date, eventType and then add to the room's schedule if the times don't overlap
-    return
+# helper function
+def findOverlaps(cursor, room_id, start_time, end_time):
+    # Convert to date time obj
+    start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
+    end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
 
-# TODO: "Class scheduling involves assigning members and trainers to a class, then determining its timing during the week and its start and end dates."
-# Literally what. Does the staff make the class schedules? How would that work?
-def classScheduling():
+    # get room_id and check the schedules in eventInfo and schedule
+    query = "SELECT start_time, end_time FROM eventInfo WHERE room_used = %s UNION SELECT start_time, end_time FROM schedule WHERE room_used = %s"
+    cursor.execute(query, (room_id, room_id))
+    result = cursor.fetchall()
+
+    # Check start and end times, if there are no overlaps, then new room booking can be added to either eventInfo or schedule
+    for event in result:
+        existing_start_time, existing_end_time = event
+        if (start_time_to_datetime < existing_end_time) and (end_time_to_datetime > existing_start_time):
+            print("No no no can't book here")
+            return True
+    return False
+
+# returns true if booking was successful
+def roomBooking(connection, room_id, attendees, start_time, end_time):
+    cursor = connection.cursor()
+    try:
+        if findOverlaps(cursor, room_id, start_time, end_time) == False:
+            # if no overlaps, we can add the booking
+            query = "INSERT INTO eventInfo(room_used, attendees, start_time, end_time) VALUES ( %s, %s, %s,%s);"
+            cursor.execute(query, (room_id, attendees, start_time, end_time))
+            connection.commit()
+            return True
+        
+        else:
+            return False
+
+    except psycopg2.DatabaseError as e:
+        print("Error booking room!", e)
+
+# Returns true if booking was successful 
+def classScheduling(connection, room_used, trainer_email, start_time, end_time, type_session, class_type):
+    cursor = connection.cursor()
+    try:
+        # check to see trainer is available
+        start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
+        end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
+
+        query = "SELECT start_time, end_time FROM trainer WHERE email = %s"
+        cursor.execute(query, (trainer_email, ))
+        result = cursor.fetchall()
+
+        trainer_start_time = result[0][0]
+        trainer_end_time = result[0][1]
+
+        if (start_time_to_datetime <= trainer_start_time) or (end_time_to_datetime >= trainer_end_time):
+            print("No no no can't book a class here")
+            return False
+
+        if findOverlaps(cursor, room_used, start_time, end_time) == False:
+            # if no overlaps, we can add the booking
+            query = "INSERT INTO schedule (room_used, trainer_email, start_time, end_time, type_session, class_type) VALUES (%s, %s, %s, %s, %s, %s);"
+            cursor.execute(query, (room_used, trainer_email, start_time, end_time, type_session, class_type))
+            connection.commit()
+            return True
+        
+        else:
+            return False
+
+    except psycopg2.DatabaseError as e:
+        print("Error booking room!", e)
     return
 
 def equipmentMaintenenceMonitoring(connection, equipment_name):
@@ -197,10 +257,6 @@ def equipmentMaintenenceMonitoring(connection, equipment_name):
         print("Error monitoring equipment!")
     return 
 
-
-
-
-
 def main():
     connection = connectToDatabase()
     #testingSelect(cursor)
@@ -211,12 +267,14 @@ def main():
     
     #addMember(connection, 'test', 'test', 'test', 2, 'M', 5, 2, 5, 'round')
     #updateMemberInformation(connection, 'test', 'test', 'testING', 4, 'M', '5', '2', '5', 'rotund')
-    print(printDashboard(connection, 'spongebob@squarepants.com'))
-    #joinClass(connection, 1, 'test', 'trainerTest', '09:00:00', '10:00:00', 'solo', 'cardio')
+    #print(printDashboard(connection, 'spongebob@squarepants.com'))
     #getMember(connection, 'testING')
     #print(validateUser(connection,'lujain@gmail.com','lujain','members'))
     #print(selectMember(connection,'lujain@gmail.com'))
     #equipmentMaintenenceMonitoring(connection, 'Treadmill')
     #testingSelect(connection.cursor())
-    
+    #setAvailability(connection, 'SandyCheeks@gmail.com', '5:00:00', '17:00:00')
+    #roomBooking(connection, 1, 15, '8:00:00', '9:00:00')
+    #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'cardio', 'solo')
+    joinClass(connection, 6, 'plankton@chumbucket.org')
 main()

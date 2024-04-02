@@ -159,7 +159,7 @@ def printAvailableClasses(connection):
 def printMembersClasses(connection, member_email):
     cursor = connection.cursor()
     try:
-        query = "SELECT * FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NOT NULL AND member_email = %s"
+        query = "SELECT stu.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NOT NULL AND member_email = %s"
         cursor.execute(query, (member_email, ))
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:
@@ -301,7 +301,7 @@ def main():
     #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'group', 'cardio')
     #joinClass(connection, 6, 'plankton@chumbucket.org')
     #print(printAvailableClasses(connection))
-    #print(printMembersClasses(connection, 'plankton@chumbucket.org'))
+    print(printMembersClasses(connection, 'plankton@chumbucket.org'))
     #cancelClass(connection, 7, 'plankton@chumbucket.org')
-    addEquipment(connection, 'skipping rope', 4)
+    #addEquipment(connection, 'skipping rope', 4)
 main()

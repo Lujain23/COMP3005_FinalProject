@@ -6,8 +6,8 @@ import math
 def connectToDatabase():
     try:
         #would change depending on the user
-        #password = "admin" #trista
-        password = "comp3005" #lujain
+        password = "admin" #trista
+        #password = "comp3005" #lujain
         database = "GymManagementSystem"
         #database = "COMP3005FinalProject"
 
@@ -138,6 +138,7 @@ def joinClass(connection, schedule_id, member_email):
 def cancelClass(connection, schedule_id, member_email):
     cursor = connection.cursor()
     try:
+        print("in function cancel class")
         query = "DELETE FROM scheduleStudents WHERE schedule_id = %s AND member_email = %s"
         cursor.execute(query, (schedule_id, member_email))
         connection.commit()
@@ -148,7 +149,7 @@ def cancelClass(connection, schedule_id, member_email):
 def printAvailableClasses(connection):
     cursor = connection.cursor()
     try:
-        query = "SELECT stu.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NULL OR type_session = 'group'"
+        query = "SELECT s.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NULL OR type_session = 'group'"
         cursor.execute(query)
         return(cursor.fetchall())
 
@@ -300,8 +301,8 @@ def main():
     #roomBooking(connection, 1, 15, '8:00:00', '9:00:00')
     #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'group', 'cardio')
     #joinClass(connection, 6, 'plankton@chumbucket.org')
-    #print(printAvailableClasses(connection))
-    print(printMembersClasses(connection, 'plankton@chumbucket.org'))
-    #cancelClass(connection, 7, 'plankton@chumbucket.org')
+    print(printAvailableClasses(connection))
+    #print(printMembersClasses(connection, 'plankton@chumbucket.org'))
+    #cancelClass(connection, 1, 'spongebob@squarepants.com')
     #addEquipment(connection, 'skipping rope', 4)
 #main()

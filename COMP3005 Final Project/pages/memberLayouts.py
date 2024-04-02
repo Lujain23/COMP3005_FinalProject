@@ -44,7 +44,7 @@ mainLayout = html.Div(
 
 #layout for "join class"
 dataStyle = {'fontSize':'18px', 'color': 'blue'}
-def classLayout(data,heading,message):
+def joinClassLayout(data):
     print(data)
     tableRows =[]
 
@@ -66,7 +66,7 @@ def classLayout(data,heading,message):
             html.Div(
                 id='tableContainer',
                 children=[
-                    html.Label(heading, style={'fontSize': '30px'}),
+                    html.Label('Available Classes: ', style={'fontSize': '30px'}),
                     html.Table([
                         html.Thead(html.Tr([
                             html.Th('Schedule ID', style=columnStyle),  
@@ -90,20 +90,77 @@ def classLayout(data,heading,message):
         children=[
             html.Label("Enter Schedule ID (just ID)",style={'font-size': '16px','margin-right':'10px'}),
             dcc.Input(id='scheduleIdInput', type='number', style={'width': '100px', 'margin-right': '10px','padding': '10px 20px'}),
-            html.Button('Submit', id='submitChangeButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}),
+            html.Button('Submit', id='submitJoinButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}),
             html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}),
         ],
         style={'textAlign': 'center', 'margin': '20px auto'} 
     ),
     dcc.ConfirmDialog(
-    id='successful',
-    message=message,
+    id='joinSuccessful',
+    message='Join Class was successful. Will return back to main menu.',
     ),
         
     ])
     return joinClassLayout
 
+def cancelClassLayout(data):
+    print(data)
+    tableRows =[]
 
+    for currClass in data:
+        schedule_id, room_used, trainer_email, start_time, end_time, session_type, class_type = currClass
+        currRow = html.Tr([html.Td(schedule_id,style=dataStyle), 
+                               html.Td(room_used,style=dataStyle), 
+                               html.Td(trainer_email,style=dataStyle), 
+                               html.Td(start_time,style=dataStyle),
+                                html.Td(end_time,style=dataStyle), 
+                                 html.Td(session_type,style=dataStyle),
+                                   html.Td(class_type,style=dataStyle)])
+        tableRows.append(currRow)
+
+    columnStyle = {'fontSize':'20px','padding': '15px'}
+    joinClassLayout = html.Div(
+        id='page-content',
+        children=[
+            html.Div(
+                id='tableContainer',
+                children=[
+                    html.Label("Enrolled Classes: ", style={'fontSize': '30px'}),
+                    html.Table([
+                        html.Thead(html.Tr([
+                            html.Th('Schedule ID', style=columnStyle),  
+                            html.Th('Room Used', style=columnStyle),
+                            html.Th('Trainer Email', style=columnStyle),
+                            html.Th('Start Time', style=columnStyle),
+                            html.Th('End Time', style=columnStyle),
+                            html.Th('Session type', style=columnStyle),
+                            html.Th('Class Type', style=columnStyle)
+                        ])),
+                        html.Tbody(id='classTableBody',children=tableRows),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                ],
+                style={'textAlign': 'center'}  
+        ),  # End of second div
+        html.Div(
+        id='classToJoinContainer',
+        children=[
+            html.Label("Enter Schedule ID (just ID)",style={'font-size': '16px','margin-right':'10px'}),
+            dcc.Input(id='scheduleIdInput', type='number', style={'width': '100px', 'margin-right': '10px','padding': '10px 20px'}),
+            html.Button('Submit', id='submitCancelButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}),
+            html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}),
+        ],
+        style={'textAlign': 'center', 'margin': '20px auto'} 
+    ),
+    dcc.ConfirmDialog(
+    id='cancelSuccessful',
+    message='Cancel Class was successful. Will return back to main menu.',
+    ),
+        
+    ])
+    return joinClassLayout
 #layout for printDashboard
 boxStyle = {
     'width': '30%',

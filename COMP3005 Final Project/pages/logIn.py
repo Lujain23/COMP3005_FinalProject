@@ -108,21 +108,22 @@ def validateUser(n_clicks,username,password,memberType):
 def join_class(n_clicks):
     if n_clicks:
         print(handler.printAvailableClasses())
-        return member.classLayout(handler.printAvailableClasses(),'Available Classes:','Join Successful! Will go back to Main Menu.')
+        return member.joinClassLayout(handler.printAvailableClasses())
     else:
         dash.no_update
 
 #second function to actually join
 @callback(
-    Output('successful','displayed',allow_duplicate=True),
+    Output('joinSuccessful','displayed',allow_duplicate=True),
     Output('page-content', 'children',allow_duplicate=True),
-    Input('submitChangeButton','n_clicks'),
+    Input('submitJoinButton','n_clicks'),
     State('scheduleIdInput', 'value'),
     prevent_initial_call = True
 )
 
 def joinClass(n_clicks,scheduleID):
     if n_clicks:
+        print(scheduleID)
         if(scheduleID):
             handler.joinClass(scheduleID,globalUsername)
             return True,member.mainLayout
@@ -143,21 +144,24 @@ def joinClass(n_clicks,scheduleID):
 def cancel_class(n_clicks):
     if n_clicks:
         print("CANCEL: ",handler.printMembersClass(globalUsername))
-        return member.classLayout(handler.printMembersClass(globalUsername),'Enrolled Classes:','Cancel Successful! Will go back to Main Menu.')
+        return member.cancelClassLayout(handler.printMembersClass(globalUsername))
     else:
         return dash.no_update
 
 #second function to actually cancel
 @callback(
+    Output('cancelSuccessful','displayed',allow_duplicate=True),
     Output('page-content','children'),
-    Input('submitChangeButton','n_clicks'),
+    Input('submitCancelButton','n_clicks'),
     State('scheduleIdInput','value'),
     prevent_initial_call = True
 )
 
 def cancelClass(n_clicks,scheduleID):
     if (n_clicks):
+        print(scheduleID)
         if(scheduleID):
+            print("heyyyyyyyy yall")
             handler.cancelClass(scheduleID,globalUsername)
             return True,member.mainLayout
         else:

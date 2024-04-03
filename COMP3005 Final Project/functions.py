@@ -137,6 +137,24 @@ def joinClass(connection, schedule_id, member_email):
         print("Error joining class!")
     return
 
+def checkTrainerAvailability(cursor, start_time, end_time, trainer_email):
+    # check to see trainer is available
+    start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
+    end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
+
+    query = "SELECT start_time, end_time FROM trainer WHERE email = %s"
+    cursor.execute(query, (trainer_email, ))
+    result = cursor.fetchall()
+
+    trainer_start_time = result[0][0]
+    trainer_end_time = result[0][1]
+
+    if (start_time_to_datetime <= trainer_start_time) or (end_time_to_datetime >= trainer_end_time):
+        print("No no no can't book a class here")
+        return False
+    else:
+        return True
+
 # returns true if the rescheduling was successful
 def rescheduleClass(connection, schedule_id, start_time, end_time):
     cursor = connection.cursor()
@@ -207,6 +225,7 @@ def cancelClass(connection, schedule_id, member_email):
         query = "UPDATE trainer SET notification = %s WHERE email = %s"
         cursor.execute(query, (notificationMessage, trainer_email))
         connection.commit()
+        return True
 
     except psycopg2.DatabaseError as e:
         print("Error cancelling class!")
@@ -220,8 +239,8 @@ def printAvailableClasses(connection):
         return(cursor.fetchall())
 
     except psycopg2.DatabaseError as e:
-        print("Error printing available classes!")
-    return
+        return("Error printing available classes!", False)
+
 
 def printMembersClasses(connection, member_email):
     cursor = connection.cursor()
@@ -230,8 +249,7 @@ def printMembersClasses(connection, member_email):
         cursor.execute(query, (member_email, ))
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:
-        print("Error printing classes member joins!")   
-    return
+        return("Error printing classes member joins!", False)   
 
 #Trainer Functions
 def setAvailability(connection, email, start_time, end_time):
@@ -251,16 +269,17 @@ def setAvailability(connection, email, start_time, end_time):
             existing_start_time, existing_end_time = event
             if (start_time_to_datetime > existing_start_time) or (end_time_to_datetime < existing_end_time):
                 print("Error: new availability conflicts with current classes")
-                return 
+                return False
 
         # No conflicts -> update normally
         query = "UPDATE trainer SET start_time = %s, end_time = %s WHERE email = %s"
         cursor.execute(query, (start_time, end_time, email))
         connection.commit()
+        return True
 
     except psycopg2.DatabaseError as e:
         print("Error setting availability!")
-    return
+    return False
 
 def getMember(connection, first_name):
     cursor = connection.cursor()
@@ -270,11 +289,9 @@ def getMember(connection, first_name):
         result = cursor.fetchall()
         return result
     except psycopg2.DatabaseError as e:
-        print("Error getting member!")
-    return 
+        return("Error getting member!", False)
 
 #staff functions
-
 # helper function
 def findOverlaps(cursor, room_id, start_time, end_time):
     # Convert to date time object

@@ -8,6 +8,8 @@ def connectToDatabase():
         #would change depending on the user
         #password = "admin" #trista
         password = "comp3005" #lujain
+        #password = "admin" #trista
+        password = "comp3005" #lujain
         database = "GymManagementSystem"
         #database = "COMP3005FinalProject"
 
@@ -224,21 +226,11 @@ def printAvailableClasses(connection):
 def printMembersClasses(connection, member_email):
     cursor = connection.cursor()
     try:
-        query = "SELECT s.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NOT NULL AND member_email = %s"
+        query = "SELECT stu.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NOT NULL AND member_email = %s"
         cursor.execute(query, (member_email, ))
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:
         print("Error printing classes member joins!")   
-    return
-
-def printSoloMemberClasses(connection, member_email):
-    cursor = connection.cursor()
-    try:
-        query = "SELECT s.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NOT NULL AND member_email = %s AND type_session = 'solo'"
-        cursor.execute(query, (member_email, ))
-        return(cursor.fetchall())
-    except psycopg2.DatabaseError as e:
-        print("Error printing member's solo classes!")   
     return
 
 #Trainer Functions
@@ -282,6 +274,7 @@ def getMember(connection, first_name):
     return 
 
 #staff functions
+
 # helper function
 def findOverlaps(cursor, room_id, start_time, end_time):
     # Convert to date time object
@@ -300,24 +293,6 @@ def findOverlaps(cursor, room_id, start_time, end_time):
             print("No no no can't book here")
             return True
     return False
-
-def checkTrainerAvailability(cursor, start_time, end_time, trainer_email):
-    # check to see trainer is available
-    start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
-    end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
-
-    query = "SELECT start_time, end_time FROM trainer WHERE email = %s"
-    cursor.execute(query, (trainer_email, ))
-    result = cursor.fetchall()
-
-    trainer_start_time = result[0][0]
-    trainer_end_time = result[0][1]
-
-    if (start_time_to_datetime <= trainer_start_time) or (end_time_to_datetime >= trainer_end_time):
-        print("No no no can't book a class here")
-        return False
-    else:
-        return True
 
 # returns true if booking was successful
 def roomBooking(connection, room_id, attendees, start_time, end_time):
@@ -340,7 +315,22 @@ def roomBooking(connection, room_id, attendees, start_time, end_time):
 def classScheduling(connection, room_used, trainer_email, start_time, end_time, type_session, class_type):
     cursor = connection.cursor()
     try:
-        if (findOverlaps(cursor, room_used, start_time, end_time) == False) and (checkTrainerAvailability(cursor, start_time, end_time, trainer_email) == True):
+        # check to see trainer is available
+        start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
+        end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
+
+        query = "SELECT start_time, end_time FROM trainer WHERE email = %s"
+        cursor.execute(query, (trainer_email, ))
+        result = cursor.fetchall()
+
+        trainer_start_time = result[0][0]
+        trainer_end_time = result[0][1]
+
+        if (start_time_to_datetime <= trainer_start_time) or (end_time_to_datetime >= trainer_end_time):
+            print("No no no can't book a class here")
+            return False
+
+        if findOverlaps(cursor, room_used, start_time, end_time) == False:
             # if no overlaps, we can add the booking
             query = "INSERT INTO schedule (room_used, trainer_email, start_time, end_time, type_session, class_type) VALUES (%s, %s, %s, %s, %s, %s);"
             cursor.execute(query, (room_used, trainer_email, start_time, end_time, type_session, class_type))
@@ -470,7 +460,7 @@ def main():
     #roomBooking(connection, 1, 15, '8:00:00', '9:00:00')
     #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'group', 'cardio')
     #joinClass(connection, 6, 'plankton@chumbucket.org')
-    #print(printAvailableClasses(connection))
+    print(printAvailableClasses(connection))
     #print(printMembersClasses(connection, 'plankton@chumbucket.org'))
     #cancelClass(connection, 1, 'spongebob@squarepants.com')
     #addEquipment(connection, 'skipping rope', 4)

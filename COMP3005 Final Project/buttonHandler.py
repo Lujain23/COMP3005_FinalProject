@@ -45,9 +45,22 @@ def printMembersClass(email):
     con = function.connectToDatabase()
     return function.printMembersClasses(con,email)
     
+def rescheduleClass(schedule_id,start_time,end_time):
+    con = function.connectToDatabase()
+    return function.rescheduleClass(con,schedule_id,start_time,end_time)
+
+def printSoloClass(email):
+    con = function.connectToDatabase()
+    return function.printSoloMemberClasses(con,email)
+
 
 '''TRAINER'''
 def getMember(firstName):
     con = function.connectToDatabase()
     values = function.getMember(con,firstName)
     return values
+
+def setAvailability(email,start_time,end_time):
+    con = function.connectToDatabase()
+    function.setAvailability(con, email, start_time, end_time)
+    return True

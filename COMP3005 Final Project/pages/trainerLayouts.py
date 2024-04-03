@@ -4,6 +4,9 @@ setAvailiability() -> update availability of CURRENT trainer
 getMember() -> select specific member (they have the name in their heads)
 '''
 rowStyle = {'fontSize':'20px','textAlign': 'center', 'width':'200px','height':'100px'}
+textFieldStyle ={'width': '100%', 'height': '30px','fontSize': '20px'}
+columnStyle = {'fontSize':'20px','padding': '15px'}
+
 #layout for the main buttons
 mainLayout = html.Div(
     id = 'welcomeLayout',
@@ -24,7 +27,6 @@ mainLayout = html.Div(
     ])#end of div
 ])
 
-columnStyle = {'fontSize':'20px','padding': '15px'}
 getMemberLayout = html.Div([
         html.Div(
             id='initialLayout',
@@ -57,6 +59,29 @@ getMemberLayout = html.Div([
                 ),
             ],
             style={'textAlign': 'center'}  
-    )  # End of second div
+    ),  # End of second div
+    html.Button('Go Back', id='trainerReturnButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
+
 ])
 
+updateAvailabilityLayout = html.Div(
+    id='page-content',
+    children=[
+         html.H1("Update Availability",style={'fontSize':'50px'}),
+                        dcc.Input(id='newTrainerStartInput', type='text', placeholder='Enter new start Time HH:MM:SS',style=textFieldStyle),
+                        html.Br(),
+                        html.Br(),
+                        dcc.Input(id='newTrainerEndInput', type='text', placeholder='Enter new end Time HH:MM:SS',style=textFieldStyle),
+                        html.Br(),
+                        html.Br(),
+                        html.Button('Submit', id='submitUpdateAvailabilityButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
+                        html.Br(),
+                        html.Br(),
+                        html.Button('Go Back', id='trainerReturnButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
+                        dcc.ConfirmDialog(
+                            id='updateAvailabilitySuccessful',
+                            message='Updating availability was successful. Will return back to main menu.',
+                        ),
+                        html.Div(id='updateAvailbiltyOutcome')
+    ]
+)

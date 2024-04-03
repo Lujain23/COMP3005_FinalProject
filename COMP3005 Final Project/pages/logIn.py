@@ -171,9 +171,7 @@ def cancel_class(n_clicks):
 
 def cancelClass(n_clicks,scheduleID):
     if (n_clicks):
-        print(scheduleID)
         if(scheduleID):
-            print("heyyyyyyyy yall")
             handler.cancelClass(scheduleID,globalUsername)
             return True,member.mainLayout
         else:
@@ -244,9 +242,38 @@ def printDashboard(n_clicks):
 )
 def reschedule_class(n_clicks):
     if n_clicks:
-        return member.generateRescheduleClassLayout(handler.printMembersClass(globalUsername))
+        return member.generateRescheduleClassLayout(handler.printSoloClass(globalUsername))
     else:
         return dash.no_update
+    
+#second function to actually reschedule
+@callback(
+    Output('rescheduleSuccessful','displayed',allow_duplicate=True),
+    Output('rescheduleOutcome','children'),
+    Output('page-content','children',allow_duplicate=True),
+    Input('submitRescheduleButton','n_clicks'),
+    State('scheduleIdInput','value'),
+    State('startInput','value'),
+    State('endInput','value'),
+    prevent_initial_call = True
+)
+
+def cancelClass(n_clicks,scheduleID,newStart,newEnd):
+    if (n_clicks):
+        if(scheduleID and newStart and newEnd):
+            if(handler.rescheduleClass(scheduleID,newStart,newEnd)):
+                #successful reschedule
+                return True,dash.no_update,member.mainLayout
+            else:
+                #failed reschedule
+                return False,'Reschdule Failed. There is an overlap. Please Try again.',dash.no_update
+        #if all 3 values arent filled
+        else:
+            return False,dash.no_update,dash.no_update
+    else:
+        
+        return False,dash.no_update,dash.no_update 
+
 #the return "go back" to the main page button  
 @callback(
     Output('page-content', 'children', allow_duplicate=True),
@@ -272,7 +299,7 @@ def getMember(n_clicks):
         return trainer.getMemberLayout
 
 
-#submit button in get member layout called
+#submit button in trainer = > get member layout called
 @callback(
     Output('memberTableBody', 'children', allow_duplicate=True),
     Input('submitGetMemberButton', 'n_clicks'),
@@ -300,4 +327,56 @@ def submitGetMember(n_clicks,memberToSearch):
 
         return tableRows
 
+#update Availability
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('updateAvailabilityButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def getMember(n_clicks):
+    if n_clicks:
+        return trainer.updateAvailabilityLayout
+    else:
+        return dash.no_update
+
+#the return "go back" to the main page button  
+@callback(
+    Output('page-content', 'children', allow_duplicate=True),
+    Input('trainerReturnButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def printDashboard(n_clicks):
+    if n_clicks:
+        return trainer.mainLayout
+    else:
+        return dash.no_update
+    
+#function that deals with "submit being clicked"
+@callback(
+    Output('updateAvailabilitySuccessful', 'displayed',allow_duplicate=True),
+    Output('page-content', 'children', allow_duplicate=True),
+    Output('updateAvailbiltyOutcome', 'children', allow_duplicate=True),
+    Input('submitUpdateAvailabilityButton', 'n_clicks'),
+    State('newTrainerStartInput','value'),
+    State('newTrainerEndInput','value'),
+
+    prevent_initial_call=True
+)
+def changeAvailability(n_clicks,newStart,newEnd):
+    if n_clicks:
+        #both filled
+        if(newStart and newEnd):
+            #change is good
+            if(handler.setAvailability(globalUsername,newStart,newEnd)):
+                return True,trainer.mainLayout,dash.no_update
+            else:
+                #cant change
+                return False,dash.no_update,'New Availabilty conflicts with current classes.'
+        else:
+            #not filled
+            return False,dash.no_update
+
+    else:
+        return False,dash.no_update
+    
 '''STAFF VIEW'''

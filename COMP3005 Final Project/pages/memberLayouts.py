@@ -22,6 +22,8 @@ boxStyle = {
     'margin': '10px',
     'box-shadow': '0px 0px 10px 0px rgba(0,0,0,0.1)',
 }
+textFieldStyle ={'width': '100%', 'height': '30px'}
+textFieldStyle2 = {'width': '70%', 'height': '30px'}
 
 #layout for the main buttons
 mainLayout = html.Div(
@@ -217,7 +219,7 @@ def generatePrintDashboardLayout(exercise_routine, height, weight, target_weight
 
 #layout for updateMemberInfo
 def generateLayout(values):
-    textFieldStyle ={'width': '100%', 'height': '30px'}
+    
     layout = html.Div(
     id='page-content',
     children=[
@@ -264,6 +266,10 @@ def generateLayout(values):
                 html.Tr([
                     html.Td(),
                     html.Td(html.Button('Update Information', id='updateButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}))
+                ]),
+                html.Tr([
+                    html.Td(),
+                    html.Td(html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'}))
                 ])
                                 
             ], style={'margin-bottom': '10px', 'width': '100%'})
@@ -317,20 +323,37 @@ def generateRescheduleClassLayout(data):
                 ],
                 style={'textAlign': 'center'}  
             ),  #first div
-            html.Div([
-                html.Div([
-                    html.Label('Schedule ID:'),
-                    dcc.Input(id='scheduleIdInput', type='text', placeholder='Enter schedule ID')
-                ]),
-                html.Div([
-                    html.Label('Start Time:'),
-                    dcc.Input(id='startInput', type='text', placeholder='Enter start time HH:MM::SS')
-                ]),
-                html.Div([
-                    html.Label('End Time:'),
-                    dcc.Input(id='endInput', type='text', placeholder='Enter end time HH:MM:SS')
-                ]),
-            ]), #second div
+            html.Br(),
+            html.Br(),
+            html.Div(
+                children = [
+
+                    html.Table([
+                            html.Tr([
+                                html.Td(html.Label('Schedule ID:',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='scheduleIdInput', type='text', placeholder='Enter schedule ID',style=textFieldStyle2))
+                            ]),
+                            html.Tr([
+                                html.Td(html.Label('Start Time HH:MM::SS: ',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='startInput', type='text', placeholder='Enter start time',style=textFieldStyle2)),
+                            ]),  
+                            html.Tr([
+                                html.Td(html.Label('End Time HH:MM:SS: ',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='endInput', type='text', placeholder='Enter end time ',style=textFieldStyle2))
+                            ]), 
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Submit', id='submitRescheduleButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})), 
+                            ]),
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})),                                 
+                            ])  
+                    ]),
+
+            ],style={'margin-bottom': '10px', 'width': '100%','display': 'flex', 'justify-content': 'center','flex-direction':'column','align-items': 'center'},
+            ), #second div
+            html.Div(id='rescheduleOutcome'),
             dcc.ConfirmDialog(
             id='rescheduleSuccessful',
             message='Reschedule Class was successful. Will return back to main menu.',
@@ -339,5 +362,4 @@ def generateRescheduleClassLayout(data):
     ]#children ends
     )
     return rescheduleClassLayout
-
 

@@ -380,7 +380,9 @@ def generateViewPayments(data):
         layout = html.Div(
                 id='tableContainer',
                 children=[
-                    html.Label('My Payments:: ', style={'fontSize': '30px'}),
+                    html.Br(),
+                    html.Br(),
+                    html.H1('My Payments', style={'fontSize': '24px', 'color': '#a2d2ff'}),
                     html.Br(),
                     html.Br(),
                     html.Table([
@@ -435,15 +437,15 @@ def generateDesignViewPayments(data):
     
 
     for currReceipt in data:
-        print("in")
-        amount, transaction_date, status, description = currReceipt
-        
+        payment_id,amount, transaction_date, status, description = currReceipt
         finalizedSingleReceipt = html.Div(
             children=[
-            html.P(f"Amount: ${amount:.2f}"),
-            html.P(f"Transaction Date: {transaction_date}"),
-            html.P(f"Status: {status}"),
-            html.P(f"Description: {description}")
+                html.Br(),
+                html.P(f"Payment ID: {payment_id}"),
+                html.P(f"Amount: ${amount:.2f}"),
+                html.P(f"Transaction Date: {transaction_date}"),
+                html.P(f"Status: {status}"),
+                html.P(f"Description: {description}")
             ],
             style=receipStyle
         )
@@ -452,12 +454,30 @@ def generateDesignViewPayments(data):
     allReceipts = html.Div(
                     id ='page-content',
                     children=[
-                        html.H1("My Payments",style={'fontSize':'24px','color': '#a2d2ff'}),
+                        html.Br(),
+                        html.Br(),
+                        html.H1('My Payments',style={'fontSize':'24px','color': '#a2d2ff'}),
                         html.Br(),
                         html.Div(allReceiptsList),
                         html.Div(
-                            html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})
-                        )
+                            html.Table([
+                                html.Tr([
+                                    html.Td(html.Label('Enter Payment ID:',style={'fontSize':'20px'})),
+                                    html.Td(dcc.Input(id='payReceiptInput', type='text',style=textFieldStyle)),
+                                    html.Td(html.Button('Pay!', id='payReceiptButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px','marginRight':'10px'}))
+                                ]),
+                                html.Tr([
+                                    html.Td(),
+                                    html.Td(),
+                                    html.Td(html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})), 
+                                ]),                                
+                            ]),
+                        ),#end of div,
+                        html.Div(id='payReceiptOutcome'),
+                        dcc.ConfirmDialog(
+                        id='memberPaySuccessful',
+                        message='Payment was successful. Will return back to main menu.',
+                        ),                     
                     ]
     )
     

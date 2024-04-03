@@ -4,6 +4,7 @@ rowStyle = {'fontSize':'20px','textAlign': 'center', 'width':'200px','height':'1
 dataStyle = {'fontSize':'18px', 'color': 'blue'}
 textFieldStyle2 = {'width': '70%', 'height': '30px'}
 columnStyle = {'fontSize':'20px','padding': '15px'}
+textFieldStyle ={'width': '100%', 'height': '30px'}
 
 #layout for the main buttons
 mainLayout = html.Div(
@@ -20,16 +21,21 @@ mainLayout = html.Div(
                 html.Td(html.Button('Add Class', id='addClassButton', n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Remove Class',id='removeClassButton',n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Modify Class', id='modifyClassButton', n_clicks=0, style=rowStyle))
-            ]),  
+            ]), 
+            html.Tr([
+                html.Td(html.Button('Add Room Booking', id='addRoomBookingButton', n_clicks=0, style=rowStyle)),
+                html.Td(html.Button('Remove Room Booking',id='removeRoomBookingButton',n_clicks=0, style=rowStyle)),
+                html.Td(html.Button('Modify Room Booking', id='modifyRoomBookingButton', n_clicks=0, style=rowStyle))
+            ]),               
             html.Tr([
                 html.Td(html.Button('Print Maintenance',id='printMaintenanceButton',n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Add Equipment Check', id='addEquipmentButton', n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Update Maintenance Check',id='updateMaintenanceButton',n_clicks=0, style=rowStyle))
             ]),   
             html.Tr([
-                html.Td(html.Button('Add Room Booking', id='addRoomBookingButton', n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Print Used Rooms',id='printUsedRoomsButton',n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('History Of Payments', id='printReceiptButton', n_clicks=0, style=rowStyle))
+                html.Td(html.Button('Update A Member Payment', id='updatePaymentButton', n_clicks=0, style=rowStyle)),
+                html.Td(html.Button('Print History Of Payments', id='printReceiptButton', n_clicks=0, style=rowStyle))
             ]),  
                 
         ], style = {'margin':'auto'}
@@ -100,7 +106,6 @@ def generateRemoveClassLayout(data):
 
             ],style={'margin-bottom': '10px', 'width': '100%','display': 'flex', 'justify-content': 'center','flex-direction':'column','align-items': 'center'},
             ), #second div
-            html.Div(id='staffRemoveClassOutcome'),
             dcc.ConfirmDialog(
             id='staffRemoveClassSuccessful',
             message='Removing Class was successful. Will return back to main menu.',
@@ -304,13 +309,14 @@ def generateUpdateEquipmentLayout():
             html.Br(),
             html.Div(
                 children=[
-                    html.Button('Update', id='updateEquipmentButton', n_clicks=0, style={**mainStyle,'width':'35%','height':'40px'}),
+                    html.Button('Update', id='staffUpdateEquipmentButton', n_clicks=0, style={**mainStyle,'width':'35%','height':'40px'}),
                     html.Br(),
                     html.Br(),
                     html.Button('Go Back', id='staffReturnButton', n_clicks=0, style={**mainStyle,'width':'35%','height':'40px'})                    
                 ],
                 style={'textAlign': 'center'}
             ), #third
+            html.Div(id='staffUpdateEquipmentOutcome'),
             dcc.ConfirmDialog(
             id='staffUpdateEquipmentSuccessful',
             message='Updating Date of equipment check was successful. Will return back to main menu.',
@@ -339,11 +345,11 @@ def generateAddEquipmentLayout():
                 ]),
                 html.Tr([
                 html.Td(html.Label('Equipment is in room:',style=mainStyle)),
-                html.Td(dcc.Input(id='roomEquipmentInput', type='text',style=mainStyle)), 
+                html.Td(dcc.Input(id='equipmentInRoomInput', type='text',style=mainStyle))
                 ]),
                 html.Tr([
                     html.Td(),
-                    html.Td( html.Button('Add Equipment', id='addEquipmentButton', n_clicks=0, style={**mainStyle,'width':'70%','height':'40px'})),                                 
+                    html.Td( html.Button('Add Equipment', id='submitAddEquipmentButton', n_clicks=0, style={**mainStyle,'width':'70%','height':'40px'})),                                 
                 ]),                  
                 html.Tr([
                     html.Td(),
@@ -430,6 +436,7 @@ def generateAddRoomBookingLayout(data):
 
             ],style={'margin-bottom': '10px', 'width': '100%','display': 'flex', 'justify-content': 'center','flex-direction':'column','align-items': 'center'},
             ), #second div
+            html.Div(id='addRoomBookingOutcome'),
             dcc.ConfirmDialog(
             id='staffAddBookingSuccessful',
             message='Creating Room Booking was successful. Will return back to main menu.',
@@ -554,4 +561,43 @@ def generatePrintAllPayments(data):
             ),  #div end
 
     
+    return layout
+
+def generateUpdatePayment(data):
+    dropdownOptions = [
+        {'label': 'Cancel Payment', 'value': 'CANCELED'},
+        {'label': 'Complete Payment', 'value': 'COMPLETED'}        
+    ]
+    table = generatePrintAllPayments(data)
+    layout = html.Div(
+        id='page-container',
+        children=[
+            html.Div(
+                children=[
+                    html.Div(table),
+                    html.Table([
+                        html.Tr([
+                            html.Td(html.Label('Enter Payment ID:', style={'fontSize': '20px'})),
+                            html.Td(dcc.Input(id = 'paymentID',style={**textFieldStyle,'marginRight':'20px'})),
+                            html.Td(dcc.Dropdown(id='staffPaymentStatus', options=dropdownOptions, style={**textFieldStyle2,'marginLeft':'10px','width':'150px'})),
+
+                        ]),
+                        html.Tr([
+                            html.Td(),
+                            html.Td(),
+                            html.Td(html.Button('Submit Status', id='staffPayStatusChangeButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px', 'marginRight': '10px'}))
+
+                        ])
+
+                    ])  # Table done
+                ]
+            ),  # Second div
+
+            html.Div(id='staffUpdatePaymentOutcome'),
+            dcc.ConfirmDialog(
+            id='staffUpdatePaymentSuccessful',
+            message='Updating payment was successful. Will return back to main menu.',
+            ),              
+        ]
+    )  # Main div
     return layout

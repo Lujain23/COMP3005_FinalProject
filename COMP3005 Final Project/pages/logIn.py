@@ -258,7 +258,7 @@ def reschedule_class(n_clicks):
     prevent_initial_call = True
 )
 
-def cancelClass(n_clicks,scheduleID,newStart,newEnd):
+def reschedule_class(n_clicks,scheduleID,newStart,newEnd):
     if (n_clicks):
         if(scheduleID and newStart and newEnd):
             if(handler.rescheduleClass(scheduleID,newStart,newEnd)):
@@ -285,7 +285,27 @@ def viewMyPayments(n_clicks):
         #member.generateViewPayments(handler.printMyPayments(globalUsername))
         return member.generateDesignViewPayments(handler.printMyPayments(globalUsername))
     else:
-        return dash.no_updat
+        return dash.no_update
+
+#functionality to payment
+@callback(
+    Output('memberPaySuccessful','displayed'),
+    Output('payReceiptOutcome','children'),
+    Output('page-content','children',allow_duplicate=True),
+    Input('payReceiptButton','n_clicks'),
+    State('payReceiptInput','value'),
+    prevent_initial_call= True
+)
+def payReceipt(n_clicks,receiptToPay):
+    if n_clicks:
+        if(receiptToPay):
+            if(handler.changePaymentStatus(receiptToPay,'COMPLETED')):
+                return True,dash.no_update,member.mainLayout
+            else:
+                return False,'Error Paying Receipt. Please try again.',dash.no_update
+        else:
+            return False,dash.no_update,dash.no_update
+  
 #the return "go back" to the main page button  
 @callback(
     Output('page-content', 'children', allow_duplicate=True),
@@ -447,7 +467,23 @@ def removeClass(n_clicks):
         return staff.generateRemoveClassLayout(handler.printAllClasses())
     else:
         return dash.no_update
+#remove class functionality 
+@callback(
+    Output('staffRemoveClassSuccessful', 'displayed',allow_duplicate=True),
+    Output('page-content', 'children', allow_duplicate=True),
+    Input('submitStaffRemoveClassButton', 'n_clicks'),
+    Input('classToRemoveInput','value'),
+    prevent_initial_call=True
+)
+def remove_class(n_clicks,scheduleID):
+    if n_clicks:
+        if(scheduleID):
+            handler.staffRemoveClass(scheduleID)
+            return True,staff.mainLayout
     
+    else:
+        return False,dash.no_update
+       
 #generate a modify class layout
 @callback(
     Output('buttonsTable', 'children', allow_duplicate=True),
@@ -459,7 +495,35 @@ def modifyClass(n_clicks):
         return staff.generateModifyClassLayout(handler.printAllClasses())
     else:
         return dash.no_update
+    
+#modify class functionality
+@callback(
+    Output('staffmodifyClassSuccessful','displayed',allow_duplicate=True),
+    Output('staffModifyClassOutcome','children'),
+    Output('page-content','children',allow_duplicate=True),
+    Input('submitModifyClassButton','n_clicks'),
+    State('StaffscheduleIdInput','value'),
+    State('StaffstartInput','value'),
+    State('StaffendInput','value'),
+    prevent_initial_call = True
+)
 
+def modify_class(n_clicks,scheduleID,newStart,newEnd):
+    if (n_clicks):
+        if(scheduleID and newStart and newEnd):
+            if(handler.rescheduleClass(scheduleID,newStart,newEnd)):
+                #successful reschedule
+                return True,dash.no_update,staff.mainLayout
+            else:
+                #failed reschedule
+                return False,'Reschdule Failed. There is an overlap. Please Try again.',dash.no_update
+        #if all 3 values arent filled
+        else:
+            return False,dash.no_update,dash.no_update
+    else:
+        
+        return False,dash.no_update,dash.no_update 
+    
 #generate a print maintence layout
 @callback(
     Output('buttonsTable', 'children', allow_duplicate=True),
@@ -482,9 +546,37 @@ def updateMaintenance(n_clicks):
     if n_clicks:
         return staff.generateUpdateEquipmentLayout()
     else:
-        return dash.no_update   
+        return dash.no_update 
 
-#generate a add equipment layout
+#update Equipment functionality
+@callback(
+    Output('staffUpdateEquipmentSuccessful','displayed',allow_duplicate=True),
+    Output('staffUpdateEquipmentOutcome','children'),
+    Output('page-content','children',allow_duplicate=True),
+    Input('staffUpdateEquipmentButton','n_clicks'),
+    State('equipmentNameInput','value'),
+    prevent_initial_call = True
+)
+
+def update_equipment(n_clicks,equipmentName):
+    if (n_clicks):
+        if(equipmentName):
+            if(handler.updateEquipment(equipmentName)):
+                #successful update
+                return True,dash.no_update,staff.mainLayout
+            else:
+                #failed update
+                return False,'Error Updating equipment!',dash.no_update
+       
+        #if values arent filled
+        else:
+            return False,dash.no_update,dash.no_update
+    else:
+        
+        return False,dash.no_update,dash.no_update 
+    
+
+#generate an add equipment layout
 @callback(
     Output('buttonsTable', 'children', allow_duplicate=True),
     Input('addEquipmentButton', 'n_clicks'),
@@ -495,6 +587,36 @@ def addEquipment(n_clicks):
         return staff.generateAddEquipmentLayout()
     else:
         return dash.no_update 
+    
+#functionality for add equipment
+@callback(
+    Output('staffaddEquipmentSuccessful','displayed',allow_duplicate=True),
+    Output('page-content','children',allow_duplicate=True),
+    Input('submitAddEquipmentButton','n_clicks'),
+    State('newEquipmentNameInput','value'),
+    State('equipmentInRoomInput','value'),
+    prevent_initial_call = True
+)
+
+def add_equipment(n_clicks,equipmentName,inRoom):
+    print("in room")
+    print(inRoom)
+    if (n_clicks):
+        if(equipmentName and inRoom):
+            if(handler.addEquipment(equipmentName,inRoom)):
+                #successful adding
+                return True,staff.mainLayout
+            else:
+                #failed adding
+                return False,dash.no_update
+        
+        #if all 2 values arent filled
+        else:
+            return False,dash.no_update
+    else:
+        
+        return False,dash.no_update 
+    
 
 #generate a add room booking layout
 @callback(
@@ -510,6 +632,37 @@ def addRoomBooking(n_clicks):
     else:
         return dash.no_update 
 
+#functionality for add room
+@callback(
+    Output('staffAddBookingSuccessful','displayed',allow_duplicate=True),
+    Output('addRoomBookingOutcome','children'),
+    Output('page-content','children',allow_duplicate=True),
+    Input('submitStaffAddBookingButton','n_clicks'),
+    State('roomUsedInput','value'),
+    State('noOfAttendeesInput','value'),
+    State('startInput','value'),
+    State('endInput','value'),    
+    prevent_initial_call = True
+)
+
+def add_roomBooking(n_clicks,roomToUse,attendees,startTime,endTime):
+
+    if (n_clicks):
+        if(roomToUse and attendees and startTime and endTime):
+            if(handler.addRoomBooking(roomToUse,attendees,startTime,endTime)):
+                #successful adding
+                return True,dash.no_update,staff.mainLayout
+            else:
+                #failed adding
+                return False,'Reschdule Failed. There is an overlap. Please Try again.',dash.no_update
+        
+        #if all  values arent filled
+        else:
+            return False,dash.no_update
+    else:
+        
+        return False,dash.no_update 
+    
 #generate a PRINT USED ROOMS layout
 @callback(
     Output('buttonsTable', 'children', allow_duplicate=True),
@@ -535,6 +688,40 @@ def printAllPayments(n_clicks):
         return staff.generatePrintAllPayments(handler.printAllPayments())
     else:
         return dash.no_update
+
+#generate an update payment layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('updatePaymentButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def printAllPayments(n_clicks):
+    if n_clicks:
+        #has to change to be print all room bookings COME BACK
+        return staff.generateUpdatePayment(handler.printAllPayments())
+    else:
+        return dash.no_update
+
+#functionality for update payment Button
+@callback(
+    Output('staffUpdatePaymentSuccessful','displayed'),
+    Output('staffUpdatePaymentOutcome','children'),
+    Output('page-content','children',allow_duplicate=True),
+    Input('staffPayStatusChangeButton','n_clicks'),
+    State('paymentID','value'),
+    State('staffPaymentStatus','value'),
+    prevent_initial_call= True
+)
+def payReceipt(n_clicks,receiptToPay,new_status):
+    if n_clicks:
+        if(receiptToPay,new_status):
+            if(handler.changePaymentStatus(receiptToPay,new_status)):
+                return True,dash.no_update,staff.mainLayout
+            else:
+                return False,'Error Updating Receipt. Please try again.',dash.no_update
+        else:
+            return False,dash.no_update,dash.no_update
+
                 
 #the return "go back" to the main page button  
 @callback(

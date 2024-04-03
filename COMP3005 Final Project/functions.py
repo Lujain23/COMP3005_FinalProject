@@ -473,8 +473,8 @@ def equipmentMaintenenceMonitoring(connection, equipment_name):
         connection.commit()
         return True
     except psycopg2.DatabaseError as e:
-        return("Error monitoring equipment!", False)
-
+        return False
+    
 def addEquipment(connection, equipment_name, room_id):
     cursor = connection.cursor()
     try:
@@ -535,7 +535,7 @@ def changePaymentStatus(connection, payment_id, new_status):
         connection.commit()
         return True
     except psycopg2.DatabaseError as e:
-        return("Error updating payment status!", False)
+        return(False)
     
 def main():
     connection = connectToDatabase()
@@ -571,4 +571,4 @@ def main():
     #changePaymentStatus(connection, 2, "PENDING")
     #print(printMaintenence(connection))
     #print(trainerViewClasses(connection, "LarryLobster@gmail.com"))
-main()
+#main()

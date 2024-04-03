@@ -67,6 +67,9 @@ def setAvailability(email,start_time,end_time):
     con = function.connectToDatabase()
     return function.setAvailability(con, email, start_time, end_time)
 
+def changePaymentStatus(paymentID,new_status):
+    con = function.connectToDatabase()
+    return function.changePaymentStatus(con,paymentID,new_status)
 
 '''STAFF'''
 def printAllClasses():
@@ -76,6 +79,30 @@ def printAllClasses():
 def staffAddClass(room_used, trainer_email, start_time, end_time, type_session, class_type):
     con = function.connectToDatabase()
     return function.classScheduling(con, room_used, trainer_email, start_time, end_time, type_session, class_type)
+def staffRemoveClass(scheduleID):
+    con = function.connectToDatabase()
+    function.staffCancelClass(con,scheduleID)
+    return True
+
+def staffModifyClass(schedule_id,start_time,end_time):
+    con = function.connectToDatabase()
+    return function.rescheduleClass(con,schedule_id,start_time,end_time)
+
+def addRoomBooking(room_id, attendees, start_time, end_time):
+    con = function.connectToDatabase()
+    return function.roomBooking(con,room_id, attendees, start_time, end_time)
+
+def addEquipment(equipmentName,insideRoom):
+    con = function.connectToDatabase()
+    function.addEquipment(con,equipmentName,insideRoom)
+    return True
+def updateEquipment(equipmentName):
+    con = function.connectToDatabase()
+    return function.equipmentMaintenenceMonitoring(con,equipmentName)
+
+def printAllMaintenance():
+    con =function.connectToDatabase()
+    return function.printMaintenence(con)
 
 def printAllPayments():
     con = function.connectToDatabase()

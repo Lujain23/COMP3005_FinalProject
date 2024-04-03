@@ -6,8 +6,8 @@ import math
 def connectToDatabase():
     try:
         #would change depending on the user
-        #password = "admin" #trista
-        password = "comp3005" #lujain
+        password = "admin" #trista
+        #password = "comp3005" #lujain
         database = "GymManagementSystem"
         #database = "COMP3005FinalProject"
 
@@ -215,6 +215,16 @@ def printMembersClasses(connection, member_email):
         print("Error printing classes member joins!")   
     return
 
+def printSoloMemberClasses(connection, member_email):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT s.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NOT NULL AND member_email = %s AND type_session = 'solo'"
+        cursor.execute(query, (member_email, ))
+        return(cursor.fetchall())
+    except psycopg2.DatabaseError as e:
+        print("Error printing member's solo classes!")   
+    return
+
 #Trainer Functions
 # Just changing start_time, end_time
 def setAvailability(connection, email, start_time, end_time):
@@ -355,5 +365,6 @@ def main():
     #print(printMembersClasses(connection, 'plankton@chumbucket.org'))
     #cancelClass(connection, 1, 'spongebob@squarepants.com')
     #addEquipment(connection, 'skipping rope', 4)
-    rescheduleClass(connection, 1, "7:00:00", "8:00:00")
+    #rescheduleClass(connection, 1, "7:00:00", "8:00:00")
+    print(printSoloMemberClasses(connection, 'spongebob@squarepants.com'))
 main()

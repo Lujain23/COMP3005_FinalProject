@@ -35,3 +35,6 @@ INSERT INTO equipment_maintenence (equipment_name, room_id, last_checked) VALUES
 
 INSERT INTO eventInfo (room_used, attendees, start_time, end_time) VALUES
 	(3, 15, '7:00:00', '10:00:00')
+
+INSERT INTO payment (amount, member_email, transaction_date, stat, descript) VALUES
+	(50.99, 'Fred@yahoo.ca', '2024-09-01', "PENDING", "Monthly subscription fee")

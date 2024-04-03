@@ -67,6 +67,8 @@ CREATE TABLE payment(
 	amount DECIMAL(5,2) NOT NULL,
 	member_email VARCHAR(255) NOT NULL,
 	transaction_date DATE DEFAULT CURRENT_DATE,
+	stat VARCHAR(15) NOT NULL,
+	descript TEXT,
 	primary key(payment_id),
 	foreign key (member_email) references members(email)
 		on delete set null

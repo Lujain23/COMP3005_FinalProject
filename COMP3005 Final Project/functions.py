@@ -399,6 +399,17 @@ def staffCancelClass(connection, schedule_id):
         print("Error cancelling class!")
     return
 
+def printAllClasses(connection):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT * FROM schedule"
+        cursor.execute(query)
+        return(cursor.fetchall())
+    
+    except psycopg2.DatabaseError as e:
+        return("Error cancelling room booking!", False)
+
+
 def staffCancelRoomBooking(connection, event_id):
     cursor = connection.cursor()
     try:
@@ -409,8 +420,7 @@ def staffCancelRoomBooking(connection, event_id):
         return True
     
     except psycopg2.DatabaseError as e:
-        print("Error cancelling room booking!")
-    return False
+        return("Error cancelling room booking!", False)
 
 def modifyRoomBooking(connection, event_id, start_time, end_time):
     cursor = connection.cursor()
@@ -443,8 +453,7 @@ def modifyRoomBooking(connection, event_id, start_time, end_time):
         connection.commit()
         return True
     except psycopg2.DatabaseError as e:
-        print("Error modifying room booking!")
-    return False
+        return("Error modifying room booking!", False)
 
 def equipmentMaintenenceMonitoring(connection, equipment_name):
     cursor = connection.cursor()
@@ -453,9 +462,9 @@ def equipmentMaintenenceMonitoring(connection, equipment_name):
         query = "UPDATE equipment_maintenence SET last_checked = %s WHERE equipment_name = %s"
         cursor.execute(query, (date.today(), equipment_name))
         connection.commit()
+        return True
     except psycopg2.DatabaseError as e:
-        print("Error monitoring equipment!")
-    return 
+        return("Error monitoring equipment!", False)
 
 def addEquipment(connection, equipment_name, room_id):
     cursor = connection.cursor()
@@ -465,6 +474,12 @@ def addEquipment(connection, equipment_name, room_id):
         connection.commit()
     except psycopg2.DatabaseError as e:
         print("Error adding equipment!") 
+    return
+
+def printMemberPayments(connection, member_email):
+    return
+
+def createPayment(connection, amount, member_email, transaction_date, stat, descript):
     return
 
 def main():

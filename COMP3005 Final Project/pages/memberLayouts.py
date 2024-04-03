@@ -24,6 +24,7 @@ boxStyle = {
 }
 textFieldStyle ={'width': '100%', 'height': '30px'}
 textFieldStyle2 = {'width': '70%', 'height': '30px'}
+columnStyle = {'fontSize':'20px','padding': '15px'}
 
 #layout for the main buttons
 mainLayout = html.Div(
@@ -46,7 +47,8 @@ mainLayout = html.Div(
 
             ]),  
             html.Tr([
-                html.Td(html.Button('Cancel Class',id='cancelClassButton',n_clicks=0, style=rowStyle))
+                html.Td(html.Button('Cancel Class',id='cancelClassButton',n_clicks=0, style=rowStyle)),
+                html.Td(html.Button('View My Payments',id='viewPaymentButton',n_clicks=0, style=rowStyle))
             ]),             
         ], style = {'margin':'auto'}
         ) #end of table
@@ -363,3 +365,100 @@ def generateRescheduleClassLayout(data):
     )
     return rescheduleClassLayout
 
+def generateViewPayments(data):
+    tableRows =[]
+
+    for currPayment in data:
+        amount, transaction_date, stat,descript = currPayment
+        currRow = html.Tr([     html.Td(amount,style=dataStyle), 
+                               html.Td(transaction_date,style=dataStyle),
+                               html.Td(stat,style=dataStyle),
+                               html.Td(descript,style=dataStyle),
+                                ])
+        tableRows.append(currRow)
+
+        layout = html.Div(
+                id='tableContainer',
+                children=[
+                    html.Label('My Payments:: ', style={'fontSize': '30px'}),
+                    html.Br(),
+                    html.Br(),
+                    html.Table([
+                        html.Thead(html.Tr([ 
+                            html.Th('Amount ($)', style=columnStyle),
+                            html.Th('Transaction Date', style=columnStyle),
+                            html.Th('Status', style=columnStyle),
+                            html.Th('Description', style=columnStyle),
+                        ])),
+                        html.Tbody(id='classTableBody',children=tableRows),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                    html.Div(
+                        children=[
+                            html.Br(),
+                            html.Br(),                            
+                            html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})
+
+                        ]
+                    )#second div end
+                ],
+                style={'textAlign': 'center'}  
+            ),  #div end
+
+    
+    return layout    
+
+def generateDesignViewPayments(data):
+    allReceiptsList = []
+
+    receipStyle = {
+        'font-family': 'Arial, sans-serif',
+        'color': '#a2d2ff',
+        'border': '2px solid #a2d2ff',
+        'border-radius': '10px',
+        'padding': '20px',
+        'margin': '10px',
+        'box-shadow': '0px 0px 10px 0px rgba(0,0,0,0.1)'
+    }
+    if(len(data) == 0):
+        #there are no payments
+        noPayments = html.Div(
+            id = 'page-content',
+            children=[
+                html.H1('WOOHOO No payments!', style={'fontSize': '36px', 'textAlign': 'center', 'color': '#a2d2ff'}),
+                html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})
+            ]
+        )
+        return noPayments
+    
+
+    for currReceipt in data:
+        print("in")
+        amount, transaction_date, status, description = currReceipt
+        
+        finalizedSingleReceipt = html.Div(
+            children=[
+            html.P(f"Amount: ${amount:.2f}"),
+            html.P(f"Transaction Date: {transaction_date}"),
+            html.P(f"Status: {status}"),
+            html.P(f"Description: {description}")
+            ],
+            style=receipStyle
+        )
+        allReceiptsList.append(finalizedSingleReceipt)
+
+    allReceipts = html.Div(
+                    id ='page-content',
+                    children=[
+                        html.H1("My Payments",style={'fontSize':'24px','color': '#a2d2ff'}),
+                        html.Br(),
+                        html.Div(allReceiptsList),
+                        html.Div(
+                            html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})
+                        )
+                    ]
+    )
+    
+    return allReceipts

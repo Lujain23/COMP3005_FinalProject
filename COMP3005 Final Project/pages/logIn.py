@@ -273,7 +273,19 @@ def cancelClass(n_clicks,scheduleID,newStart,newEnd):
     else:
         
         return False,dash.no_update,dash.no_update 
-
+    
+#to generate the view my payments layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('viewPaymentButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def viewMyPayments(n_clicks):
+    if n_clicks:
+        #member.generateViewPayments(handler.printMyPayments(globalUsername))
+        return member.generateDesignViewPayments(handler.printMyPayments(globalUsername))
+    else:
+        return dash.no_updat
 #the return "go back" to the main page button  
 @callback(
     Output('page-content', 'children', allow_duplicate=True),
@@ -478,12 +490,52 @@ def updateMaintenance(n_clicks):
     Input('addEquipmentButton', 'n_clicks'),
     prevent_initial_call=True
 )
-def updateMaintenance(n_clicks):
+def addEquipment(n_clicks):
     if n_clicks:
         return staff.generateAddEquipmentLayout()
     else:
         return dash.no_update 
-    
+
+#generate a add room booking layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('addRoomBookingButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def addRoomBooking(n_clicks):
+    if n_clicks:
+        #has to change to be print all room bookings COME BACK
+        #return staff.generateAddRoomBookingLayout()
+        return 'missing something'
+    else:
+        return dash.no_update 
+
+#generate a PRINT USED ROOMS layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('printUsedRoomsButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def printUsedRooms(n_clicks):
+    if n_clicks:
+        #has to change to be print all room bookings COME BACK
+        return 'implement it!'
+    else:
+        return dash.no_update
+
+#generate a PRINT HISTORY OF ALL PAYMENTS layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('printReceiptButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def printAllPayments(n_clicks):
+    if n_clicks:
+        #has to change to be print all room bookings COME BACK
+        return staff.generatePrintAllPayments(handler.printAllPayments())
+    else:
+        return dash.no_update
+                
 #the return "go back" to the main page button  
 @callback(
     Output('page-content', 'children', allow_duplicate=True),

@@ -53,7 +53,10 @@ def printSoloClass(email):
     con = function.connectToDatabase()
     return function.printSoloMemberClasses(con,email)
 
-
+def printMyPayments(email):
+    con = function.connectToDatabase()
+    return function.printMemberPayments(con,email)
+    
 '''TRAINER'''
 def getMember(firstName):
     con = function.connectToDatabase()
@@ -73,3 +76,7 @@ def printAllClasses():
 def staffAddClass(room_used, trainer_email, start_time, end_time, type_session, class_type):
     con = function.connectToDatabase()
     return function.classScheduling(con, room_used, trainer_email, start_time, end_time, type_session, class_type)
+
+def printAllPayments():
+    con = function.connectToDatabase()
+    return function.printAllPayments(con)

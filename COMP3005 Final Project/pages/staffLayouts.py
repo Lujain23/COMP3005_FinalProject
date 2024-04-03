@@ -29,7 +29,7 @@ mainLayout = html.Div(
             html.Tr([
                 html.Td(html.Button('Add Room Booking', id='addRoomBookingButton', n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Print Used Rooms',id='printUsedRoomsButton',n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Print Receipt', id='printReceiptButton', n_clicks=0, style=rowStyle))
+                html.Td(html.Button('History Of Payments', id='printReceiptButton', n_clicks=0, style=rowStyle))
             ]),  
                 
         ], style = {'margin':'auto'}
@@ -360,5 +360,198 @@ def generateAddEquipmentLayout():
     )
     return layout      
 
+def generateAddRoomBookingLayout(data):
+    tableRows =[]
 
+    for currClass in data:
+        event_id, room_used, noOfAttendees, start_time, end_time = currClass
+        currRow = html.Tr([html.Td(event_id,style=dataStyle), 
+                               html.Td(room_used,style=dataStyle), 
+                               html.Td(noOfAttendees,style=dataStyle), 
+                               html.Td(start_time,style=dataStyle),
+                                html.Td(end_time,style=dataStyle)])
+        tableRows.append(currRow)
 
+    
+    addBookingLayout = html.Div(
+        id='page-content',
+        children=[
+            html.Div(
+                id='tableContainer',
+                children=[
+                    html.Label('All Current Classes: ', style={'fontSize': '30px'}),
+                    html.Table([
+                        html.Thead(html.Tr([
+                            html.Th('Event ID', style=columnStyle),  
+                            html.Th('Room Used', style=columnStyle),
+                            html.Th('Number Of Attendees', style=columnStyle),
+                            html.Th('Start Time', style=columnStyle),
+                            html.Th('End Time', style=columnStyle),
+                        ])),
+                        html.Tbody(id='classTableBody',children=tableRows),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                ],
+                style={'textAlign': 'center'}  
+            ),  #first div
+            html.Br(),
+            html.Br(),
+            html.Div(
+                children = [
+
+                    html.Table([
+                            html.Tr([
+                                html.Td(html.Label('Room to use:',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='roomUsedInput', type='text',style=textFieldStyle2))
+                            ]),
+                            html.Tr([
+                                html.Td(html.Label('Number of Attendees:',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='noOfAttendeesInput', type='number',style=textFieldStyle2))
+                            ]),                            
+                            html.Tr([
+                                html.Td(html.Label('Start Time HH:MM::SS: ',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='startInput', type='text',style=textFieldStyle2)),
+                            ]),  
+                            html.Tr([
+                                html.Td(html.Label('End Time HH:MM:SS: ',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='endInput', type='text',style=textFieldStyle2))
+                            ]),
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Submit', id='submitStaffAddBookingButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})), 
+                            ]),
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Go Back', id='staffReturnButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})),                                 
+                            ])  
+                    ]),
+
+            ],style={'margin-bottom': '10px', 'width': '100%','display': 'flex', 'justify-content': 'center','flex-direction':'column','align-items': 'center'},
+            ), #second div
+            dcc.ConfirmDialog(
+            id='staffAddBookingSuccessful',
+            message='Creating Room Booking was successful. Will return back to main menu.',
+            ),    
+    
+    ]#children ends
+    )
+    return addBookingLayout
+
+def roomBookingTable(data):
+    tableRows =[]
+
+    for currClass in data:
+        event_id, room_used, noOfAttendees, start_time, end_time = currClass
+        currRow = html.Tr([html.Td(event_id,style=dataStyle), 
+                               html.Td(room_used,style=dataStyle), 
+                               html.Td(noOfAttendees,style=dataStyle), 
+                               html.Td(start_time,style=dataStyle),
+                                html.Td(end_time,style=dataStyle)])
+        tableRows.append(currRow)
+        html.Div(
+                id='tableContainer',
+                children=[
+                    html.Label('All Current Classes: ', style={'fontSize': '30px'}),
+                    html.Table([
+                        html.Thead(html.Tr([
+                            html.Th('Event ID', style=columnStyle),  
+                            html.Th('Room Used', style=columnStyle),
+                            html.Th('Number Of Attendees', style=columnStyle),
+                            html.Th('Start Time', style=columnStyle),
+                            html.Th('End Time', style=columnStyle),
+                        ])),
+                        html.Tbody(id='classTableBody',children=tableRows),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                ],
+                style={'textAlign': 'center'}  
+            ),  #first div
+        html.Br(),
+        html.Br(),
+        html.Div(
+            children = [
+
+                    html.Table([
+                            html.Tr([
+                                html.Td(html.Label('Room to use:',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='roomUsedInput', type='text',style=textFieldStyle2))
+                            ]),
+                            html.Tr([
+                                html.Td(html.Label('Number of Attendees:',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='noOfAttendeesInput', type='number',style=textFieldStyle2))
+                            ]),                            
+                            html.Tr([
+                                html.Td(html.Label('Start Time HH:MM::SS: ',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='startInput', type='text',style=textFieldStyle2)),
+                            ]),  
+                            html.Tr([
+                                html.Td(html.Label('End Time HH:MM:SS: ',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='endInput', type='text',style=textFieldStyle2))
+                            ]),
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Submit', id='submitStaffAddBookingButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})), 
+                            ]),
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Go Back', id='staffReturnButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})),                                 
+                            ])  
+                    ]),
+
+            ],style={'margin-bottom': '10px', 'width': '100%','display': 'flex', 'justify-content': 'center','flex-direction':'column','align-items': 'center'},
+        ),            
+
+    return roomBookingTable
+
+def generatePrintAllPayments(data):
+    tableRows =[]
+
+    for currPayment in data:
+        payment_id, amount, member_email, transaction_date, stat,descript = currPayment
+        currRow = html.Tr([html.Td(payment_id,style=dataStyle), 
+                               html.Td(amount,style=dataStyle), 
+                               html.Td(member_email,style=dataStyle), 
+                               html.Td(transaction_date,style=dataStyle),
+                               html.Td(stat,style=dataStyle),
+                               html.Td(descript,style=dataStyle),
+                                ])
+        tableRows.append(currRow)
+
+        layout = html.Div(
+                id='tableContainer',
+                children=[
+                    html.Label('History Of All Payments: ', style={'fontSize': '30px'}),
+                    html.Br(),
+                    html.Br(),
+                    html.Table([
+                        html.Thead(html.Tr([
+                            html.Th('Payment ID', style=columnStyle),  
+                            html.Th('Amount ($)', style=columnStyle),
+                            html.Th('Member Email', style=columnStyle),
+                            html.Th('Transaction Date', style=columnStyle),
+                            html.Th('Status', style=columnStyle),
+                            html.Th('Description', style=columnStyle),
+                        ])),
+                        html.Tbody(id='classTableBody',children=tableRows),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                    html.Div(
+                        children=[
+                            html.Br(),
+                            html.Br(),                            
+                            html.Button('Go Back', id='staffReturnButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})
+
+                        ]
+                    )#second div end
+                ],
+                style={'textAlign': 'center'}  
+            ),  #div end
+
+    
+    return layout

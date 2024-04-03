@@ -499,7 +499,7 @@ def printMaintenence(connection):
 def printMemberPayments(connection, member_email):
     cursor = connection.cursor()
     try:
-        query = "SELECT amount, transaction_date, stat, descript FROM payment WHERE member_email = %s"
+        query = "SELECT payment_id, amount, transaction_date, stat, descript FROM payment WHERE member_email = %s"
         cursor.execute(query, (member_email, ))
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:
@@ -566,9 +566,9 @@ def main():
     #staffCancelRoomBooking(connection, 3)
     #modifyRoomBooking(connection, 4, "8:00:00", "9:00:00")
     #print(printAllClasses(connection))
-    #print(printMemberPayments(connection, "Fred@yahoo.ca"))
+    print(printMemberPayments(connection, "Fred@yahoo.ca"))
     #createPayment(connection, 70.99, "plankton@chumbucket.org", "2024-04-01", "COMPLETED", "Solo training fee")
     #changePaymentStatus(connection, 2, "PENDING")
     #print(printMaintenence(connection))
     #print(trainerViewClasses(connection, "LarryLobster@gmail.com"))
-#main()
+main()

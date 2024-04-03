@@ -6,8 +6,8 @@ import math
 def connectToDatabase():
     try:
         #would change depending on the user
-        password = "admin" #trista
-        #password = "comp3005" #lujain
+        #password = "admin" #trista
+        password = "comp3005" #lujain
         database = "GymManagementSystem"
         #database = "COMP3005FinalProject"
 
@@ -394,7 +394,7 @@ def staffCancelClass(connection, schedule_id):
         connection.commit()
 
     except psycopg2.DatabaseError as e:
-        print("Error cancelling class!")
+        print("Error cancelling class!", e)
     return
 
 def printAllClasses(connection):
@@ -474,6 +474,16 @@ def addEquipment(connection, equipment_name, room_id):
         print("Error adding equipment!") 
     return
 
+def printMaintenence(connection):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT * FROM equipment_maintenence"
+        cursor.execute(query)
+        return(cursor.fetchall())
+    except psycopg2.DatabaseError as e:
+        print("Error adding equipment!") 
+    return
+
 # returns amount, transaction date, status and description
 def printMemberPayments(connection, member_email):
     cursor = connection.cursor()
@@ -533,7 +543,7 @@ def main():
     #testingSelect(connection.cursor())
     #setAvailability(connection, 'LarryLobster@gmail.com', '6:00:00', '17:00:00')
     #roomBooking(connection, 1, 15, '8:00:00', '9:00:00')
-    #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'group', 'cardio')
+    #classScheduling(connection, 4, 'Karen@Computer.com', '18:00:00', '18:30:00', 'solo', 'weight-lifting')
     #joinClass(connection, 6, 'plankton@chumbucket.org')
     #print(printAvailableClasses(connection))
     #print(printMembersClasses(connection, 'plankton@chumbucket.org'))
@@ -547,5 +557,6 @@ def main():
     #print(printAllClasses(connection))
     #print(printMemberPayments(connection, "Fred@yahoo.ca"))
     #createPayment(connection, 70.99, "plankton@chumbucket.org", "2024-04-01", "COMPLETED", "Solo training fee")
-    changePaymentStatus(connection, 2, "PENDING")
-main()
+    #changePaymentStatus(connection, 2, "PENDING")
+    print(printMaintenence(connection))
+#main()

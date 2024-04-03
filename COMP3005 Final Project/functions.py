@@ -297,6 +297,17 @@ def getMember(connection, first_name):
         return result
     except psycopg2.DatabaseError as e:
         return("Error getting member!", False)
+    
+def trainerViewClasses(connection, trainer_email):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT schedule_id, room_used, start_time, end_time, type_session, class_type FROM schedule WHERE trainer_email = %s"
+        cursor.execute(query, (trainer_email,))
+        result = cursor.fetchall()
+        return result
+    except psycopg2.DatabaseError as e:
+        return("Error getting trainer's classes!", False)
+    
 
 #staff functions
 # helper function
@@ -558,5 +569,6 @@ def main():
     #print(printMemberPayments(connection, "Fred@yahoo.ca"))
     #createPayment(connection, 70.99, "plankton@chumbucket.org", "2024-04-01", "COMPLETED", "Solo training fee")
     #changePaymentStatus(connection, 2, "PENDING")
-    print(printMaintenence(connection))
+    #print(printMaintenence(connection))
+    #print(trainerViewClasses(connection, "LarryLobster@gmail.com"))
 #main()

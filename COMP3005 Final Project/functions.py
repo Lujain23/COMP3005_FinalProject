@@ -6,8 +6,8 @@ import math
 def connectToDatabase():
     try:
         #would change depending on the user
-        password = "admin" #trista
-        #password = "comp3005" #lujain
+        #password = "admin" #trista
+        password = "comp3005" #lujain
         database = "GymManagementSystem"
         #database = "COMP3005FinalProject"
 
@@ -139,14 +139,6 @@ def joinClass(connection, schedule_id, member_email):
 def rescheduleClass(connection, schedule_id, start_time, end_time):
     cursor = connection.cursor()
     try:
-        # check to make sure class is solo
-        query = "SELECT type_session FROM schedule WHERE schedule_id = %s"
-        cursor.execute(query, (schedule_id, ))
-        result = cursor.fetchall()
-        if (result[0][0] != "solo"):
-            print("Error: Can't reschedule group class")
-            return False
-        
         # find trainer for class
         query = "SELECT trainer_email FROM schedule WHERE schedule_id = %s"
         cursor.execute(query, (schedule_id, ))
@@ -175,6 +167,12 @@ def rescheduleClass(connection, schedule_id, start_time, end_time):
             query = "UPDATE schedule SET start_time = %s, end_time = %s WHERE schedule_id = %s"
             cursor.execute(query, (start_time, end_time, schedule_id))
             connection.commit()
+
+            # Send notification to trainer that class has been rescheduled
+            notificationMessage = "Class with schedule_id " + str(schedule_id) + " has beeen rescheduled to " + str(start_time) + " to " + str(end_time)
+            query = "UPDATE trainer SET notification = %s WHERE email = %s"
+            cursor.execute(query, (notificationMessage, trainer_email))
+            connection.commit()
             return True
         else:
             return False
@@ -186,10 +184,28 @@ def rescheduleClass(connection, schedule_id, start_time, end_time):
 def cancelClass(connection, schedule_id, member_email):
     cursor = connection.cursor()
     try:
-        print("in function cancel class")
         query = "DELETE FROM scheduleStudents WHERE schedule_id = %s AND member_email = %s"
         cursor.execute(query, (schedule_id, member_email))
         connection.commit()
+
+        # find trainer for class
+        query = "SELECT trainer_email FROM schedule WHERE schedule_id = %s"
+        cursor.execute(query, (schedule_id, ))
+        result = cursor.fetchall()
+        trainer_email = result[0][0]
+
+        # find member name
+        query = "SELECT first_name FROM members WHERE email = %s"
+        cursor.execute(query, (member_email, ))
+        result = cursor.fetchall()
+        first_name = result[0][0]
+        
+        # Send notification to trainer that class has been rescheduled
+        notificationMessage = "Member " + first_name + " dropped class with schedule_id " + str(schedule_id)
+        query = "UPDATE trainer SET notification = %s WHERE email = %s"
+        cursor.execute(query, (notificationMessage, trainer_email))
+        connection.commit()
+
     except psycopg2.DatabaseError as e:
         print("Error cancelling class!")
     return
@@ -226,13 +242,30 @@ def printSoloMemberClasses(connection, member_email):
     return
 
 #Trainer Functions
-# Just changing start_time, end_time
 def setAvailability(connection, email, start_time, end_time):
     cursor = connection.cursor()
     try:
+        # get trainer's current class list
+        query = "SELECT start_time, end_time FROM schedule WHERE trainer_email = %s"
+        cursor.execute(query, (email, ))
+        result = cursor.fetchall()
+
+        # Convert to date time object
+        start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
+        end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
+
+        # Check all start and end times of all trainer's classes to make sure they can change their schedule
+        for event in result:
+            existing_start_time, existing_end_time = event
+            if (start_time_to_datetime > existing_start_time) or (end_time_to_datetime < existing_end_time):
+                print("Error: new availability conflicts with current classes")
+                return 
+
+        # No conflicts -> update normally
         query = "UPDATE trainer SET start_time = %s, end_time = %s WHERE email = %s"
         cursor.execute(query, (start_time, end_time, email))
         connection.commit()
+
     except psycopg2.DatabaseError as e:
         print("Error setting availability!")
     return
@@ -321,6 +354,82 @@ def classScheduling(connection, room_used, trainer_email, start_time, end_time, 
         print("Error booking room!", e)
     return
 
+def staffCancelClass(connection, schedule_id):
+    cursor = connection.cursor()
+    try:
+        # delete in scheduleStudents
+        query = "DELETE FROM scheduleStudents WHERE schedule_id = %s"
+        cursor.execute(query, (schedule_id, ))
+        connection.commit()
+
+        # find trainer for class
+        query = "SELECT trainer_email FROM schedule WHERE schedule_id = %s"
+        cursor.execute(query, (schedule_id, ))
+        result = cursor.fetchall()
+        trainer_email = result[0][0]
+
+        # delete in schedule
+        query = "DELETE FROM schedule WHERE schedule_id = %s"
+        cursor.execute(query, (schedule_id, ))
+        connection.commit()
+        
+        # Send notification to trainer that class has been rescheduled
+        notificationMessage = "Class with schedule_id " + str(schedule_id) + " has beeen cancelled"
+        query = "UPDATE trainer SET notification = %s WHERE email = %s"
+        cursor.execute(query, (notificationMessage, trainer_email))
+        connection.commit()
+
+    except psycopg2.DatabaseError as e:
+        print("Error cancelling class!")
+    return
+
+def staffCancelRoomBooking(connection, event_id):
+    cursor = connection.cursor()
+    try:
+        # delete in scheduleStudents
+        query = "DELETE FROM eventInfo WHERE event_id = %s"
+        cursor.execute(query, (event_id, ))
+        connection.commit()
+        return True
+    
+    except psycopg2.DatabaseError as e:
+        print("Error cancelling room booking!")
+    return False
+
+def modifyRoomBooking(connection, event_id, start_time, end_time):
+    cursor = connection.cursor()
+    try:
+        # find room_id of event_id
+        query = "SELECT room_used FROM eventInfo WHERE event_id = %s"
+        cursor.execute(query, (event_id, ))
+        result = cursor.fetchall()
+        room_used = result[0][0]
+
+        # if there's no overlaps with the new time, we can reschedule
+        # Convert to date time object
+        start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
+        end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
+
+        # get all schedules for current room minus the schedule we want to change
+        query = "SELECT start_time, end_time FROM eventInfo WHERE room_used = %s AND event_id != %s UNION SELECT start_time, end_time FROM schedule WHERE room_used = %s"
+        cursor.execute(query, (room_used, event_id, room_used))
+        result = cursor.fetchall()
+
+        # Check start and end times, if there are no overlaps, then room booking can be modified
+        for event in result:
+            existing_start_time, existing_end_time = event
+            if (start_time_to_datetime < existing_end_time) and (end_time_to_datetime > existing_start_time):
+                print("Error: cannot modify room booking")
+                return False
+        
+        query = "UPDATE eventInfo SET start_time = %s, end_time = %s WHERE event_id = %s"
+        cursor.execute(query, (start_time, end_time, event_id))
+        connection.commit()
+        return True
+    except psycopg2.DatabaseError as e:
+        print("Error modifying room booking!")
+    return False
+
 def equipmentMaintenenceMonitoring(connection, equipment_name):
     cursor = connection.cursor()
     # Just update date in equipment
@@ -357,7 +466,7 @@ def main():
     #print(selectMember(connection,'lujain@gmail.com'))
     #equipmentMaintenenceMonitoring(connection, 'Treadmill')
     #testingSelect(connection.cursor())
-    #setAvailability(connection, 'SandyCheeks@gmail.com', '5:00:00', '17:00:00')
+    #setAvailability(connection, 'LarryLobster@gmail.com', '6:00:00', '17:00:00')
     #roomBooking(connection, 1, 15, '8:00:00', '9:00:00')
     #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'group', 'cardio')
     #joinClass(connection, 6, 'plankton@chumbucket.org')
@@ -365,6 +474,9 @@ def main():
     #print(printMembersClasses(connection, 'plankton@chumbucket.org'))
     #cancelClass(connection, 1, 'spongebob@squarepants.com')
     #addEquipment(connection, 'skipping rope', 4)
-    #rescheduleClass(connection, 1, "7:00:00", "8:00:00")
-    print(printSoloMemberClasses(connection, 'spongebob@squarepants.com'))
+    #rescheduleClass(connection, 1, "7:30:00", "8:30:00")
+    #printSoloMemberClasses(connection, 'spongebob@squarepants.com')
+    #staffCancelClass(connection, 1)
+    #staffCancelRoomBooking(connection, 3)
+    modifyRoomBooking(connection, 4, "8:00:00", "9:00:00")
 main()

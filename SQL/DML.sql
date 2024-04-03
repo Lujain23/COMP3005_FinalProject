@@ -35,3 +35,6 @@ INSERT INTO equipment_maintenence (equipment_name, room_id, last_checked) VALUES
 	('Rowing Machine', 2, '2023-04-23'),
 	('Peleton', 3, '2023-10-19'),
 	('Squat Rack', 2, '2023-05-08');
+
+INSERT INTO eventInfo (room_used, attendees, start_time, end_time) VALUES
+	(3, 15, '7:00:00', '10:00:00')

@@ -6,10 +6,8 @@ import math
 def connectToDatabase():
     try:
         #would change depending on the user
-        #password = "admin" #trista
-        password = "comp3005" #lujain
-        #password = "admin" #trista
-        password = "comp3005" #lujain
+        password = "admin" #trista
+        #password = "comp3005" #lujain
         database = "GymManagementSystem"
         #database = "COMP3005FinalProject"
 
@@ -476,12 +474,48 @@ def addEquipment(connection, equipment_name, room_id):
         print("Error adding equipment!") 
     return
 
+# returns amount, transaction date, status and description
 def printMemberPayments(connection, member_email):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT amount, transaction_date, stat, descript FROM payment WHERE member_email = %s"
+        cursor.execute(query, (member_email, ))
+        return(cursor.fetchall())
+    except psycopg2.DatabaseError as e:
+        print("Error printing member payments!") 
+    return
+
+def printAllPayments(connection):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT * FROM payment"
+        cursor.execute(query)
+        return(cursor.fetchall())
+    except psycopg2.DatabaseError as e:
+        print("Error printing all payments!") 
     return
 
 def createPayment(connection, amount, member_email, transaction_date, stat, descript):
+    cursor = connection.cursor()
+    try:
+        query = "INSERT INTO payment (amount, member_email, transaction_date, stat, descript) VALUES (%s, %s, %s, %s, %s)"
+        cursor.execute(query, (amount, member_email, transaction_date, stat, descript))
+        connection.commit()
+        return("Payment successfully created!")
+    except psycopg2.DatabaseError as e:
+        print("Error adding equipment!") 
     return
 
+def changePaymentStatus(connection, payment_id, new_status):
+    cursor = connection.cursor()
+    try:
+        query = "UPDATE payment SET stat = %s WHERE payment_id = %s"
+        cursor.execute(query, (new_status, payment_id))
+        connection.commit()
+        return True
+    except psycopg2.DatabaseError as e:
+        return("Error updating payment status!", False)
+    
 def main():
     connection = connectToDatabase()
     #testingSelect(cursor)
@@ -510,4 +544,8 @@ def main():
     #staffCancelClass(connection, 1)
     #staffCancelRoomBooking(connection, 3)
     #modifyRoomBooking(connection, 4, "8:00:00", "9:00:00")
+    #print(printAllClasses(connection))
+    #print(printMemberPayments(connection, "Fred@yahoo.ca"))
+    #createPayment(connection, 70.99, "plankton@chumbucket.org", "2024-04-01", "COMPLETED", "Solo training fee")
+    changePaymentStatus(connection, 2, "PENDING")
 main()

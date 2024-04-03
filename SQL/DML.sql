@@ -9,9 +9,6 @@ INSERT INTO trainer (email, first_name, passwd, start_time, end_time) VALUES
 	('Karen@Computer.com', 'Karen', 'Plankton!', '9:00:00', '19:00:00'),
 	('LarryLobster@gmail.com', 'Larry', 'MuscleBeach', '6:00:00', '14:00:00');
 
-INSERT INTO room(room_id, eventType) VALUES
-	(1, 'event');
-
 -- Populate schedule table
 INSERT INTO schedule (schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type) VALUES 
 	(1, 1, 'LarryLobster@gmail.com', '7:00:00', '8:00:00', 'solo', 'weight-lifting');

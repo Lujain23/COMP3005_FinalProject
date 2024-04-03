@@ -241,6 +241,15 @@ def printAvailableClasses(connection):
     except psycopg2.DatabaseError as e:
         return("Error printing available classes!", False)
 
+def printSoloMemberClasses(connection, member_email):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT s.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NOT NULL AND member_email = %s AND type_session = 'solo'"
+        cursor.execute(query, (member_email, ))
+        return(cursor.fetchall())
+    except psycopg2.DatabaseError as e:
+        print("Error printing member's solo classes!")   
+    return
 
 def printMembersClasses(connection, member_email):
     cursor = connection.cursor()
@@ -477,7 +486,7 @@ def main():
     #roomBooking(connection, 1, 15, '8:00:00', '9:00:00')
     #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'group', 'cardio')
     #joinClass(connection, 6, 'plankton@chumbucket.org')
-    print(printAvailableClasses(connection))
+    #print(printAvailableClasses(connection))
     #print(printMembersClasses(connection, 'plankton@chumbucket.org'))
     #cancelClass(connection, 1, 'spongebob@squarepants.com')
     #addEquipment(connection, 'skipping rope', 4)
@@ -485,5 +494,5 @@ def main():
     #printSoloMemberClasses(connection, 'spongebob@squarepants.com')
     #staffCancelClass(connection, 1)
     #staffCancelRoomBooking(connection, 3)
-    modifyRoomBooking(connection, 4, "8:00:00", "9:00:00")
+    #modifyRoomBooking(connection, 4, "8:00:00", "9:00:00")
 main()

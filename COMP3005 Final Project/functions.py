@@ -135,6 +135,54 @@ def joinClass(connection, schedule_id, member_email):
         print("Error joining class!")
     return
 
+# returns true if the rescheduling was successful
+def rescheduleClass(connection, schedule_id, start_time, end_time):
+    cursor = connection.cursor()
+    try:
+        # check to make sure class is solo
+        query = "SELECT type_session FROM schedule WHERE schedule_id = %s"
+        cursor.execute(query, (schedule_id, ))
+        result = cursor.fetchall()
+        if (result[0][0] != "solo"):
+            print("Error: Can't reschedule group class")
+            return False
+        
+        # find trainer for class
+        query = "SELECT trainer_email FROM schedule WHERE schedule_id = %s"
+        cursor.execute(query, (schedule_id, ))
+        result = cursor.fetchall()
+        trainer_email = result[0][0]
+
+        # check that it falls under trainer availability
+        if (checkTrainerAvailability(cursor, start_time, end_time, trainer_email) == True):
+            # Convert to date time object
+            start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
+            end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
+
+            # get start and end times of trainer's other classes besides the one that wants to be changed
+            query = "SELECT start_time, end_time FROM schedule WHERE trainer_email = %s AND schedule_id != %s"
+            cursor.execute(query, (trainer_email, schedule_id))
+            result = cursor.fetchall()
+
+            # Check all start and end times of all trainer's classes to make sure there are no overlaps
+            for event in result:
+                existing_start_time, existing_end_time = event
+                if (start_time_to_datetime < existing_end_time) and (end_time_to_datetime > existing_start_time):
+                    print("No no no can't reschedule here")
+                    return False
+
+            # if all checking was good, change the start and end time of the class
+            query = "UPDATE schedule SET start_time = %s, end_time = %s WHERE schedule_id = %s"
+            cursor.execute(query, (start_time, end_time, schedule_id))
+            connection.commit()
+            return True
+        else:
+            return False
+
+    except psycopg2.DatabaseError as e:
+        print("Error rescheduling class!", e)  
+    return
+
 def cancelClass(connection, schedule_id, member_email):
     cursor = connection.cursor()
     try:
@@ -160,7 +208,7 @@ def printAvailableClasses(connection):
 def printMembersClasses(connection, member_email):
     cursor = connection.cursor()
     try:
-        query = "SELECT stu.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NOT NULL AND member_email = %s"
+        query = "SELECT s.schedule_id, room_used, trainer_email, start_time, end_time, type_session, class_type FROM schedule s LEFT JOIN scheduleStudents stu ON s.schedule_id = stu.schedule_id WHERE stu.schedule_id IS NOT NULL AND member_email = %s"
         cursor.execute(query, (member_email, ))
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:
@@ -191,7 +239,6 @@ def getMember(connection, first_name):
     return 
 
 #staff functions
-
 # helper function
 def findOverlaps(cursor, room_id, start_time, end_time):
     # Convert to date time object
@@ -210,6 +257,24 @@ def findOverlaps(cursor, room_id, start_time, end_time):
             print("No no no can't book here")
             return True
     return False
+
+def checkTrainerAvailability(cursor, start_time, end_time, trainer_email):
+    # check to see trainer is available
+    start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
+    end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
+
+    query = "SELECT start_time, end_time FROM trainer WHERE email = %s"
+    cursor.execute(query, (trainer_email, ))
+    result = cursor.fetchall()
+
+    trainer_start_time = result[0][0]
+    trainer_end_time = result[0][1]
+
+    if (start_time_to_datetime <= trainer_start_time) or (end_time_to_datetime >= trainer_end_time):
+        print("No no no can't book a class here")
+        return False
+    else:
+        return True
 
 # returns true if booking was successful
 def roomBooking(connection, room_id, attendees, start_time, end_time):
@@ -232,22 +297,7 @@ def roomBooking(connection, room_id, attendees, start_time, end_time):
 def classScheduling(connection, room_used, trainer_email, start_time, end_time, type_session, class_type):
     cursor = connection.cursor()
     try:
-        # check to see trainer is available
-        start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
-        end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
-
-        query = "SELECT start_time, end_time FROM trainer WHERE email = %s"
-        cursor.execute(query, (trainer_email, ))
-        result = cursor.fetchall()
-
-        trainer_start_time = result[0][0]
-        trainer_end_time = result[0][1]
-
-        if (start_time_to_datetime <= trainer_start_time) or (end_time_to_datetime >= trainer_end_time):
-            print("No no no can't book a class here")
-            return False
-
-        if findOverlaps(cursor, room_used, start_time, end_time) == False:
+        if (findOverlaps(cursor, room_used, start_time, end_time) == False) and (checkTrainerAvailability(cursor, start_time, end_time, trainer_email) == True):
             # if no overlaps, we can add the booking
             query = "INSERT INTO schedule (room_used, trainer_email, start_time, end_time, type_session, class_type) VALUES (%s, %s, %s, %s, %s, %s);"
             cursor.execute(query, (room_used, trainer_email, start_time, end_time, type_session, class_type))
@@ -301,8 +351,9 @@ def main():
     #roomBooking(connection, 1, 15, '8:00:00', '9:00:00')
     #classScheduling(connection, 1, 'SandyCheeks@gmail.com', '9:00:00', '10:00:00', 'group', 'cardio')
     #joinClass(connection, 6, 'plankton@chumbucket.org')
-    print(printAvailableClasses(connection))
+    #print(printAvailableClasses(connection))
     #print(printMembersClasses(connection, 'plankton@chumbucket.org'))
     #cancelClass(connection, 1, 'spongebob@squarepants.com')
     #addEquipment(connection, 'skipping rope', 4)
-#main()
+    rescheduleClass(connection, 1, "7:00:00", "8:00:00")
+main()

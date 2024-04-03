@@ -80,7 +80,7 @@ layout= html.Div(
    
     [Output('confirmRegister','displayed'),
      Output('warning','displayed'),
-    Output('url','pathname')],
+    Output('url','pathname',allow_duplicate= True)],
    [Input('registerButton','n_clicks')],
    [State('emailInput','value'),
     State('passwordInput','value'),
@@ -101,4 +101,16 @@ def registerMember(n_clicks,email,password,firstName,age,gender,height,weight,ta
                 return True,False,'/'
         else:
             return False,True,'signup'
-        
+
+@callback(
+    Output('url','pathname',allow_duplicate=True),
+    Input('signUpReturnButton','n_clicks'),
+    prevent_initial_call = True
+)   
+
+def backToMain(n_clicks):
+    if n_clicks:
+        return '/'
+    else:
+        return dash.no_update
+

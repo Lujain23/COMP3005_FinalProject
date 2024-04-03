@@ -12,8 +12,17 @@ def rescheduleClass():
 def cancelClass():
 '''
 
-
 rowStyle = {'fontSize':'20px','textAlign': 'center', 'width':'200px','height':'100px'}
+dataStyle = {'fontSize':'18px', 'color': 'blue'}
+boxStyle = {
+    'width': '30%',
+    'padding': '20px',
+    'border': '2px solid #a2d2ff',
+    'border-radius': '10px',
+    'margin': '10px',
+    'box-shadow': '0px 0px 10px 0px rgba(0,0,0,0.1)',
+}
+
 #layout for the main buttons
 mainLayout = html.Div(
     id = 'welcomeLayout',
@@ -43,9 +52,7 @@ mainLayout = html.Div(
 ])
 
 #layout for "join class"
-dataStyle = {'fontSize':'18px', 'color': 'blue'}
 def joinClassLayout(data):
-    print(data)
     tableRows =[]
 
     for currClass in data:
@@ -84,7 +91,7 @@ def joinClassLayout(data):
                     ),
                 ],
                 style={'textAlign': 'center'}  
-        ),  # End of second div
+        ),  #first div
         html.Div(
         id='classToJoinContainer',
         children=[
@@ -103,6 +110,7 @@ def joinClassLayout(data):
     ])
     return joinClassLayout
 
+#layout for cancel class
 def cancelClassLayout(data):
     print(data)
     tableRows =[]
@@ -161,15 +169,8 @@ def cancelClassLayout(data):
         
     ])
     return joinClassLayout
+
 #layout for printDashboard
-boxStyle = {
-    'width': '30%',
-    'padding': '20px',
-    'border': '2px solid #a2d2ff',
-    'border-radius': '10px',
-    'margin': '10px',
-    'box-shadow': '0px 0px 10px 0px rgba(0,0,0,0.1)',
-}
 def generatePrintDashboardLayout(exercise_routine, height, weight, target_weight, BMI, isOverweight, weightChange, achievement):
     if(isOverweight):
         overweightSentence = "You are overweight."
@@ -214,8 +215,6 @@ def generatePrintDashboardLayout(exercise_routine, height, weight, target_weight
         
     return printDashboardLayout
 
-#layout for cancel class
-
 #layout for updateMemberInfo
 def generateLayout(values):
     textFieldStyle ={'width': '100%', 'height': '30px'}
@@ -224,7 +223,7 @@ def generateLayout(values):
     children=[
         dcc.Location(id = 'url',refresh=False),
         html.Div([
-            html.H1("User Registration Form"),
+            html.H1("Update Personal Information"),
             html.Table([
                 html.Tr([
                     html.Td(html.Label("Email")),
@@ -268,7 +267,7 @@ def generateLayout(values):
                 ])
                                 
             ], style={'margin-bottom': '10px', 'width': '100%'})
-        ], style={'width': '50%'}),
+        ], style={'width': '100%'}),
         dcc.ConfirmDialog(
         id='confirmUpdate',
         message='Update Successful! Will go back to Main Menu.',
@@ -276,5 +275,69 @@ def generateLayout(values):
     ]
 )
     return  layout
+
+#layout for resechdule class - gotta make sure data only has the solo classes
+def generateRescheduleClassLayout(data):
+    tableRows =[]
+
+    for currClass in data:
+        schedule_id, room_used, trainer_email, start_time, end_time, session_type, class_type = currClass
+        currRow = html.Tr([html.Td(schedule_id,style=dataStyle), 
+                               html.Td(room_used,style=dataStyle), 
+                               html.Td(trainer_email,style=dataStyle), 
+                               html.Td(start_time,style=dataStyle),
+                                html.Td(end_time,style=dataStyle), 
+                                 html.Td(session_type,style=dataStyle),
+                                   html.Td(class_type,style=dataStyle)])
+        tableRows.append(currRow)
+
+    columnStyle = {'fontSize':'20px','padding': '15px'}
+    rescheduleClassLayout = html.Div(
+        id='page-content',
+        children=[
+            html.Div(
+                id='tableContainer',
+                children=[
+                    html.Label('Solo Classes to Reschedule: ', style={'fontSize': '30px'}),
+                    html.Table([
+                        html.Thead(html.Tr([
+                            html.Th('Schedule ID', style=columnStyle),  
+                            html.Th('Room Used', style=columnStyle),
+                            html.Th('Trainer Email', style=columnStyle),
+                            html.Th('Start Time', style=columnStyle),
+                            html.Th('End Time', style=columnStyle),
+                            html.Th('Session type', style=columnStyle),
+                            html.Th('Class Type', style=columnStyle)
+                        ])),
+                        html.Tbody(id='classTableBody',children=tableRows),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                ],
+                style={'textAlign': 'center'}  
+            ),  #first div
+            html.Div([
+                html.Div([
+                    html.Label('Schedule ID:'),
+                    dcc.Input(id='scheduleIdInput', type='text', placeholder='Enter schedule ID')
+                ]),
+                html.Div([
+                    html.Label('Start Time:'),
+                    dcc.Input(id='startInput', type='text', placeholder='Enter start time HH:MM::SS')
+                ]),
+                html.Div([
+                    html.Label('End Time:'),
+                    dcc.Input(id='endInput', type='text', placeholder='Enter end time HH:MM:SS')
+                ]),
+            ]), #second div
+            dcc.ConfirmDialog(
+            id='rescheduleSuccessful',
+            message='Reschedule Class was successful. Will return back to main menu.',
+            ),    
+    
+    ]#children ends
+    )
+    return rescheduleClassLayout
 
 

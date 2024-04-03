@@ -95,6 +95,19 @@ def validateUser(n_clicks,username,password,memberType):
             else:
                 return dash.no_update,"Incorrect. Please try again." ,'/login'
 
+@callback(
+    Output('url','pathname',allow_duplicate=True),
+    Input('logInReturnButton','n_clicks'),
+    prevent_initial_call = True
+)   
+
+def backToMain(n_clicks):
+    if n_clicks:
+        return '/'
+    else:
+        return dash.no_update
+    
+
 ''' MEMBER VIEW'''
 #functions for the buttons for MEMBER
             
@@ -143,7 +156,6 @@ def joinClass(n_clicks,scheduleID):
 )
 def cancel_class(n_clicks):
     if n_clicks:
-        print("CANCEL: ",handler.printMembersClass(globalUsername))
         return member.cancelClassLayout(handler.printMembersClass(globalUsername))
     else:
         return dash.no_update
@@ -224,7 +236,17 @@ def printDashboard(n_clicks):
         exercise_routine, height, weight, target_weight, BMI, isOverweight, weightChange, achievement = handler.printDashboard(globalUsername)
         return member.generatePrintDashboardLayout(exercise_routine, height, weight, target_weight, BMI, isOverweight, weightChange, achievement)
         
-
+#to generate the reschedule template
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('rescheduleClassButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def reschedule_class(n_clicks):
+    if n_clicks:
+        return member.generateRescheduleClassLayout(handler.printMembersClass(globalUsername))
+    else:
+        return dash.no_update
 #the return "go back" to the main page button  
 @callback(
     Output('page-content', 'children', allow_duplicate=True),

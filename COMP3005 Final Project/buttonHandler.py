@@ -62,5 +62,14 @@ def getMember(firstName):
 
 def setAvailability(email,start_time,end_time):
     con = function.connectToDatabase()
-    function.setAvailability(con, email, start_time, end_time)
-    return True
+    return function.setAvailability(con, email, start_time, end_time)
+
+
+'''STAFF'''
+def printAllClasses():
+    con = function.connectToDatabase()
+    return function.printAllClasses(con)
+
+def staffAddClass(room_used, trainer_email, start_time, end_time, type_session, class_type):
+    con = function.connectToDatabase()
+    return function.classScheduling(con, room_used, trainer_email, start_time, end_time, type_session, class_type)

@@ -338,18 +338,6 @@ def getMember(n_clicks):
         return trainer.updateAvailabilityLayout
     else:
         return dash.no_update
-
-#the return "go back" to the main page button  
-@callback(
-    Output('page-content', 'children', allow_duplicate=True),
-    Input('trainerReturnButton', 'n_clicks'),
-    prevent_initial_call=True
-)
-def printDashboard(n_clicks):
-    if n_clicks:
-        return trainer.mainLayout
-    else:
-        return dash.no_update
     
 #function that deals with "submit being clicked"
 @callback(
@@ -378,5 +366,132 @@ def changeAvailability(n_clicks,newStart,newEnd):
 
     else:
         return False,dash.no_update
+
+#the return "go back" to the main page button  
+@callback(
+    Output('page-content', 'children', allow_duplicate=True),
+    Input('trainerReturnButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def printDashboard(n_clicks):
+    if n_clicks:
+        return trainer.mainLayout
+    else:
+        return dash.no_update
     
 '''STAFF VIEW'''
+
+#generate an add class layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('addClassButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def addClass(n_clicks):
+    if n_clicks:
+        return staff.generateAddClassLayout(handler.printAllClasses())
+    else:
+        return dash.no_update
+#add class functionality
+@callback(
+    Output('staffAddClassSuccessful', 'displayed',allow_duplicate=True),
+    Output('page-content', 'children', allow_duplicate=True),
+    Output('staffAddClassOutcome', 'children', allow_duplicate=True),
+    Input('submitStaffAddClassButton', 'n_clicks'),
+    State('roomUsedInput','value'),
+    State('trainerInput','value'),
+    State('startInput','value'),
+    State('endInput','value'),
+    State('sessionTypeInput','value'),
+    State('description','value'),
+
+    prevent_initial_call=True
+)
+def add_class(n_clicks,roomUsed,trainerEmail,start_time,end_time,type_session,class_type):
+    if n_clicks:
+        #both filled
+        if(roomUsed and trainerEmail and start_time and end_time and type_session and class_type):
+            #change is good
+            if(handler.staffAddClass(roomUsed,trainerEmail,start_time,end_time,type_session,class_type)):
+                return True,staff.mainLayout,dash.no_update
+            else:
+                #cant change
+                return False,dash.no_update,'Class Conflicts. Please Try again.'
+        else:
+            #not filled
+            return False,dash.no_update
+
+    else:
+        return False,dash.no_update
+    
+#generate a remove class layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('removeClassButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def removeClass(n_clicks):
+    if n_clicks:
+        return staff.generateRemoveClassLayout(handler.printAllClasses())
+    else:
+        return dash.no_update
+    
+#generate a modify class layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('modifyClassButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def modifyClass(n_clicks):
+    if n_clicks:
+        return staff.generateModifyClassLayout(handler.printAllClasses())
+    else:
+        return dash.no_update
+
+#generate a print maintence layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('printMaintenanceButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def printMaintenance(n_clicks):
+    if n_clicks:
+        return #come back
+    else:
+        return dash.no_update
+
+#generate a update equipment check layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('updateMaintenanceButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def updateMaintenance(n_clicks):
+    if n_clicks:
+        return staff.generateUpdateEquipmentLayout()
+    else:
+        return dash.no_update   
+
+#generate a add equipment layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('addEquipmentButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def updateMaintenance(n_clicks):
+    if n_clicks:
+        return staff.generateAddEquipmentLayout()
+    else:
+        return dash.no_update 
+    
+#the return "go back" to the main page button  
+@callback(
+    Output('page-content', 'children', allow_duplicate=True),
+    Input('staffReturnButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def staffReturn(n_clicks):
+    if n_clicks:
+        return staff.mainLayout
+    else:
+        return dash.no_update

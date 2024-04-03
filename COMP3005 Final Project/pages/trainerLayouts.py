@@ -59,9 +59,16 @@ getMemberLayout = html.Div([
                 ),
             ],
             style={'textAlign': 'center'}  
-    ),  # End of second div
-    html.Button('Go Back', id='trainerReturnButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
-
+        ),
+        html.Br(),
+        html.Br(),
+        html.Div(
+            children=[
+                html.Button('Go Back', id='trainerReturnButton',style={'textAlign': 'center','width': '20%', 'height': '50px','fontSize':'16px'})
+            ],
+            style = {'display': 'flex', 'justify-content': 'center'}
+        )#end of button div
+       
 ])
 
 updateAvailabilityLayout = html.Div(

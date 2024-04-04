@@ -17,7 +17,7 @@ def connectToDatabase():
                                     user = "postgres",
                                     port = "5432")
         
-        print("Connected to Database!")
+        #print("Connected to Database!")
 
 
         #make it return the connection? still thinking of how it would be used.
@@ -418,6 +418,15 @@ def printAllClasses(connection):
     except psycopg2.DatabaseError as e:
         return("Error cancelling room booking!", False)
 
+def printAllRoomBooking(connection):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT * FROM eventInfo"
+        cursor.execute(query)
+        return(cursor.fetchall())
+    
+    except psycopg2.DatabaseError as e:
+        return("Error cancelling room booking!", False)
 
 def staffCancelRoomBooking(connection, event_id):
     cursor = connection.cursor()

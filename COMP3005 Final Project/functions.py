@@ -6,8 +6,8 @@ import math
 def connectToDatabase():
     try:
         #would change depending on the user
-        password = "admin" #trista
-        #password = "comp3005" #lujain
+        #password = "admin" #trista
+        password = "comp3005" #lujain
         database = "GymManagementSystem"
 
         connection = psycopg2.connect( database = database,
@@ -609,5 +609,5 @@ def main():
     #changePaymentStatus(connection, 2, "PENDING")
     #print(printMaintenence(connection))
     #print(trainerViewClasses(connection, "LarryLobster@gmail.com"))
-    print(viewNotifications(connection, "LarryLobster@gmail.com"))
-main()
+    #print(viewNotifications(connection, "LarryLobster@gmail.com"))
+#main()

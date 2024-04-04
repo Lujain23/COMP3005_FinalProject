@@ -27,36 +27,42 @@ textFieldStyle2 = {'width': '70%', 'height': '30px'}
 columnStyle = {'fontSize':'20px','padding': '15px'}
 
 #layout for the main buttons
-mainLayout = html.Div(
-    id = 'welcomeLayout',
-    children=[
-    
-    html.Div(
-        id = 'buttonsTable',
+def mainLayout(name):
+    mainLayout = html.Div(
+        id = 'welcomeLayout',
         children=[
-        html.H1('Hello Member!'),
-        html.H1('Welcome to the Health and Fitness Club!'),
-        html.Table([
-            html.Tr([
-                html.Td(html.Button('Update Personal Information', id='updateInfoButton', n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Join Class',id='joinClassButton',n_clicks=0, style=rowStyle))
-            ]),
-            html.Tr([
-                html.Td(html.Button('Print Dashboard',id='printDashboardButton',n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Reschedule Class',id='rescheduleClassButton',n_clicks=0, style=rowStyle)),
+        
+        html.Div(
+            id = 'buttonsTable',
+            children=[
+            html.H1([
+                html.Span('Hello Member ',style={'color':'black'}),
+                html.Span(name,style={'color':'#a2d2ff'}),
+                html.Span('!',style={'color':'black'}),
+            ]),#heading done
+            html.H1('Welcome to the Health and Fitness Club!'),
+            html.Table([
+                html.Tr([
+                    html.Td(html.Button('Update Personal Information', id='updateInfoButton', n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('Join Class',id='joinClassButton',n_clicks=0, style=rowStyle))
+                ]),
+                html.Tr([
+                    html.Td(html.Button('Print Dashboard',id='printDashboardButton',n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('Reschedule Class',id='rescheduleClassButton',n_clicks=0, style=rowStyle)),
 
-            ]),  
-            html.Tr([
-                html.Td(html.Button('Cancel Class',id='cancelClassButton',n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('View My Payments',id='viewPaymentButton',n_clicks=0, style=rowStyle))
-            ]),
-            html.Tr([
-                html.Td( html.Button('Go Back', id='typeMemberReturnButton', n_clicks=0, style = rowStyle),colSpan=2,style={'textAlign': 'center'})
-            ]),                           
-        ], style = {'margin':'auto'}
-        ) #end of table
-    ])#end of div
-])
+                ]),  
+                html.Tr([
+                    html.Td(html.Button('Cancel Class',id='cancelClassButton',n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('View My Payments',id='viewPaymentButton',n_clicks=0, style=rowStyle))
+                ]),
+                html.Tr([
+                    html.Td( html.Button('Go Back', id='typeMemberReturnButton', n_clicks=0, style = rowStyle),colSpan=2,style={'textAlign': 'center'})
+                ]),                           
+            ], style = {'margin':'auto'}
+            ) #end of table
+        ])#end of div
+    ])
+    return mainLayout
 
 #layout for "join class"
 def joinClassLayout(data):

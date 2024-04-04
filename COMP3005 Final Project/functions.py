@@ -27,28 +27,22 @@ def disconnectDatabase(connection):
         connection.close()
         print("Connection Closed.")
 
-
-def testingSelect(cursor):
-    cursor.execute("SELECT * from equipment_maintenence")
-    ans = cursor.fetchall()
-    
-    print(ans)
-    for row in ans:
-        print("name is: " + row[2])
-
 def validateUser(connection,username,password,memberType):
     cursor = connection.cursor()
     ans = []
     try:
         query = "SELECT * FROM {} WHERE email = %s AND passwd = %s".format(memberType)
         cursor.execute(query,(username,password))
+        queryName = "SELECT first_name FROM {} WHERE email = %s".format(memberType)
+        cursor.execute(queryName,(username,))
         ans = cursor.fetchall()
+        
         if(len(ans) == 1):
             print("exists")
-            return True
+            return True,ans[0][0]
         else:
             print("no no no")
-            return False
+            return False,''
     except psycopg2.DatabaseError as e:
         print("Error in ValidateUser!")
 
@@ -554,10 +548,9 @@ def createPayment(connection, amount, member_email, transaction_date, stat, desc
         query = "INSERT INTO payment (amount, member_email, transaction_date, stat, descript) VALUES (%s, %s, %s, %s, %s)"
         cursor.execute(query, (amount, member_email, transaction_date, stat, descript))
         connection.commit()
-        return("Payment successfully created!")
+        return True
     except psycopg2.DatabaseError as e:
-        print("Error adding equipment!") 
-    return
+        return False
 
 def changePaymentStatus(connection, payment_id, new_status):
     cursor = connection.cursor()
@@ -579,8 +572,9 @@ def main():
     connection = connectToDatabase()
     #testingSelect(cursor)
 
-    #validateUser(cursor,'Jim','Beam','students')
-    #validateUser(cursor,'hey','Beam','students')
+    validateUser(connection,'Jim','Beam','members')
+    validateUser(connection,'hey','Beam','members')
+    validateUser(connection,'spongebob@squarepants.com','KrabbyPatty@12','members')
     
     #addMember(connection, 'test', 'test', 'test', 2, 'M', 5, 2, 5, 'round')
     #updateMemberInformation(connection, 'test', 'test', 'testING', 4, 'M', '5', '2', '5', 'rotund')

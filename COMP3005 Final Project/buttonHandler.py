@@ -130,6 +130,12 @@ def printAllMaintenance():
     con =function.connectToDatabase()
     return function.printMaintenence(con)
 
+#payment styff
 def printAllPayments():
     con = function.connectToDatabase()
     return function.printAllPayments(con)
+#changing payment status is like the member one
+
+def addPayment(amount, member_email, transaction_date, stat, descript):
+    con = function.connectToDatabase()
+    return function.createPayment(con, amount, member_email, transaction_date, stat, descript)

@@ -9,31 +9,37 @@ columnStyle = {'fontSize':'20px','padding': '15px'}
 dataStyle = {'fontSize':'18px', 'color': 'blue'}
 
 #layout for the main buttons
-mainLayout = html.Div(
-    id = 'welcomeLayout',
-    children=[
-    
-    html.Div(
-        id = 'buttonsTable',
+def mainLayout(name):
+    mainLayout = html.Div(
+        id = 'welcomeLayout',
         children=[
-        html.H1('Hello Trainer!'),
-        html.H1('Welcome to the Health and Fitness Club!'),
-        html.Table([
-            html.Tr([
-                html.Td(html.Button('Update Availability', id='updateAvailabilityButton', n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Search Member',id='getMemberButton',n_clicks=0, style=rowStyle))
-            ]),
-            html.Tr([
-                html.Td(html.Button('View My Classes', id='viewTrainerClassButton', n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('View Notifications', id='viewNotificationButton', n_clicks=0, style=rowStyle))
-            ]),
-            html.Tr([
-                html.Td( html.Button('Go Back', id='typeMemberReturnButton', n_clicks=0, style = rowStyle),colSpan=2,style={'textAlign': 'center'})
-            ]),                                    
-        ], style = {'margin':'auto'}
-        ), #end of table
-    ])#end of div
-])
+        
+        html.Div(
+            id = 'buttonsTable',
+            children=[
+            html.H1([
+                html.Span('Hello Trainer ',style={'color':'black'}),
+                html.Span(name,style={'color':'#a2d2ff'}),
+                html.Span('!',style={'color':'black'}),
+            ]),#heading done
+            html.H1('Welcome to the Health and Fitness Club!'),
+            html.Table([
+                html.Tr([
+                    html.Td(html.Button('Update Availability', id='updateAvailabilityButton', n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('Search Member',id='getMemberButton',n_clicks=0, style=rowStyle))
+                ]),
+                html.Tr([
+                    html.Td(html.Button('View My Classes', id='viewTrainerClassButton', n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('View Notifications', id='viewNotificationButton', n_clicks=0, style=rowStyle))
+                ]),
+                html.Tr([
+                    html.Td( html.Button('Go Back', id='typeMemberReturnButton', n_clicks=0, style = rowStyle),colSpan=2,style={'textAlign': 'center'})
+                ]),                                    
+            ], style = {'margin':'auto'}
+            ), #end of table
+        ])#end of div
+    ])
+    return mainLayout
 
 getMemberLayout = html.Div([
         html.Div(

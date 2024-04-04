@@ -1,48 +1,55 @@
 from dash import  html,dcc
 
-rowStyle = {'fontSize':'20px','textAlign': 'center', 'width':'200px','height':'100px'}
+rowStyle = {'fontSize':'15px','textAlign': 'center', 'width':'180px','height':'80px'}
 dataStyle = {'fontSize':'18px', 'color': 'blue'}
 textFieldStyle2 = {'width': '70%', 'height': '30px'}
 columnStyle = {'fontSize':'20px','padding': '15px'}
 textFieldStyle ={'width': '100%', 'height': '30px'}
 
 #layout for the main buttons
-mainLayout = html.Div(
-    id = 'welcomeLayout',
-    children=[
-    
-    html.Div(
-        id = 'buttonsTable',
+def mainLayout(name):
+    mainLayout = html.Div(
+        id = 'welcomeLayout',
         children=[
-        html.H1('Hello Staff!'),
-        html.H1('Welcome to the Health and Fitness Club!'),
-        html.Table([
-            html.Tr([
-                html.Td(html.Button('Add Class', id='addClassButton', n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Remove Class',id='removeClassButton',n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Modify Class', id='modifyClassButton', n_clicks=0, style=rowStyle))
-            ]), 
-            html.Tr([
-                html.Td(html.Button('Add Room Booking', id='addRoomBookingButton', n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Remove Room Booking',id='removeRoomBookingButton',n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Modify Room Booking', id='modifyRoomBookingButton', n_clicks=0, style=rowStyle))
-            ]),               
-            html.Tr([
-                html.Td(html.Button('Print Maintenance',id='printMaintenanceButton',n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Add Equipment Check', id='addEquipmentButton', n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Update Maintenance Check',id='updateMaintenanceButton',n_clicks=0, style=rowStyle))
-            ]),   
-            html.Tr([
-                html.Td(html.Button('Update A Member Payment', id='updatePaymentButton', n_clicks=0, style=rowStyle)),
-                html.Td(html.Button('Print History Of Payments', id='printReceiptButton', n_clicks=0, style=rowStyle)),
-                html.Td( html.Button('Go Back To Log In Page', id='typeMemberReturnButton', n_clicks=0, style = rowStyle))
-
-            ]),   
-                
-        ], style = {'margin':'auto'}
-        ) #end of table
-    ])#end of div
-])
+        
+        html.Div(
+            id = 'buttonsTable',
+            children=[
+            html.H1([
+                html.Span('Hello Staff ',style={'color':'black'}),
+                html.Span(name,style={'color':'#a2d2ff'}),
+                html.Span('!',style={'color':'black'}),
+            ]),#heading done
+            html.H1('Welcome to the Health and Fitness Club!'),
+            html.Table([
+                html.Tr([
+                    html.Td(html.Button('Add Class', id='addClassButton', n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('Remove Class',id='removeClassButton',n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('Modify Class', id='modifyClassButton', n_clicks=0, style=rowStyle))
+                ]), 
+                html.Tr([
+                    html.Td(html.Button('Add Room Booking', id='addRoomBookingButton', n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('Remove Room Booking',id='removeRoomBookingButton',n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('Modify Room Booking', id='modifyRoomBookingButton', n_clicks=0, style=rowStyle))
+                ]),               
+                html.Tr([
+                    html.Td(html.Button('Print Maintenance',id='printMaintenanceButton',n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('Add Equipment Check', id='addEquipmentButton', n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('Update Maintenance Check',id='updateMaintenanceButton',n_clicks=0, style=rowStyle))
+                ]),   
+                html.Tr([
+                    html.Td(html.Button('Print History Of Payments', id='printReceiptButton', n_clicks=0, style=rowStyle)),
+                    html.Td( html.Button('Add a new Payment', id='addNewPaymentButton', n_clicks=0, style = rowStyle)),
+                    html.Td(html.Button('Update A Member Payment', id='updatePaymentButton', n_clicks=0, style=rowStyle)),
+                ]),   
+                html.Tr([
+                    html.Td( html.Button('Go Back To Log In Page', id='typeMemberReturnButton', n_clicks=0, style = rowStyle),colSpan=3,style={'textAlign': 'center'})
+                ]),                
+            ], style = {'margin':'auto'}
+            ) #end of table
+        ])#end of div
+    ])
+    return mainLayout
 
 def generateRemoveClassLayout(data):
     tableRows =[]
@@ -821,4 +828,48 @@ def generateUpdatePayment(data):
                 style={'textAlign': 'center'}  
             ),  #div end
 
+    return layout
+
+
+def generateAddPaymentLayout():
+    layout = html.Div(
+        id = 'page-content',
+        children = [
+            html.H1("Add A New Payment:",style={'fontSize': '30px'}),
+                    html.Table([
+                            html.Tr([
+                                html.Td(html.Label('Amount ($):',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='amountInput', type='text',style=textFieldStyle2))
+                            ]),
+                            html.Tr([
+                                html.Td(html.Label('Member Email:',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='memberInput', type='text',style=textFieldStyle2))
+                            ]),                            
+                            html.Tr([
+                                html.Td(html.Label('Transaction Date (YYYY-MM-DD): ',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='dateInput', type='text',style=textFieldStyle2)),
+                            ]),  
+
+                            html.Tr([
+                                html.Td(html.Label('Description of payment: ',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='descriptionInput', type = 'text', style=textFieldStyle2))
+                            ]),    
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Submit', id='submitStaffAddPaymentButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})), 
+                            ]),
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Go Back', id='staffReturnButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})),                                 
+                            ])  
+                    ]),
+                    html.Div(id='staffAddPaymentOutcome'),
+                    dcc.ConfirmDialog(
+                    id='staffAddPaymentSuccessful',
+                    message='Adding of payment was successful. Will return back to main menu.',
+                    ),
+
+            ],style={'margin-bottom': '10px', 'width': '100%','display': 'flex', 'justify-content': 'center','flex-direction':'column','align-items': 'center'},
+    ) #main div
+ 
     return layout

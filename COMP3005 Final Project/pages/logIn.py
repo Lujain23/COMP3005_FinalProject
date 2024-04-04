@@ -6,6 +6,7 @@ dash.register_page(__name__)
 
 globalUsername  = ''
 globalType = ''
+globalFirstName = ''
 
 
 import pages.memberLayouts as member
@@ -20,42 +21,42 @@ center={'display': 'flex', 'justify-content': 'center', 'align-items': 'center',
 
 #layout for user log in
 layout = html.Div(
-    id='page-content',
-     children=[
-          dcc.Location(id='url',refresh=False),
-          html.Div(
-                style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center', 'height': '100vh'},
-                
-                children=[
-                    html.Div([
-                        html.H1("Log In Page",style={'fontSize':'50px'}),
-                        dcc.Input(id='usernameInput', type='text', placeholder='Enter username',style=textFieldStyle),
-                        html.Br(),
-                        html.Br(),
-                        dcc.Input(id='passwordInput', type='password', placeholder='Enter password',style=textFieldStyle),
-                        html.Br(),
-                        html.Br(),
-                        dcc.Dropdown(
-                            id='memberType',
-                            options=[
-                                {'label': 'Member', 'value': 'members'},
-                                {'label': 'Trainer', 'value': 'trainer'},
-                                {'label': 'Staff', 'value': 'admin_staff'}
-                            ],
-                            style=textFieldStyle
+        id='page-content',
+        children=[
+            dcc.Location(id='url',refresh=False),
+            html.Div(
+                    style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center', 'height': '100vh'},
+                    
+                    children=[
+                        html.Div([
+                            html.H1("Log In Page",style={'fontSize':'50px'}),
+                            dcc.Input(id='usernameInput', type='text', placeholder='Enter username',style=textFieldStyle),
+                            html.Br(),
+                            html.Br(),
+                            dcc.Input(id='passwordInput', type='password', placeholder='Enter password',style=textFieldStyle),
+                            html.Br(),
+                            html.Br(),
+                            dcc.Dropdown(
+                                id='memberType',
+                                options=[
+                                    {'label': 'Member', 'value': 'members'},
+                                    {'label': 'Trainer', 'value': 'trainer'},
+                                    {'label': 'Staff', 'value': 'admin_staff'}
+                                ],
+                                style=textFieldStyle
 
-                        ),
-                        html.Br(),
-                        html.Br(),
-                        html.Button('Submit', id='logInSubmitButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
-                        html.Br(),
-                        html.Br(),
-                        html.Button('Go Back', id='logInReturnButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
-                        html.Div(id="failed")
-                    ])
-                ]  
-          )
-     ]
+                            ),
+                            html.Br(),
+                            html.Br(),
+                            html.Button('Submit', id='logInSubmitButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
+                            html.Br(),
+                            html.Br(),
+                            html.Button('Go Back', id='logInReturnButton',style={'textAlign': 'center','width': '100%', 'height': '50px','fontSize':'24px'}),
+                            html.Div(id="failed")
+                        ])
+                    ]  
+            )
+        ]
 
 )
 
@@ -75,23 +76,25 @@ layout = html.Div(
 def validateUser(n_clicks,username,password,memberType):
     #if we're in the login page
         if n_clicks:
-            global globalUsername, globalType
+            global globalUsername, globalType,globalFirstName
             globalUsername = username
             globalType = memberType
 
+
             #now to validate if it exits
             #need to create like a statement thing of whcih "welcome" it opens to  TO DO
-            if (handler.validateUser(username,password,memberType)):
+            outcome,globalFirstName = handler.validateUser(username,password,memberType)
+            if (outcome):
                 
                 if(memberType == 'members'):
                     new_url = 'members'
-                    return member.mainLayout,dash.no_update,new_url
+                    return member.mainLayout(globalFirstName),dash.no_update,new_url
                 elif (memberType == 'trainer'):
                     new_url = 'trainer'
-                    return trainer.mainLayout,dash.no_update,new_url
+                    return trainer.mainLayout(globalFirstName),dash.no_update,new_url
                 elif(memberType == 'admin_staff'):
                     new_url = 'admin'
-                    return staff.mainLayout,dash.no_update,new_url
+                    return staff.mainLayout(globalFirstName),dash.no_update,new_url
                                 
                 
                 #not validated
@@ -154,7 +157,7 @@ def joinClass(n_clicks,scheduleID):
         print(scheduleID)
         if(scheduleID):
             handler.joinClass(scheduleID,globalUsername)
-            return True,member.mainLayout
+            return True,member.mainLayout(globalFirstName)
         else:
             False,dash.no_update
     else:
@@ -188,7 +191,7 @@ def cancelClass(n_clicks,scheduleID):
     if (n_clicks):
         if(scheduleID):
             handler.cancelClass(scheduleID,globalUsername)
-            return True,member.mainLayout
+            return True,member.mainLayout(globalFirstName)
         else:
             False,dash.no_update
     else:
@@ -234,7 +237,7 @@ def update_information_done(n_clicks,email,password,firstName,age,gender,height,
     if n_clicks:
         #will have to call the function that updates the values //SQL
         handler.updateMember(email,password,firstName,age,gender,height,weight,target,exceriseRoutine)
-        return True,member.mainLayout 
+        return True,member.mainLayout(globalFirstName)
     else:
         return False,dash.no_update    
 
@@ -278,7 +281,7 @@ def reschedule_class(n_clicks,scheduleID,newStart,newEnd):
         if(scheduleID and newStart and newEnd):
             if(handler.rescheduleClass(scheduleID,newStart,newEnd)):
                 #successful reschedule
-                return True,dash.no_update,member.mainLayout
+                return True,dash.no_update,member.mainLayout(globalFirstName)
             else:
                 #failed reschedule
                 return False,'Reschdule Failed. There is an overlap. Please Try again.',dash.no_update
@@ -315,7 +318,7 @@ def payReceipt(n_clicks,receiptToPay):
     if n_clicks:
         if(receiptToPay):
             if(handler.changePaymentStatus(receiptToPay,'COMPLETED')):
-                return True,dash.no_update,member.mainLayout
+                return True,dash.no_update,member.mainLayout(globalFirstName)
             else:
                 return False,'Error Paying Receipt. Please try again.',dash.no_update
         else:
@@ -329,7 +332,7 @@ def payReceipt(n_clicks,receiptToPay):
 )
 def printDashboard(n_clicks):
     if n_clicks:
-        return member.mainLayout
+        return member.mainLayout(globalFirstName)
     else:
         return dash.no_update
         
@@ -403,7 +406,7 @@ def changeAvailability(n_clicks,newStart,newEnd):
         if(newStart and newEnd):
             #change is good
             if(handler.setAvailability(globalUsername,newStart,newEnd)):
-                return True,trainer.mainLayout,dash.no_update
+                return True,trainer.mainLayout(globalFirstName),dash.no_update
             else:
                 #cant change
                 return False,dash.no_update,'New Availabilty conflicts with current classes.'
@@ -444,7 +447,7 @@ def trainerViewClass(n_clicks):
 def deleteNotifications(n_clicks):
     if n_clicks:
         if(handler.deleteNotifications(globalUsername)):
-            return True,trainer.mainLayout
+            return True,trainer.mainLayout(globalFirstName)
         else:
             return False,dash.no_update
     else:
@@ -458,7 +461,7 @@ def deleteNotifications(n_clicks):
 )
 def trainerGoBack(n_clicks):
     if n_clicks:
-        return trainer.mainLayout
+        return trainer.mainLayout(globalFirstName)
     else:
         return dash.no_update
     
@@ -496,7 +499,7 @@ def add_class(n_clicks,roomUsed,trainerEmail,start_time,end_time,type_session,cl
         if(roomUsed and trainerEmail and start_time and end_time and type_session and class_type):
             #change is good
             if(handler.staffAddClass(roomUsed,trainerEmail,start_time,end_time,type_session,class_type)):
-                return True,staff.mainLayout,dash.no_update
+                return True,staff.mainLayout(globalFirstName),dash.no_update
             else:
                 #cant change
                 return False,dash.no_update,'Class Conflicts. Please Try again.'
@@ -530,7 +533,7 @@ def remove_class(n_clicks,scheduleID):
     if n_clicks:
         if(scheduleID):
             handler.staffRemoveClass(scheduleID)
-            return True,staff.mainLayout
+            return True,staff.mainLayout(globalFirstName)
     
     else:
         return False,dash.no_update
@@ -564,7 +567,7 @@ def modify_class(n_clicks,scheduleID,newStart,newEnd):
         if(scheduleID and newStart and newEnd):
             if(handler.rescheduleClass(scheduleID,newStart,newEnd)):
                 #successful reschedule
-                return True,dash.no_update,staff.mainLayout
+                return True,dash.no_update,staff.mainLayout(globalFirstName)
             else:
                 #failed reschedule
                 return False,'Reschdule Failed. There is an overlap. Please Try again.',dash.no_update
@@ -614,7 +617,7 @@ def update_equipment(n_clicks,equipmentName):
         if(equipmentName):
             if(handler.updateEquipment(equipmentName)):
                 #successful update
-                return True,dash.no_update,staff.mainLayout
+                return True,dash.no_update,staff.mainLayout(globalFirstName)
             else:
                 #failed update
                 return False,'Error Updating equipment!',dash.no_update
@@ -656,7 +659,7 @@ def add_equipment(n_clicks,equipmentName,inRoom):
         if(equipmentName and inRoom):
             if(handler.addEquipment(equipmentName,inRoom)):
                 #successful adding
-                return True,staff.mainLayout
+                return True,staff.mainLayout(globalFirstName)
             else:
                 #failed adding
                 return False,dash.no_update
@@ -701,7 +704,7 @@ def add_roomBooking(n_clicks,roomToUse,attendees,startTime,endTime):
         if(roomToUse and attendees and startTime and endTime):
             if(handler.addRoomBooking(roomToUse,attendees,startTime,endTime)):
                 #successful adding
-                return True,dash.no_update,staff.mainLayout
+                return True,dash.no_update,staff.mainLayout(globalFirstName)
             else:
                 #failed adding
                 return False,'Reschdule Failed. There is an overlap. Please Try again.',dash.no_update
@@ -742,7 +745,7 @@ def remove_roomBooking(n_clicks,eventToRemove):
         if(eventToRemove):
             if(handler.removeRoomBooking(eventToRemove)):
                 #successful adding
-                return True,dash.no_update,staff.mainLayout
+                return True,dash.no_update,staff.mainLayout(globalFirstName)
             else:
                 #failed adding
                 return False,'Remove Failed. Please Try again.',dash.no_update
@@ -784,7 +787,7 @@ def modifyRoomBooking(n_clicks,eventID,startTime,endTime):
         if(eventID and startTime and endTime):
             #all values there
             if(handler.modifyRoomBooking(eventID,startTime,endTime)):
-                return True,staff.mainLayout,dash.no_update
+                return True,staff.mainLayout(globalFirstName),dash.no_update
             else:
                 #modify failed
                 return False,dash.no_update,'Error: cannot modify room booking. Please Try again,'
@@ -834,13 +837,48 @@ def update_payment(n_clicks,payment_id,newStatus):
     if (n_clicks):
         if (payment_id and newStatus):
             if(handler.changePaymentStatus(payment_id,newStatus)):
-                return True,staff.mainLayout,dash.no_update
+                return True,staff.mainLayout(globalFirstName),dash.no_update
             else:
                 return False,dash.no_update,'Error Changing Status. Please try again.'
         
     else:
         return False,dash.no_update,dash.no_update
-    
+
+#generate an add payment layout   
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('addNewPaymentButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def addPayment(n_clicks):
+    if n_clicks:
+        return staff.generateAddPaymentLayout()
+    else:
+        dash.no_update
+
+#functionality for add payment Button
+@callback(
+        [Output('staffAddPaymentSuccessful','displayed'),
+         Output('page-content','children',allow_duplicate = True),
+        Output('staffAddPaymentOutcome','children')],
+        Input('submitStaffAddPaymentButton','n_clicks'),
+        [State('amountInput','value'),
+        State('memberInput','value'),
+        State('dateInput','value'),
+        State('descriptionInput','value')   
+        ],
+        prevent_initial_call =  True
+)
+def update_payment(n_clicks,amountID,memberEmail,date,desc):
+    if (n_clicks):
+        if (amountID and memberEmail and date and desc):
+            if(handler.addPayment(amountID,memberEmail,date,'PENDING',desc)):
+                return True,staff.mainLayout(globalFirstName),dash.no_update
+            else:
+                return False,dash.no_update,'Error Adding Payment. Please try again.'
+        
+    else:
+        return False,dash.no_update,dash.no_update    
                 
 #the return "go back" to the main page button  
 @callback(
@@ -850,6 +888,6 @@ def update_payment(n_clicks,payment_id,newStatus):
 )
 def staffReturn(n_clicks):
     if n_clicks:
-        return staff.mainLayout
+        return staff.mainLayout(globalFirstName)
     else:
         return dash.no_update

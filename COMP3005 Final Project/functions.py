@@ -9,7 +9,6 @@ def connectToDatabase():
         #password = "admin" #trista
         password = "comp3005" #lujain
         database = "GymManagementSystem"
-        #database = "COMP3005FinalProject"
 
         connection = psycopg2.connect( database = database,
                                     host = "localhost",
@@ -17,7 +16,7 @@ def connectToDatabase():
                                     user = "postgres",
                                     port = "5432")
         
-        #print("Connected to Database!")
+        print("Connected to Database!")
 
 
         #make it return the connection? still thinking of how it would be used.
@@ -316,6 +315,10 @@ def findOverlaps(cursor, room_id, start_time, end_time):
     start_time_to_datetime = datetime.strptime(start_time, '%H:%M:%S').time()
     end_time_to_datetime = datetime.strptime(end_time, '%H:%M:%S').time()
 
+    if (validTime(start_time_to_datetime, end_time_to_datetime) == False):
+        print("Error: invalid start and end times")
+        return True
+    
     # get room_id and check the schedules in eventInfo and schedule
     query = "SELECT start_time, end_time FROM eventInfo WHERE room_used = %s UNION SELECT start_time, end_time FROM schedule WHERE room_used = %s"
     cursor.execute(query, (room_id, room_id))
@@ -418,15 +421,6 @@ def printAllClasses(connection):
     except psycopg2.DatabaseError as e:
         return("Error cancelling room booking!", False)
 
-def printAllRoomBooking(connection):
-    cursor = connection.cursor()
-    try:
-        query = "SELECT * FROM eventInfo"
-        cursor.execute(query)
-        return(cursor.fetchall())
-    
-    except psycopg2.DatabaseError as e:
-        return("Error cancelling room booking!", False)
 
 def staffCancelRoomBooking(connection, event_id):
     cursor = connection.cursor()
@@ -473,12 +467,12 @@ def modifyRoomBooking(connection, event_id, start_time, end_time):
     except psycopg2.DatabaseError as e:
         return("Error modifying room booking!", False)
 
-def equipmentMaintenenceMonitoring(connection, equipment_name):
+def equipmentMaintenenceMonitoring(connection, equipment_name, room_id):
     cursor = connection.cursor()
     # Just update date in equipment
     try:
-        query = "UPDATE equipment_maintenence SET last_checked = %s WHERE equipment_name = %s"
-        cursor.execute(query, (date.today(), equipment_name))
+        query = "UPDATE equipment_maintenence SET last_checked = %s WHERE equipment_name = %s AND room_id = %s"
+        cursor.execute(query, (date.today(), equipment_name, room_id))
         connection.commit()
         return True
     except psycopg2.DatabaseError as e:
@@ -546,6 +540,12 @@ def changePaymentStatus(connection, payment_id, new_status):
     except psycopg2.DatabaseError as e:
         return(False)
     
+# Check to make sure start_time < end_time
+def validTime(start_time, end_time):
+    if start_time > end_time:
+        return False
+    return True
+    
 def main():
     connection = connectToDatabase()
     #testingSelect(cursor)
@@ -562,7 +562,7 @@ def main():
     #equipmentMaintenenceMonitoring(connection, 'Treadmill')
     #testingSelect(connection.cursor())
     #setAvailability(connection, 'LarryLobster@gmail.com', '6:00:00', '17:00:00')
-    #roomBooking(connection, 1, 15, '8:00:00', '9:00:00')
+    #roomBooking(connection, 4, 20, '8:00:00', '00:30:00')
     #classScheduling(connection, 4, 'Karen@Computer.com', '18:00:00', '18:30:00', 'solo', 'weight-lifting')
     #joinClass(connection, 6, 'plankton@chumbucket.org')
     #print(printAvailableClasses(connection))
@@ -575,7 +575,7 @@ def main():
     #staffCancelRoomBooking(connection, 3)
     #modifyRoomBooking(connection, 4, "8:00:00", "9:00:00")
     #print(printAllClasses(connection))
-    print(printMemberPayments(connection, "Fred@yahoo.ca"))
+    #print(printMemberPayments(connection, "Fred@yahoo.ca"))
     #createPayment(connection, 70.99, "plankton@chumbucket.org", "2024-04-01", "COMPLETED", "Solo training fee")
     #changePaymentStatus(connection, 2, "PENDING")
     #print(printMaintenence(connection))

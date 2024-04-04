@@ -17,10 +17,13 @@ CREATE TABLE trainer(
 	passwd VARCHAR(15) NOT NULL,
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
-	notification TEXT,
 	primary key(email)
 );
 
+CREATE TABLE trainerNotifications(
+	trainer_email VARCHAR(255) NOT NULL,
+	notification TEXT
+);
 --for events
 CREATE TABLE eventInfo(
 	event_id SERIAL NOT NULL,

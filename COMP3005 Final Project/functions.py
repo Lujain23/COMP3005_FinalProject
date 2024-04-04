@@ -291,7 +291,8 @@ def getMember(connection, first_name):
         result = cursor.fetchall()
         return result
     except psycopg2.DatabaseError as e:
-        return("Error getting member!", False)
+        print("Error getting member!")
+        return[]
     
 def trainerViewClasses(connection, trainer_email):
     cursor = connection.cursor()
@@ -301,8 +302,30 @@ def trainerViewClasses(connection, trainer_email):
         result = cursor.fetchall()
         return result
     except psycopg2.DatabaseError as e:
-        return("Error getting trainer's classes!", False)
+        print("Error getting trainer's classes!")
+        return[]
     
+def getNotifications(connection, trainer_email):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT notification FROM trainerNotifications WHERE trainer_email = %s"
+        cursor.execute(query, (trainer_email,))
+        result = cursor.fetchall()
+        return result
+    except psycopg2.DatabaseError as e:
+        print("Error getting trainer's notifications!")
+        return
+    
+def viewNotifications(connection, trainer_email):
+    cursor = connection.cursor()
+    try:
+        query = "DELETE FROM trainerNotifications WHERE trainer_email = %s"
+        cursor.execute(query, (trainer_email,))
+        connection.commit()
+        return True
+    except psycopg2.DatabaseError as e:
+        print("Error viewing trainer's notifications!")
+        return False
 
 #staff functions
 # helper function
@@ -586,4 +609,5 @@ def main():
     #changePaymentStatus(connection, 2, "PENDING")
     #print(printMaintenence(connection))
     #print(trainerViewClasses(connection, "LarryLobster@gmail.com"))
-#main()
+    print(viewNotifications(connection, "LarryLobster@gmail.com"))
+main()

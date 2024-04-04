@@ -21,7 +21,10 @@ mainLayout = html.Div(
             html.Tr([
                 html.Td(html.Button('Update Availability', id='updateAvailabilityButton', n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Search Member',id='getMemberButton',n_clicks=0, style=rowStyle))
-            ]),       
+            ]),
+            html.Tr([
+                html.Td(html.Button('View Notifications', id='viewNotificationButton', n_clicks=0, style=rowStyle),colSpan = 2,style={'textAlign': 'center'}),
+            ]),                    
         ], style = {'margin':'auto'}
         ) #end of table
     ])#end of div

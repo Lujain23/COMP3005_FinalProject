@@ -33,7 +33,6 @@ mainLayout = html.Div(
                 html.Td(html.Button('Update Maintenance Check',id='updateMaintenanceButton',n_clicks=0, style=rowStyle))
             ]),   
             html.Tr([
-                html.Td(html.Button('Print Used Rooms',id='printUsedRoomsButton',n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Update A Member Payment', id='updatePaymentButton', n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('Print History Of Payments', id='printReceiptButton', n_clicks=0, style=rowStyle))
             ]),  
@@ -366,6 +365,51 @@ def generateAddEquipmentLayout():
     )
     return layout      
 
+def generatePrintMaintenance(data):
+    tableRows =[]
+
+    for currMaintenance in data:
+        equipment_ID, equipment_name, room_ID, last_checked = currMaintenance
+        currRow = html.Tr([html.Td(equipment_ID,style=dataStyle), 
+                               html.Td(equipment_name,style=dataStyle), 
+                               html.Td(room_ID,style=dataStyle), 
+                               html.Td(last_checked,style=dataStyle),
+                            ])
+        tableRows.append(currRow)
+
+        layout = html.Div(
+                id='tableContainer',
+                children=[
+                    html.Label('All Equipments and their last Date checked: ', style={'fontSize': '30px'}),
+                    html.Br(),
+                    html.Br(),
+                    html.Table([
+                        html.Thead(html.Tr([
+                            html.Th('Equipment ID', style=columnStyle),  
+                            html.Th('Equipment Name', style=columnStyle),
+                            html.Th('In Room', style=columnStyle),
+                            html.Th('Last Checked', style=columnStyle),
+                        ])),
+                        html.Tbody(id='classTableBody',children=tableRows),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                    html.Div(
+                        children=[
+                            html.Br(),
+                            html.Br(),                            
+                            html.Button('Go Back', id='staffReturnButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})
+
+                        ]
+                    )#second div end
+                ],
+                style={'textAlign': 'center'}  
+            ),  #div end
+
+    
+    return layout    
+
 def generateAddRoomBookingLayout(data):
     tableRows =[]
 
@@ -385,7 +429,7 @@ def generateAddRoomBookingLayout(data):
             html.Div(
                 id='tableContainer',
                 children=[
-                    html.Label('All Current Classes: ', style={'fontSize': '30px'}),
+                    html.Label('All Current Room Bookings: ', style={'fontSize': '30px'}),
                     html.Table([
                         html.Thead(html.Tr([
                             html.Th('Event ID', style=columnStyle),  
@@ -446,6 +490,150 @@ def generateAddRoomBookingLayout(data):
     )
     return addBookingLayout
 
+def generateRemoveRoomBookingLayout(data):
+    tableRows =[]
+
+    for currClass in data:
+        event_id, room_used, noOfAttendees, start_time, end_time = currClass
+        currRow = html.Tr([html.Td(event_id,style=dataStyle), 
+                               html.Td(room_used,style=dataStyle), 
+                               html.Td(noOfAttendees,style=dataStyle), 
+                               html.Td(start_time,style=dataStyle),
+                                html.Td(end_time,style=dataStyle)])
+        tableRows.append(currRow)
+
+    
+    removeBookingLayout = html.Div(
+        id='page-content',
+        children=[
+            html.Div(
+                id='tableContainer',
+                children=[
+                    html.Label('All Current Room Bookings: ', style={'fontSize': '30px'}),
+                    html.Table([
+                        html.Thead(html.Tr([
+                            html.Th('Event ID', style=columnStyle),  
+                            html.Th('Room Used', style=columnStyle),
+                            html.Th('Number Of Attendees', style=columnStyle),
+                            html.Th('Start Time', style=columnStyle),
+                            html.Th('End Time', style=columnStyle),
+                        ])),
+                        html.Tbody(id='classTableBody',children=tableRows),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                ],
+                style={'textAlign': 'center'}  
+            ),  #first div
+            html.Br(),
+            html.Br(),
+            html.Div(
+                children = [
+
+                    html.Table([
+                            html.Tr([
+                                html.Td(html.Label('Event ID:',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='eventToRemoveInput', type='text',style=textFieldStyle2))
+                            ]),
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Remove', id='submitStaffRemoveBookingButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})), 
+                            ]),
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Go Back', id='staffReturnButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})),                                 
+                            ])  
+                    ]),
+
+            ],style={'margin-bottom': '10px', 'width': '100%','display': 'flex', 'justify-content': 'center','flex-direction':'column','align-items': 'center'},
+            ), #second div
+            html.Div(id='removeRoomBookingOutcome'),
+            dcc.ConfirmDialog(
+            id='staffRemoveBookingSuccessful',
+            message='Removing Room Booking was successful. Will return back to main menu.',
+            ),    
+    
+    ]#children ends
+    )
+    return removeBookingLayout
+
+def generateModifyRoomBookingLayout(data):
+    tableRows =[]
+
+    for currClass in data:
+        event_id, room_used, noOfAttendees, start_time, end_time = currClass
+        currRow = html.Tr([html.Td(event_id,style=dataStyle), 
+                               html.Td(room_used,style=dataStyle), 
+                               html.Td(noOfAttendees,style=dataStyle), 
+                               html.Td(start_time,style=dataStyle),
+                                html.Td(end_time,style=dataStyle)])
+        tableRows.append(currRow)
+
+    
+    modifyBookingLayout = html.Div(
+        id='page-content',
+        children=[
+            html.Div(
+                id='tableContainer',
+                children=[
+                    html.Label('All Current Room Bookings: ', style={'fontSize': '30px'}),
+                    html.Table([
+                        html.Thead(html.Tr([
+                            html.Th('Event ID', style=columnStyle),  
+                            html.Th('Room Used', style=columnStyle),
+                            html.Th('Number Of Attendees', style=columnStyle),
+                            html.Th('Start Time', style=columnStyle),
+                            html.Th('End Time', style=columnStyle),
+                        ])),
+                        html.Tbody(id='classTableBody',children=tableRows),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                ],
+                style={'textAlign': 'center'}  
+            ),  #first div   
+            html.Br(),
+            html.Br(),
+            html.Div(
+                children = [
+
+                    html.Table([
+                            html.Tr([
+                                html.Td(html.Label('Event ID:',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='StaffeventIdInput', type='text', placeholder='Enter Event ID',style=textFieldStyle2))
+                            ]),
+                            html.Tr([
+                                html.Td(html.Label('Start Time HH:MM::SS: ',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='StaffstartInput', type='text', placeholder='Enter start time',style=textFieldStyle2)),
+                            ]),  
+                            html.Tr([
+                                html.Td(html.Label('End Time HH:MM:SS: ',style={'fontSize':'20px'})),
+                                html.Td(dcc.Input(id='StaffendInput', type='text', placeholder='Enter end time ',style=textFieldStyle2))
+                            ]), 
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Submit', id='submitModifyRoomButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})), 
+                            ]),
+                            html.Tr([
+                                html.Td(),
+                                html.Td(html.Button('Go Back', id='staffReturnButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})),                                 
+                            ])  
+                    ]),
+
+            ],style={'margin-bottom': '10px', 'width': '100%','display': 'flex', 'justify-content': 'center','flex-direction':'column','align-items': 'center'},
+            ), #second div
+            html.Div(id='staffModifyRoomOutcome'),
+            dcc.ConfirmDialog(
+            id='staffmodifyRoomSuccessful',
+            message='Modifying Room Booking was successful. Will return back to main menu.',
+            ),    
+    
+    ]#children ends
+    )
+    return modifyBookingLayout        
+         
 def roomBookingTable(data):
     tableRows =[]
 
@@ -568,13 +756,41 @@ def generateUpdatePayment(data):
         {'label': 'Cancel Payment', 'value': 'CANCELED'},
         {'label': 'Complete Payment', 'value': 'COMPLETED'}        
     ]
-    table = generatePrintAllPayments(data)
-    layout = html.Div(
-        id='page-container',
-        children=[
-            html.Div(
+    tableRows =[]
+
+    for currPayment in data:
+        payment_id, amount, member_email, transaction_date, stat,descript = currPayment
+        currRow = html.Tr([html.Td(payment_id,style=dataStyle), 
+                               html.Td(amount,style=dataStyle), 
+                               html.Td(member_email,style=dataStyle), 
+                               html.Td(transaction_date,style=dataStyle),
+                               html.Td(stat,style=dataStyle),
+                               html.Td(descript,style=dataStyle),
+                                ])
+        tableRows.append(currRow)
+
+        layout = html.Div(
+                id='page-content',
                 children=[
-                    html.Div(table),
+                    html.Label('All Payments: ', style={'fontSize': '30px'}),
+                    html.Br(),
+                    html.Br(),
+                    html.Table([
+                        html.Thead(html.Tr([
+                            html.Th('Payment ID', style=columnStyle),  
+                            html.Th('Amount ($)', style=columnStyle),
+                            html.Th('Member Email', style=columnStyle),
+                            html.Th('Transaction Date', style=columnStyle),
+                            html.Th('Status', style=columnStyle),
+                            html.Th('Description', style=columnStyle),
+                        ])),
+                        html.Tbody(id='classTableBody',children=tableRows),
+                        ],
+
+                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
+                    ),
+                    html.Br(),
+                    html.Br(),
                     html.Table([
                         html.Tr([
                             html.Td(html.Label('Enter Payment ID:', style={'fontSize': '20px'})),
@@ -582,22 +798,25 @@ def generateUpdatePayment(data):
                             html.Td(dcc.Dropdown(id='staffPaymentStatus', options=dropdownOptions, style={**textFieldStyle2,'marginLeft':'10px','width':'150px'})),
 
                         ]),
+                        html.Br(),
                         html.Tr([
                             html.Td(),
                             html.Td(),
-                            html.Td(html.Button('Submit Status', id='staffPayStatusChangeButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px', 'marginRight': '10px'}))
+                            html.Td(html.Button('Submit Status', id='staffPayStatusChangeButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px','marginLeft':'20px'})),
+                        ]),
+                        html.Tr([
+                            html.Td(),
+                            html.Td(),
+                            html.Td(html.Button('Go Back', id='staffReturnButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px','marginLeft':'10px'})),
+                        ]),
+                    ]),
+                    html.Div(id='staffUpdatePaymentOutcome'),
+                    dcc.ConfirmDialog(
+                    id='staffUpdatePaymentSuccessful',
+                    message='Updating payment was successful. Will return back to main menu.',
+                    ),
+                ],
+                style={'textAlign': 'center'}  
+            ),  #div end
 
-                        ])
-
-                    ])  # Table done
-                ]
-            ),  # Second div
-
-            html.Div(id='staffUpdatePaymentOutcome'),
-            dcc.ConfirmDialog(
-            id='staffUpdatePaymentSuccessful',
-            message='Updating payment was successful. Will return back to main menu.',
-            ),              
-        ]
-    )  # Main div
     return layout

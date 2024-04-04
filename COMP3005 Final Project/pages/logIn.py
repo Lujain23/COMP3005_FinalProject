@@ -532,7 +532,7 @@ def modify_class(n_clicks,scheduleID,newStart,newEnd):
 )
 def printMaintenance(n_clicks):
     if n_clicks:
-        return #come back
+        return staff.generatePrintMaintenance(handler.printAllMaintenance())
     else:
         return dash.no_update
 
@@ -627,8 +627,7 @@ def add_equipment(n_clicks,equipmentName,inRoom):
 def addRoomBooking(n_clicks):
     if n_clicks:
         #has to change to be print all room bookings COME BACK
-        #return staff.generateAddRoomBookingLayout()
-        return 'missing something'
+        return staff.generateAddRoomBookingLayout(handler.printAllRoomBooking())
     else:
         return dash.no_update 
 
@@ -663,18 +662,86 @@ def add_roomBooking(n_clicks,roomToUse,attendees,startTime,endTime):
         
         return False,dash.no_update 
     
-#generate a PRINT USED ROOMS layout
+#generate a remove room booking layout
 @callback(
     Output('buttonsTable', 'children', allow_duplicate=True),
-    Input('printUsedRoomsButton', 'n_clicks'),
+    Input('removeRoomBookingButton', 'n_clicks'),
     prevent_initial_call=True
 )
-def printUsedRooms(n_clicks):
+def removeRoomBooking(n_clicks):
     if n_clicks:
         #has to change to be print all room bookings COME BACK
-        return 'implement it!'
+        return staff.generateRemoveRoomBookingLayout(handler.printAllRoomBooking())
     else:
         return dash.no_update
+         
+#functionality for remove room
+@callback(
+    Output('staffRemoveBookingSuccessful','displayed',allow_duplicate=True),
+    Output('removeRoomBookingOutcome','children'),
+    Output('page-content','children',allow_duplicate=True),
+    Input('submitStaffRemoveBookingButton','n_clicks'),
+    State('eventToRemoveInput','value'), 
+    prevent_initial_call = True
+)
+
+def remove_roomBooking(n_clicks,eventToRemove):
+
+    if (n_clicks):
+        if(eventToRemove):
+            if(handler.removeRoomBooking(eventToRemove)):
+                #successful adding
+                return True,dash.no_update,staff.mainLayout
+            else:
+                #failed adding
+                return False,'Remove Failed. Please Try again.',dash.no_update
+        
+        #if all  values arent filled
+        else:
+            return False,dash.no_update
+    else:
+        
+        return False,dash.no_update 
+
+#generate a modify room booking layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('modifyRoomBookingButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+
+def modifyRoomBooking(n_clicks):
+    if n_clicks:
+        #has to change to be print all room bookings COME BACK
+        return staff.generateModifyRoomBookingLayout(handler.printAllRoomBooking())
+    else:
+        return dash.no_update
+
+#functionality modify room booking layout
+@callback(
+    Output('staffmodifyRoomSuccessful','displayed'),
+    Output('page-content', 'children', allow_duplicate=True),
+    Output('staffModifyRoomOutcome','children'),
+    Input('submitModifyRoomButton', 'n_clicks'),
+    State('StaffeventIdInput','value'),
+    State('StaffstartInput','value'),
+    State('StaffendInput','value'),
+    prevent_initial_call=True
+)
+def modifyRoomBooking(n_clicks,eventID,startTime,endTime):
+    if n_clicks:
+        if(eventID and startTime and endTime):
+            #all values there
+            if(handler.modifyRoomBooking(eventID,startTime,endTime)):
+                return True,staff.mainLayout,dash.no_update
+            else:
+                #modify failed
+                return False,dash.no_update,'Error: cannot modify room booking. Please Try again,'
+        else:
+            return False,dash.no_update,dash.no_update
+    else:
+        return dash.no_update
+
 
 #generate a PRINT HISTORY OF ALL PAYMENTS layout
 @callback(
@@ -695,7 +762,7 @@ def printAllPayments(n_clicks):
     Input('updatePaymentButton', 'n_clicks'),
     prevent_initial_call=True
 )
-def printAllPayments(n_clicks):
+def updatePayment(n_clicks):
     if n_clicks:
         #has to change to be print all room bookings COME BACK
         return staff.generateUpdatePayment(handler.printAllPayments())
@@ -704,24 +771,25 @@ def printAllPayments(n_clicks):
 
 #functionality for update payment Button
 @callback(
-    Output('staffUpdatePaymentSuccessful','displayed'),
-    Output('staffUpdatePaymentOutcome','children'),
-    Output('page-content','children',allow_duplicate=True),
-    Input('staffPayStatusChangeButton','n_clicks'),
-    State('paymentID','value'),
-    State('staffPaymentStatus','value'),
-    prevent_initial_call= True
+        [Output('staffUpdatePaymentSuccessful','displayed'),
+         Output('page-content','children',allow_duplicate = True),
+        Output('staffUpdatePaymentOutcome','children')],
+        Input('staffPayStatusChangeButton','n_clicks'),
+        [State('paymentID','value'),
+        State('staffPaymentStatus','value')],
+        prevent_initial_call =  True
 )
-def payReceipt(n_clicks,receiptToPay,new_status):
-    if n_clicks:
-        if(receiptToPay,new_status):
-            if(handler.changePaymentStatus(receiptToPay,new_status)):
-                return True,dash.no_update,staff.mainLayout
+def update_payment(n_clicks,payment_id,newStatus):
+    if (n_clicks):
+        if (payment_id and newStatus):
+            if(handler.changePaymentStatus(payment_id,newStatus)):
+                return True,staff.mainLayout,dash.no_update
             else:
-                return False,'Error Updating Receipt. Please try again.',dash.no_update
-        else:
-            return False,dash.no_update,dash.no_update
-
+                return False,dash.no_update,'Error Changing Status. Please try again.'
+        
+    else:
+        return False,dash.no_update,dash.no_update
+    
                 
 #the return "go back" to the main page button  
 @callback(

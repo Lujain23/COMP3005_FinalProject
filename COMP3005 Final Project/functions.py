@@ -6,8 +6,8 @@ import math
 def connectToDatabase():
     try:
         #would change depending on the user
-        #password = "admin" #trista
-        password = "comp3005" #lujain
+        password = "admin" #trista
+        #password = "comp3005" #lujain
         database = "GymManagementSystem"
 
         connection = psycopg2.connect( database = database,
@@ -16,10 +16,6 @@ def connectToDatabase():
                                     user = "postgres",
                                     port = "5432")
         
-        print("Connected to Database!")
-
-
-        #make it return the connection? still thinking of how it would be used.
         return  connection
    
     except psycopg2.Error as e:
@@ -419,9 +415,18 @@ def printAllClasses(connection):
         return(cursor.fetchall())
     
     except psycopg2.DatabaseError as e:
-        return("Error cancelling room booking!", False)
+        return False
 
-
+def printAllRoomBooking(connection):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT * FROM eventInfo"
+        cursor.execute(query)
+        return(cursor.fetchall())
+    
+    except psycopg2.DatabaseError as e:
+        return False   
+    
 def staffCancelRoomBooking(connection, event_id):
     cursor = connection.cursor()
     try:
@@ -432,7 +437,8 @@ def staffCancelRoomBooking(connection, event_id):
         return True
     
     except psycopg2.DatabaseError as e:
-        return("Error cancelling room booking!", False)
+        print("Error cancelling room booking!")
+        return(False)
 
 def modifyRoomBooking(connection, event_id, start_time, end_time):
     cursor = connection.cursor()

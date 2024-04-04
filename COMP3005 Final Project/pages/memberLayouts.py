@@ -49,7 +49,10 @@ mainLayout = html.Div(
             html.Tr([
                 html.Td(html.Button('Cancel Class',id='cancelClassButton',n_clicks=0, style=rowStyle)),
                 html.Td(html.Button('View My Payments',id='viewPaymentButton',n_clicks=0, style=rowStyle))
-            ]),             
+            ]),
+            html.Tr([
+                html.Td( html.Button('Go Back', id='typeMemberReturnButton', n_clicks=0, style = rowStyle),colSpan=2,style={'textAlign': 'center'})
+            ]),                           
         ], style = {'margin':'auto'}
         ) #end of table
     ])#end of div

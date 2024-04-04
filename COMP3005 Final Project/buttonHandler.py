@@ -56,7 +56,11 @@ def printSoloClass(email):
 def printMyPayments(email):
     con = function.connectToDatabase()
     return function.printMemberPayments(con,email)
-    
+
+def changePaymentStatus(paymentID,new_status):
+    con = function.connectToDatabase()
+    return function.changePaymentStatus(con,paymentID,new_status)
+
 '''TRAINER'''
 def getMember(firstName):
     con = function.connectToDatabase()
@@ -67,9 +71,17 @@ def setAvailability(email,start_time,end_time):
     con = function.connectToDatabase()
     return function.setAvailability(con, email, start_time, end_time)
 
-def changePaymentStatus(paymentID,new_status):
+def trainerClasses(email):
     con = function.connectToDatabase()
-    return function.changePaymentStatus(con,paymentID,new_status)
+    return function.trainerViewClasses(con, email)
+
+def getNotifications(email):
+    con = function.connectToDatabase()
+    return function.getNotifications(con,email)
+
+def deleteNotifications(email):
+    con = function.connectToDatabase()
+    return function.viewNotifications(con,email)    
 
 '''STAFF'''
 def printAllClasses():

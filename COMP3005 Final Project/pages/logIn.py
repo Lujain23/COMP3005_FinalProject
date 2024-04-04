@@ -11,16 +11,21 @@ globalType = ''
 import pages.memberLayouts as member
 import pages.trainerLayouts as trainer
 import pages.staffLayouts as staff
+from pages.main import layout as mainPageLayout
 
 import buttonHandler as handler
 textFieldStyle ={'width': '100%', 'height': '30px','fontSize': '20px'}
+buttonStyle = {'width': '100%', 'height': '50px', 'fontSize': '24px', 'margin': '10px auto'}
+center={'display': 'flex', 'justify-content': 'center', 'align-items': 'center','height': '100vh'}
+
 #layout for user log in
 layout = html.Div(
+    id='page-content',
      children=[
           dcc.Location(id='url',refresh=False),
           html.Div(
                 style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center', 'height': '100vh'},
-                id='page-content',
+                
                 children=[
                     html.Div([
                         html.H1("Log In Page",style={'fontSize':'50px'}),
@@ -53,8 +58,6 @@ layout = html.Div(
      ]
 
 )
-
-
 
 #dealing with log In page.
 @callback(
@@ -97,17 +100,29 @@ def validateUser(n_clicks,username,password,memberType):
 
 @callback(
     Output('url','pathname',allow_duplicate=True),
+    Output('page-content','children',allow_duplicate=True),
     Input('logInReturnButton','n_clicks'),
     prevent_initial_call = True
 )   
 
 def backToMain(n_clicks):
     if n_clicks:
-        return '/'
+        return '/',mainPageLayout
+    else:
+        return dash.no_update,dash.no_update
+  
+#depending on the type of member they can go back to the login page
+@callback(
+    Output('page-content','children',allow_duplicate=True),
+    Input('typeMemberReturnButton','n_clicks'),
+    prevent_initial_call= True
+)
+def backToLogin(n_clicks):
+    if n_clicks:
+        return layout
     else:
         return dash.no_update
     
-
 ''' MEMBER VIEW'''
 #functions for the buttons for MEMBER
             
@@ -399,13 +414,49 @@ def changeAvailability(n_clicks,newStart,newEnd):
     else:
         return False,dash.no_update
 
+#generate the view trainer class layout
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('viewTrainerClassButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def trainerViewClass(n_clicks):
+    if n_clicks:
+        return trainer.generateViewMyClass(handler.trainerClasses(globalUsername))
+
+#generate the notifications
+@callback(
+    Output('buttonsTable', 'children', allow_duplicate=True),
+    Input('viewNotificationButton', 'n_clicks'),
+    prevent_initial_call=True
+)
+def trainerViewClass(n_clicks):
+    if n_clicks:
+        return trainer.generateNotificationLayout(handler.getNotifications(globalUsername))
+
+#create functionality for the view notification button
+@callback(
+    Output('deleteNotificationsSuccessful','displayed'),
+    Output('page-content','children',allow_duplicate=True),
+    Input('trainerViewNotifications','n_clicks'),
+    prevent_initial_call=True
+)
+def deleteNotifications(n_clicks):
+    if n_clicks:
+        if(handler.deleteNotifications(globalUsername)):
+            return True,trainer.mainLayout
+        else:
+            return False,dash.no_update
+    else:
+        return False,dash.no_update
+      
 #the return "go back" to the main page button  
 @callback(
     Output('page-content', 'children', allow_duplicate=True),
     Input('trainerReturnButton', 'n_clicks'),
     prevent_initial_call=True
 )
-def printDashboard(n_clicks):
+def trainerGoBack(n_clicks):
     if n_clicks:
         return trainer.mainLayout
     else:

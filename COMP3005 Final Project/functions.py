@@ -6,8 +6,8 @@ import math
 def connectToDatabase():
     try:
         #would change depending on the user
-        #password = "admin" #trista
-        password = "comp3005" #lujain
+        password = "admin" #trista
+        #password = "comp3005" #lujain
         database = "GymManagementSystem"
 
         connection = psycopg2.connect( database = database,
@@ -177,8 +177,8 @@ def rescheduleClass(connection, schedule_id, start_time, end_time):
 
             # Send notification to trainer that class has been rescheduled
             notificationMessage = "Class with schedule_id " + str(schedule_id) + " has beeen rescheduled to " + str(start_time) + " to " + str(end_time)
-            query = "UPDATE trainer SET notification = %s WHERE email = %s"
-            cursor.execute(query, (notificationMessage, trainer_email))
+            query = "INSERT INTO trainerNotifications(trainer_email, notification) VALUES (%s, %s);"
+            cursor.execute(query, (trainer_email, notificationMessage))
             connection.commit()
             return True
         else:
@@ -209,8 +209,8 @@ def cancelClass(connection, schedule_id, member_email):
         
         # Send notification to trainer that class has been rescheduled
         notificationMessage = "Member " + first_name + " dropped class with schedule_id " + str(schedule_id)
-        query = "UPDATE trainer SET notification = %s WHERE email = %s"
-        cursor.execute(query, (notificationMessage, trainer_email))
+        query = "INSERT INTO trainerNotifications(trainer_email, notification) VALUES (%s, %s);"
+        cursor.execute(query, (trainer_email, notificationMessage))
         connection.commit()
         return True
 
@@ -416,8 +416,8 @@ def staffCancelClass(connection, schedule_id):
         
         # Send notification to trainer that class has been rescheduled
         notificationMessage = "Class with schedule_id " + str(schedule_id) + " has beeen cancelled"
-        query = "UPDATE trainer SET notification = %s WHERE email = %s"
-        cursor.execute(query, (notificationMessage, trainer_email))
+        query = "INSERT INTO trainerNotifications(trainer_email, notification) VALUES (%s, %s);"
+        cursor.execute(query, (trainer_email, notificationMessage))
         connection.commit()
 
     except psycopg2.DatabaseError as e:

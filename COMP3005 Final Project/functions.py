@@ -6,8 +6,8 @@ import math
 def connectToDatabase():
     try:
         #would change depending on the user
-        password = "admin" #trista
-        #password = "comp3005" #lujain
+        #password = "admin" #trista
+        password = "comp3005" #lujain
         database = "GymManagementSystem"
 
         connection = psycopg2.connect( database = database,
@@ -542,6 +542,16 @@ def printAllPayments(connection):
         print("Error printing all payments!") 
     return
 
+def viewMemberPayments(connection, member_email):
+    cursor = connection.cursor()
+    try:
+        query = "SELECT payment_id, amount, member_email, transaction_date, stat, descript FROM payment WHERE member_email = %s"
+        cursor.execute(query, (member_email, ))
+        return(cursor.fetchall())
+    except psycopg2.DatabaseError as e:
+        print("Error printing all payments!") 
+    return
+
 def createPayment(connection, amount, member_email, transaction_date, stat, descript):
     cursor = connection.cursor()
     try:
@@ -604,4 +614,5 @@ def main():
     #print(printMaintenence(connection))
     #print(trainerViewClasses(connection, "LarryLobster@gmail.com"))
     #print(viewNotifications(connection, "LarryLobster@gmail.com"))
+    #print(viewMemberPayments(connection, "spongebob@squarepants.com"))
 #main()

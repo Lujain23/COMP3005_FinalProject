@@ -809,7 +809,41 @@ def printAllPayments(n_clicks):
         return staff.generatePrintAllPayments(handler.printAllPayments())
     else:
         return dash.no_update
+    
+#functionality for filter payments based on member email
+@callback(
+        [Output('page-content','children',allow_duplicate = True),
+        Output('filterOutcome','children')],
+        Input('filterButton','n_clicks'),
+        State('filterEmailInput','value'),
+        prevent_initial_call =  True
+)
+def filter_payment(n_clicks,email):
+    if (n_clicks):
+        if (email):
+            outcome,values =handler.filterPayment(email)
+            if outcome:
+                return staff.generatePrintAllPayments(values),dash.no_update
+            else:
+                return dash.no_update,'Invalid Member Email. Please Try again.'
+        else:
+            return dash.no_update,dash.no_update
+    else:
+        return dash.no_update,dash.no_update
 
+#functionality for clear filter payments 
+@callback(
+        [Output('page-content','children',allow_duplicate = True),
+        Output('filterEmailInput','value')],
+        Input('clearFilterButton','n_clicks'),
+        prevent_initial_call =  True
+)
+def clearFilter_payment(n_clicks):
+    if (n_clicks):
+            return staff.generatePrintAllPayments(handler.printAllPayments()),''
+    else:
+        return dash.no_update,dash.no_update
+        
 #generate an update payment layout
 @callback(
     Output('buttonsTable', 'children', allow_duplicate=True),

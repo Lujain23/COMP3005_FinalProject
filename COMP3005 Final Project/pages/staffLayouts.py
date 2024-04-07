@@ -678,7 +678,6 @@ def roomBookingTable(data):
         html.Br(),
         html.Div(
             children = [
-
                     html.Table([
                             html.Tr([
                                 html.Td(html.Label('Room to use:',style={'fontSize':'20px'})),
@@ -725,12 +724,18 @@ def generatePrintAllPayments(data):
                                 ])
         tableRows.append(currRow)
 
-        layout = html.Div(
-                id='tableContainer',
+    layout = html.Div(
+                id='page-content',
                 children=[
                     html.Label('History Of All Payments: ', style={'fontSize': '30px'}),
                     html.Br(),
                     html.Br(),
+                    html.Div([
+                        dcc.Input(id='filterEmailInput', type='text', placeholder='Enter email of Member to search', style={'margin-bottom': '10px','marginRight':'10px','height':'35px','width':'35%','fontSize':'20px'}),
+                        html.Button('Filter', id='filterButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px',}),
+                        html.Button('Clear Filters', id='clearFilterButton', n_clicks=0, style={'marginLeft':'10px','font-size': '16px', 'padding': '10px 20px',}),
+                    ]),
+                    html.Div(id='filterOutcome'),
                     html.Table([
                         html.Thead(html.Tr([
                             html.Th('Payment ID', style=columnStyle),  
@@ -752,7 +757,8 @@ def generatePrintAllPayments(data):
                             html.Button('Go Back', id='staffReturnButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})
 
                         ]
-                    )#second div end
+                    )#second div end,
+
                 ],
                 style={'textAlign': 'center'}  
             ),  #div end
@@ -778,7 +784,7 @@ def generateUpdatePayment(data):
                                 ])
         tableRows.append(currRow)
 
-        layout = html.Div(
+    layout = html.Div(
                 id='page-content',
                 children=[
                     html.Label('All Payments: ', style={'fontSize': '30px'}),

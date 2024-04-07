@@ -139,3 +139,7 @@ def printAllPayments():
 def addPayment(amount, member_email, transaction_date, stat, descript):
     con = function.connectToDatabase()
     return function.createPayment(con, amount, member_email, transaction_date, stat, descript)
+
+def filterPayment(memberEmail):
+    con = function.connectToDatabase()
+    return function.viewMemberPayments(con,memberEmail)

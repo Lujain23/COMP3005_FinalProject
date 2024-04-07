@@ -545,7 +545,7 @@ def printAllPayments(connection):
 def viewMemberPayments(connection, member_email):
     cursor = connection.cursor()
     try:
-        query = "SELECT payment_id, amount, transaction_date, stat, descript FROM payment WHERE member_email = %s"
+        query = "SELECT * FROM payment WHERE member_email = %s"
         cursor.execute(query, (member_email, ))
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:

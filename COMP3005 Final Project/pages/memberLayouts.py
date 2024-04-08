@@ -17,7 +17,7 @@ dataStyle = {'fontSize':'18px', 'color': 'blue'}
 boxStyle = {
     'width': '30%',
     'padding': '20px',
-    'border': '2px solid #a2d2ff',
+    'border': '2px solid #52489C',
     'border-radius': '10px',
     'margin': '10px',
     'box-shadow': '0px 0px 10px 0px rgba(0,0,0,0.1)',
@@ -37,7 +37,7 @@ def mainLayout(name):
             children=[
             html.H1([
                 html.Span('Hello Member ',style={'color':'black'}),
-                html.Span(name,style={'color':'#a2d2ff'}),
+                html.Span(name,style={'color':'#52489C'}),
                 html.Span('!',style={'color':'black'}),
             ]),#heading done
             html.H1('Welcome to the Health and Fitness Club!'),
@@ -199,17 +199,17 @@ def generatePrintDashboardLayout(exercise_routine, height, weight, target_weight
 
     printDashboardLayout = html.Div([
         html.Div([
-            html.H2('Exercise Routine', style={'color': '#a2d2ff', 'margin-bottom': '10px'}),
+            html.H2('Exercise Routine', style={'color': '#52489C', 'margin-bottom': '10px'}),
             html.P(exercise_routine, style={'font-size': '18px'}),
         ], style=boxStyle),
 
         html.Div([
-            html.H2('Fitness Achievement', style={'color': '#a2d2ff', 'margin-bottom': '10px'}),
+            html.H2('Fitness Achievement', style={'color': '#52489C', 'margin-bottom': '10px'}),
             html.P(achievement, style={'font-size': '18px'}),
         ], style=boxStyle),
 
         html.Div([
-            html.H2('Health Statistics', style={'color': '#a2d2ff', 'margin-bottom': '10px'}),
+            html.H2('Health Statistics', style={'color': '#52489C', 'margin-bottom': '10px'}),
             html.P(line1, style={'font-size': '18px'}),
             html.P(line2, style={'font-size': '18px'}),
             html.P(line3, style={'font-size': '18px'}),
@@ -391,7 +391,7 @@ def generateViewPayments(data):
                 children=[
                     html.Br(),
                     html.Br(),
-                    html.H1('My Payments', style={'fontSize': '24px', 'color': '#a2d2ff'}),
+                    html.H1('My Payments', style={'fontSize': '24px', 'color': '#52489C'}),
                     html.Br(),
                     html.Br(),
                     html.Table([
@@ -426,8 +426,8 @@ def generateDesignViewPayments(data):
 
     receipStyle = {
         'font-family': 'Arial, sans-serif',
-        'color': '#a2d2ff',
-        'border': '2px solid #a2d2ff',
+        'color': '#52489C',
+        'border': '2px solid #52489C',
         'border-radius': '10px',
         'padding': '20px',
         'margin': '10px',
@@ -438,7 +438,7 @@ def generateDesignViewPayments(data):
         noPayments = html.Div(
             id = 'page-content',
             children=[
-                html.H1('WOOHOO No payments!', style={'fontSize': '36px', 'textAlign': 'center', 'color': '#a2d2ff'}),
+                html.H1('WOOHOO No payments!', style={'fontSize': '36px', 'textAlign': 'center', 'color': '#52489C'}),
                 html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})
             ]
         )
@@ -450,7 +450,7 @@ def generateDesignViewPayments(data):
         finalizedSingleReceipt = html.Div(
             children=[
                 html.Br(),
-                html.P(f"Payment ID: {payment_id}"),
+                html.P(f"Payment ID: {payment_id}",style={'fontSize':'20px','fontWeight': 'bold'}),
                 html.P(f"Amount: ${amount:.2f}"),
                 html.P(f"Transaction Date: {transaction_date}"),
                 html.P(f"Status: {status}"),
@@ -465,7 +465,7 @@ def generateDesignViewPayments(data):
                     children=[
                         html.Br(),
                         html.Br(),
-                        html.H1('My Payments',style={'fontSize':'24px','color': '#a2d2ff'}),
+                        html.H1('My Payments',style={'fontSize':'24px','color': '#52489C'}),
                         html.Br(),
                         html.Div(allReceiptsList),
                         html.Div(

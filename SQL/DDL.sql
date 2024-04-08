@@ -13,8 +13,8 @@ CREATE TABLE members(
 
 CREATE TABLE trainer(
 	email VARCHAR(255) NOT NULL UNIQUE,
-	first_name VARCHAR(255),
 	passwd VARCHAR(15) NOT NULL,
+	first_name VARCHAR(255),
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
 	primary key(email)
@@ -59,8 +59,8 @@ CREATE TABLE scheduleStudents(
 
 CREATE TABLE admin_staff(
 	email VARCHAR(255) NOT NULL,
-	first_name TEXT,
 	passwd VARCHAR(15) NOT NULL,
+	first_name TEXT,
 	primary key(email)
 	
 );

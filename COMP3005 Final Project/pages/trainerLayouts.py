@@ -19,7 +19,7 @@ def mainLayout(name):
             children=[
             html.H1([
                 html.Span('Hello Trainer ',style={'color':'black'}),
-                html.Span(name,style={'color':'#a2d2ff'}),
+                html.Span(name,style={'color':'#52489C'}),
                 html.Span('!',style={'color':'black'}),
             ]),#heading done
             html.H1('Welcome to the Health and Fitness Club!'),

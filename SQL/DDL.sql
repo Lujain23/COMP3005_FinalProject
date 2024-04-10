@@ -31,7 +31,7 @@ CREATE TABLE eventInfo(
 	attendees INTEGER NOT NULL,
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
-	primary key(event_id),
+	primary key(event_id)
 );
 
 --for class
@@ -45,7 +45,7 @@ CREATE TABLE schedule(
 	class_type VARCHAR(20) NOT NULL, -- Cardio, weight-lifting
 	primary key(schedule_id),
 	foreign key (trainer_email) references trainer(email)
-		on delete set null,
+		on delete set null
 );
 
 CREATE TABLE scheduleStudents(

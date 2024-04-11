@@ -55,10 +55,11 @@ def generateRemoveClassLayout(data):
     tableRows =[]
 
     for currClass in data:
-        schedule_id, room_used, trainer_email, start_time, end_time, session_type, class_type = currClass
+        schedule_id, room_used, trainer_email,day, start_time, end_time, session_type, class_type = currClass
         currRow = html.Tr([html.Td(schedule_id,style=dataStyle), 
                                html.Td(room_used,style=dataStyle), 
                                html.Td(trainer_email,style=dataStyle), 
+                               html.Td(day,style=dataStyle), 
                                html.Td(start_time,style=dataStyle),
                                 html.Td(end_time,style=dataStyle), 
                                  html.Td(session_type,style=dataStyle),
@@ -78,6 +79,7 @@ def generateRemoveClassLayout(data):
                             html.Th('Schedule ID', style=columnStyle),  
                             html.Th('Room Used', style=columnStyle),
                             html.Th('Trainer Email', style=columnStyle),
+                            html.Th('On Day', style=columnStyle),
                             html.Th('Start Time', style=columnStyle),
                             html.Th('End Time', style=columnStyle),
                             html.Th('Session type', style=columnStyle),
@@ -127,10 +129,11 @@ def generateModifyClassLayout(data):
     tableRows =[]
 
     for currClass in data:
-        schedule_id, room_used, trainer_email, start_time, end_time, session_type, class_type = currClass
+        schedule_id, room_used, trainer_email, day, start_time, end_time, session_type, class_type = currClass
         currRow = html.Tr([html.Td(schedule_id,style=dataStyle), 
                                html.Td(room_used,style=dataStyle), 
                                html.Td(trainer_email,style=dataStyle), 
+                               html.Td(day,style=dataStyle),
                                html.Td(start_time,style=dataStyle),
                                 html.Td(end_time,style=dataStyle), 
                                  html.Td(session_type,style=dataStyle),
@@ -150,6 +153,7 @@ def generateModifyClassLayout(data):
                             html.Th('Schedule ID', style=columnStyle),  
                             html.Th('Room Used', style=columnStyle),
                             html.Th('Trainer Email', style=columnStyle),
+                            html.Th('On Day', style=columnStyle),
                             html.Th('Start Time', style=columnStyle),
                             html.Th('End Time', style=columnStyle),
                             html.Th('Session type', style=columnStyle),
@@ -207,10 +211,11 @@ def generateAddClassLayout(data):
     tableRows =[]
 
     for currClass in data:
-        schedule_id, room_used, trainer_email, start_time, end_time, session_type, class_type = currClass
+        schedule_id, room_used, trainer_email, day,start_time, end_time, session_type, class_type = currClass
         currRow = html.Tr([html.Td(schedule_id,style=dataStyle), 
                                html.Td(room_used,style=dataStyle), 
                                html.Td(trainer_email,style=dataStyle), 
+                               html.Td(day,style=dataStyle), 
                                html.Td(start_time,style=dataStyle),
                                 html.Td(end_time,style=dataStyle), 
                                  html.Td(session_type,style=dataStyle),
@@ -230,6 +235,7 @@ def generateAddClassLayout(data):
                             html.Th('Schedule ID', style=columnStyle),  
                             html.Th('Room Used', style=columnStyle),
                             html.Th('Trainer Email', style=columnStyle),
+                            html.Th('On Day', style=columnStyle),
                             html.Th('Start Time', style=columnStyle),
                             html.Th('End Time', style=columnStyle),
                             html.Th('Session type', style=columnStyle),
@@ -256,10 +262,20 @@ def generateAddClassLayout(data):
                             html.Tr([
                                 html.Td(html.Label('Trainer Email:',style={'fontSize':'20px'})),
                                 html.Td(dcc.Input(id='trainerInput', type='text',style=textFieldStyle2))
-                            ]),                            
+                            ]),
+                            html.Tr([
+                                html.Td(html.Label('On Day',style={'fontSize':'20px'})),
+                                html.Td(dcc.DatePickerSingle(
+                                            id='datePickedInput',
+                                            min_date_allowed='2020-12-01',
+                                            max_date_allowed='2026-12-31',
+                                            initial_visible_month='2024-04-01',
+                                            display_format='YYYY-MM-DD',  # Set the display format to YYYY-MM-DD
+                                        )),
+                            ]),                              
                             html.Tr([
                                 html.Td(html.Label('Start Time HH:MM::SS: ',style={'fontSize':'20px'})),
-                                html.Td(dcc.Input(id='startInput', type='text',style=textFieldStyle2)),
+                                html.Td(dcc.Input(id='startInput', type='text',style={**textFieldStyle2,'margin-top':'10px'})),
                             ]),  
                             html.Tr([
                                 html.Td(html.Label('End Time HH:MM:SS: ',style={'fontSize':'20px'})),
@@ -423,10 +439,11 @@ def generateAddRoomBookingLayout(data):
     tableRows =[]
 
     for currClass in data:
-        event_id, room_used, noOfAttendees, start_time, end_time = currClass
+        event_id, room_used, noOfAttendees, day,start_time, end_time = currClass
         currRow = html.Tr([html.Td(event_id,style=dataStyle), 
                                html.Td(room_used,style=dataStyle), 
                                html.Td(noOfAttendees,style=dataStyle), 
+                               html.Td(day,style=dataStyle), 
                                html.Td(start_time,style=dataStyle),
                                 html.Td(end_time,style=dataStyle)])
         tableRows.append(currRow)
@@ -444,6 +461,7 @@ def generateAddRoomBookingLayout(data):
                             html.Th('Event ID', style=columnStyle),  
                             html.Th('Room Used', style=columnStyle),
                             html.Th('Number Of Attendees', style=columnStyle),
+                            html.Th('On Day', style=columnStyle),
                             html.Th('Start Time', style=columnStyle),
                             html.Th('End Time', style=columnStyle),
                         ])),
@@ -468,7 +486,17 @@ def generateAddRoomBookingLayout(data):
                             html.Tr([
                                 html.Td(html.Label('Number of Attendees:',style={'fontSize':'20px'})),
                                 html.Td(dcc.Input(id='noOfAttendeesInput', type='number',style=textFieldStyle2))
-                            ]),                            
+                            ]),
+                            html.Tr([
+                                html.Td(html.Label('On Day',style={'fontSize':'20px'})),
+                                html.Td(dcc.DatePickerSingle(
+                                            id='datePickedInput',
+                                            min_date_allowed='2020-12-01',
+                                            max_date_allowed='2026-12-31',
+                                            initial_visible_month='2024-04-01',
+                                            display_format='YYYY-MM-DD',  # Set the display format to YYYY-MM-DD
+                                        )),
+                            ]),                                
                             html.Tr([
                                 html.Td(html.Label('Start Time HH:MM::SS: ',style={'fontSize':'20px'})),
                                 html.Td(dcc.Input(id='startInput', type='text',style=textFieldStyle2)),
@@ -503,10 +531,11 @@ def generateRemoveRoomBookingLayout(data):
     tableRows =[]
 
     for currClass in data:
-        event_id, room_used, noOfAttendees, start_time, end_time = currClass
+        event_id, room_used, noOfAttendees,day, start_time, end_time = currClass
         currRow = html.Tr([html.Td(event_id,style=dataStyle), 
                                html.Td(room_used,style=dataStyle), 
                                html.Td(noOfAttendees,style=dataStyle), 
+                               html.Td(day,style=dataStyle), 
                                html.Td(start_time,style=dataStyle),
                                 html.Td(end_time,style=dataStyle)])
         tableRows.append(currRow)
@@ -524,6 +553,7 @@ def generateRemoveRoomBookingLayout(data):
                             html.Th('Event ID', style=columnStyle),  
                             html.Th('Room Used', style=columnStyle),
                             html.Th('Number Of Attendees', style=columnStyle),
+                            html.Th('On Day', style=columnStyle),
                             html.Th('Start Time', style=columnStyle),
                             html.Th('End Time', style=columnStyle),
                         ])),
@@ -571,10 +601,11 @@ def generateModifyRoomBookingLayout(data):
     tableRows =[]
 
     for currClass in data:
-        event_id, room_used, noOfAttendees, start_time, end_time = currClass
+        event_id, room_used, noOfAttendees,day, start_time, end_time = currClass
         currRow = html.Tr([html.Td(event_id,style=dataStyle), 
                                html.Td(room_used,style=dataStyle), 
                                html.Td(noOfAttendees,style=dataStyle), 
+                               html.Td(day,style=dataStyle),
                                html.Td(start_time,style=dataStyle),
                                 html.Td(end_time,style=dataStyle)])
         tableRows.append(currRow)
@@ -592,6 +623,7 @@ def generateModifyRoomBookingLayout(data):
                             html.Th('Event ID', style=columnStyle),  
                             html.Th('Room Used', style=columnStyle),
                             html.Th('Number Of Attendees', style=columnStyle),
+                            html.Th('On Day', style=columnStyle),
                             html.Th('Start Time', style=columnStyle),
                             html.Th('End Time', style=columnStyle),
                         ])),

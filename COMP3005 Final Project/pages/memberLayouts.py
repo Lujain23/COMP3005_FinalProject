@@ -66,13 +66,15 @@ def mainLayout(name):
 
 #layout for "join class"
 def joinClassLayout(data):
+    print("in")
     tableRows =[]
 
     for currClass in data:
-        schedule_id, room_used, trainer_email, start_time, end_time, session_type, class_type = currClass
+        schedule_id, room_used, trainer_email, day_class,start_time, end_time, session_type, class_type = currClass
         currRow = html.Tr([html.Td(schedule_id,style=dataStyle), 
                                html.Td(room_used,style=dataStyle), 
                                html.Td(trainer_email,style=dataStyle), 
+                               html.Td(day_class,style=dataStyle), 
                                html.Td(start_time,style=dataStyle),
                                 html.Td(end_time,style=dataStyle), 
                                  html.Td(session_type,style=dataStyle),
@@ -92,6 +94,7 @@ def joinClassLayout(data):
                             html.Th('Schedule ID', style=columnStyle),  
                             html.Th('Room Used', style=columnStyle),
                             html.Th('Trainer Email', style=columnStyle),
+                            html.Th('On Day', style=columnStyle),
                             html.Th('Start Time', style=columnStyle),
                             html.Th('End Time', style=columnStyle),
                             html.Th('Session type', style=columnStyle),
@@ -129,10 +132,11 @@ def cancelClassLayout(data):
     tableRows =[]
 
     for currClass in data:
-        schedule_id, room_used, trainer_email, start_time, end_time, session_type, class_type = currClass
+        schedule_id, room_used, trainer_email, class_day,start_time, end_time, session_type, class_type = currClass
         currRow = html.Tr([html.Td(schedule_id,style=dataStyle), 
                                html.Td(room_used,style=dataStyle), 
-                               html.Td(trainer_email,style=dataStyle), 
+                               html.Td(trainer_email,style=dataStyle),
+                               html.Td(class_day,style=dataStyle), 
                                html.Td(start_time,style=dataStyle),
                                 html.Td(end_time,style=dataStyle), 
                                  html.Td(session_type,style=dataStyle),
@@ -152,6 +156,7 @@ def cancelClassLayout(data):
                             html.Th('Schedule ID', style=columnStyle),  
                             html.Th('Room Used', style=columnStyle),
                             html.Th('Trainer Email', style=columnStyle),
+                            html.Th('On Day', style=columnStyle),
                             html.Th('Start Time', style=columnStyle),
                             html.Th('End Time', style=columnStyle),
                             html.Th('Session type', style=columnStyle),
@@ -298,10 +303,11 @@ def generateRescheduleClassLayout(data):
     tableRows =[]
 
     for currClass in data:
-        schedule_id, room_used, trainer_email, start_time, end_time, session_type, class_type = currClass
+        schedule_id, room_used, trainer_email,day, start_time, end_time, session_type, class_type = currClass
         currRow = html.Tr([html.Td(schedule_id,style=dataStyle), 
                                html.Td(room_used,style=dataStyle), 
                                html.Td(trainer_email,style=dataStyle), 
+                               html.Td(day,style=dataStyle),
                                html.Td(start_time,style=dataStyle),
                                 html.Td(end_time,style=dataStyle), 
                                  html.Td(session_type,style=dataStyle),
@@ -321,6 +327,7 @@ def generateRescheduleClassLayout(data):
                             html.Th('Schedule ID', style=columnStyle),  
                             html.Th('Room Used', style=columnStyle),
                             html.Th('Trainer Email', style=columnStyle),
+                            html.Th('On Day', style=columnStyle),
                             html.Th('Start Time', style=columnStyle),
                             html.Th('End Time', style=columnStyle),
                             html.Th('Session type', style=columnStyle),

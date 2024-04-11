@@ -45,6 +45,7 @@ def validateUser(connection,username,password,memberType):
             return False,''
     except psycopg2.DatabaseError as e:
         print("Error in ValidateUser!")
+        return False,''
 
 #Member Functions
 def selectMember(connection,email):
@@ -56,6 +57,7 @@ def selectMember(connection,email):
         return ans
     except psycopg2.DatabaseError as e:
         print("Error selecting member!")
+        return []
     return
 
 
@@ -65,9 +67,11 @@ def addMember(connection, email, passwd, first_name, age, gender, height, weight
         query = "INSERT INTO members (email, passwd, first_name, age, gender, height, weight, target_weight, exercise_routine) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         cursor.execute(query, (email, passwd, first_name, age, gender, height, weight, target_weight, exercise_routine))
         connection.commit()
+        return True
     except psycopg2.DatabaseError as e:
         print("Error adding member!")
-    return  
+        return False
+      
 
 def updateMemberInformation(connection, email, passwd, first_name, age, gender, height, weight, target_weight, exercise_routine):
     cursor = connection.cursor()
@@ -75,8 +79,10 @@ def updateMemberInformation(connection, email, passwd, first_name, age, gender, 
         query = "UPDATE members SET passwd = %s, first_name = %s, age = %s, gender = %s, height = %s, weight = %s, target_weight = %s, exercise_routine = %s WHERE email = %s"
         cursor.execute(query, (passwd, first_name, age, gender, height, weight, target_weight, exercise_routine, email))
         connection.commit()
+        return True
     except psycopg2.DatabaseError as e:
         print("Error updating member information!")
+        return False
     return
 
 def printDashboard(connection, email):
@@ -112,6 +118,7 @@ def printDashboard(connection, email):
         return exercise_routine[0][0], height[0][0], weight[0][0], target_weight[0][0], BMI, isOverweight, weightChange, achievement
     except psycopg2.DatabaseError as e:
         print("Error printing dashboard!")
+        return 
     return
 
 def joinClass(connection, schedule_id, member_email):
@@ -120,8 +127,10 @@ def joinClass(connection, schedule_id, member_email):
         query = "INSERT INTO scheduleStudents (schedule_id, member_email) VALUES (%s, %s);"
         cursor.execute(query, (schedule_id, member_email))
         connection.commit()
+        return True
     except psycopg2.DatabaseError as e:
         print("Error joining class!")
+        return False
     return
 
 def checkTrainerAvailability(cursor, start_time, end_time, trainer_email):
@@ -216,6 +225,7 @@ def cancelClass(connection, schedule_id, member_email):
 
     except psycopg2.DatabaseError as e:
         print("Error cancelling class!")
+        return False
     return
 
 def printAvailableClasses(connection):
@@ -226,7 +236,7 @@ def printAvailableClasses(connection):
         return(cursor.fetchall())
 
     except psycopg2.DatabaseError as e:
-        return("Error printing available classes!", False)
+        return []
 
 def printSoloMemberClasses(connection, member_email):
     cursor = connection.cursor()
@@ -236,6 +246,7 @@ def printSoloMemberClasses(connection, member_email):
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:
         print("Error printing member's solo classes!")   
+        return []
     return
 
 def printMembersClasses(connection, member_email):
@@ -245,7 +256,8 @@ def printMembersClasses(connection, member_email):
         cursor.execute(query, (member_email, ))
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:
-        return("Error printing classes member joins!", False)   
+        print("Error printing Members Class!")
+        return []
 
 #Trainer Functions
 def setAvailability(connection, email, start_time, end_time):
@@ -286,7 +298,7 @@ def getMember(connection, first_name):
         return result
     except psycopg2.DatabaseError as e:
         print("Error getting member!")
-        return[]
+        return []
     
 def trainerViewClasses(connection, trainer_email):
     cursor = connection.cursor()
@@ -308,7 +320,7 @@ def getNotifications(connection, trainer_email):
         return result
     except psycopg2.DatabaseError as e:
         print("Error getting trainer's notifications!")
-        return
+        return []
     
 def viewNotifications(connection, trainer_email):
     cursor = connection.cursor()
@@ -362,6 +374,7 @@ def roomBooking(connection, room_id, attendees, day, start_time, end_time):
 
     except psycopg2.DatabaseError as e:
         print("Error booking room!", e)
+        return False
 
 # Returns true if booking was successful 
 def classScheduling(connection, room_used, trainer_email, classDay, start_time, end_time, type_session, class_type):
@@ -420,9 +433,11 @@ def staffCancelClass(connection, schedule_id):
         query = "INSERT INTO trainerNotifications(trainer_email, notification) VALUES (%s, %s);"
         cursor.execute(query, (trainer_email, notificationMessage))
         connection.commit()
+        return True
 
     except psycopg2.DatabaseError as e:
         print("Error cancelling class!", e)
+        return False
     return
 
 def printAllClasses(connection):
@@ -433,7 +448,7 @@ def printAllClasses(connection):
         return(cursor.fetchall())
     
     except psycopg2.DatabaseError as e:
-        return False
+        return []
 
 def printAllRoomBooking(connection):
     cursor = connection.cursor()
@@ -443,7 +458,7 @@ def printAllRoomBooking(connection):
         return(cursor.fetchall())
     
     except psycopg2.DatabaseError as e:
-        return False   
+        return []   
     
 def staffCancelRoomBooking(connection, event_id):
     cursor = connection.cursor()
@@ -456,7 +471,7 @@ def staffCancelRoomBooking(connection, event_id):
     
     except psycopg2.DatabaseError as e:
         print("Error cancelling room booking!")
-        return(False)
+        return False
 
 def modifyRoomBooking(connection, event_id, start_time, end_time):
     cursor = connection.cursor()
@@ -489,7 +504,8 @@ def modifyRoomBooking(connection, event_id, start_time, end_time):
         connection.commit()
         return True
     except psycopg2.DatabaseError as e:
-        return("Error modifying room booking!", False)
+        print("Error modifying room booking!")
+        return False
 
 def equipmentMaintenenceMonitoring(connection, equipment_name, room_id):
     cursor = connection.cursor()
@@ -508,8 +524,10 @@ def addEquipment(connection, equipment_name, room_id):
         query = "INSERT INTO equipment_maintenence (equipment_name, room_id) VALUES (%s, %s)"
         cursor.execute(query, (equipment_name, room_id))
         connection.commit()
+        return True
     except psycopg2.DatabaseError as e:
         print("Error adding equipment!") 
+        return False
     return
 
 def printMaintenence(connection):
@@ -520,6 +538,7 @@ def printMaintenence(connection):
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:
         print("Error adding equipment!") 
+        return []
     return
 
 # returns amount, transaction date, status and description
@@ -531,6 +550,7 @@ def printMemberPayments(connection, member_email):
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:
         print("Error printing member payments!") 
+        return []
     return
 
 def printAllPayments(connection):
@@ -541,6 +561,7 @@ def printAllPayments(connection):
         return(cursor.fetchall())
     except psycopg2.DatabaseError as e:
         print("Error printing all payments!") 
+        return []
     return
 
 def viewMemberPayments(connection, member_email):
@@ -572,7 +593,7 @@ def changePaymentStatus(connection, payment_id, new_status):
         connection.commit()
         return True
     except psycopg2.DatabaseError as e:
-        return(False)
+        return False
     
 # Check to make sure start_time < end_time
 def validTime(start_time, end_time):

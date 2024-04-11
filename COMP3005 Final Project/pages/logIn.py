@@ -138,7 +138,6 @@ def backToLogin(n_clicks):
 )
 def join_class(n_clicks):
     if n_clicks:
-        print(handler.printAvailableClasses())
         return member.joinClassLayout(handler.printAvailableClasses())
     else:
         dash.no_update
@@ -154,7 +153,6 @@ def join_class(n_clicks):
 
 def joinClass(n_clicks,scheduleID):
     if n_clicks:
-        print(scheduleID)
         if(scheduleID):
             handler.joinClass(scheduleID,globalUsername)
             return True,member.mainLayout(globalFirstName)
@@ -486,6 +484,7 @@ def addClass(n_clicks):
     Input('submitStaffAddClassButton', 'n_clicks'),
     State('roomUsedInput','value'),
     State('trainerInput','value'),
+    State('datePickedInput','date'),
     State('startInput','value'),
     State('endInput','value'),
     State('sessionTypeInput','value'),
@@ -493,12 +492,12 @@ def addClass(n_clicks):
 
     prevent_initial_call=True
 )
-def add_class(n_clicks,roomUsed,trainerEmail,start_time,end_time,type_session,class_type):
+def add_class(n_clicks,roomUsed,trainerEmail,day,start_time,end_time,type_session,class_type):
     if n_clicks:
         #both filled
-        if(roomUsed and trainerEmail and start_time and end_time and type_session and class_type):
+        if(roomUsed and trainerEmail and day and start_time and end_time and type_session and class_type):
             #change is good
-            if(handler.staffAddClass(roomUsed,trainerEmail,start_time,end_time,type_session,class_type)):
+            if(handler.staffAddClass(roomUsed,trainerEmail,day,start_time,end_time,type_session,class_type)):
                 return True,staff.mainLayout(globalFirstName),dash.no_update
             else:
                 #cant change
@@ -653,8 +652,6 @@ def addEquipment(n_clicks):
 )
 
 def add_equipment(n_clicks,equipmentName,inRoom):
-    print("in room")
-    print(inRoom)
     if (n_clicks):
         if(equipmentName and inRoom):
             if(handler.addEquipment(equipmentName,inRoom)):
@@ -693,16 +690,17 @@ def addRoomBooking(n_clicks):
     Input('submitStaffAddBookingButton','n_clicks'),
     State('roomUsedInput','value'),
     State('noOfAttendeesInput','value'),
+    State('datePickedInput','date'),
     State('startInput','value'),
     State('endInput','value'),    
     prevent_initial_call = True
 )
 
-def add_roomBooking(n_clicks,roomToUse,attendees,startTime,endTime):
+def add_roomBooking(n_clicks,roomToUse,attendees,day,startTime,endTime):
 
     if (n_clicks):
-        if(roomToUse and attendees and startTime and endTime):
-            if(handler.addRoomBooking(roomToUse,attendees,startTime,endTime)):
+        if(roomToUse and attendees and day and startTime and endTime):
+            if(handler.addRoomBooking(roomToUse,attendees,day,startTime,endTime)):
                 #successful adding
                 return True,dash.no_update,staff.mainLayout(globalFirstName)
             else:

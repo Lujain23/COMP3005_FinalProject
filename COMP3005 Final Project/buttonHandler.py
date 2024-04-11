@@ -89,9 +89,9 @@ def printAllClasses():
     return function.printAllClasses(con)
 
 #classes
-def staffAddClass(room_used, trainer_email, start_time, end_time, type_session, class_type):
+def staffAddClass(room_used, trainer_email, day,start_time, end_time, type_session, class_type):
     con = function.connectToDatabase()
-    return function.classScheduling(con, room_used, trainer_email, start_time, end_time, type_session, class_type)
+    return function.classScheduling(con, room_used, trainer_email,day, start_time, end_time, type_session, class_type)
 def staffRemoveClass(scheduleID):
     con = function.connectToDatabase()
     function.staffCancelClass(con,scheduleID)
@@ -105,9 +105,9 @@ def printAllRoomBooking():
     con = function.connectToDatabase()
     return function.printAllRoomBooking(con)
 
-def addRoomBooking(room_id, attendees, start_time, end_time):
+def addRoomBooking(room_id, attendees, day,start_time, end_time):
     con = function.connectToDatabase()
-    return function.roomBooking(con,room_id, attendees, start_time, end_time)
+    return function.roomBooking(con,room_id, attendees, day,start_time, end_time)
 
 def removeRoomBooking(eventID):
     con = function.connectToDatabase()

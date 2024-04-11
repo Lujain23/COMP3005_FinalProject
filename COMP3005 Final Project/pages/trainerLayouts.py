@@ -111,9 +111,10 @@ def generateViewMyClass(data):
     tableRows =[]
 
     for currClass in data:
-        schedule_id, room_used, start_time, end_time, type_session, class_type = currClass
+        schedule_id, room_used, day,start_time, end_time, type_session, class_type = currClass
         currRow = html.Tr([html.Td(schedule_id,style=dataStyle), 
-                               html.Td(room_used,style=dataStyle), 
+                               html.Td(room_used,style=dataStyle),
+                               html.Td(day,style=dataStyle),  
                                html.Td(start_time,style=dataStyle), 
                                html.Td(end_time,style=dataStyle),
                                html.Td(type_session,style=dataStyle),
@@ -131,6 +132,7 @@ def generateViewMyClass(data):
                         html.Thead(html.Tr([
                             html.Th('Schdule ID', style=columnStyle),  
                             html.Th('Room Used', style=columnStyle),
+                            html.Th('On Day', style=columnStyle),
                             html.Th('Start Time', style=columnStyle),
                             html.Th('End Time', style=columnStyle),
                             html.Th('Session Type', style=columnStyle),

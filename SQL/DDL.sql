@@ -29,6 +29,7 @@ CREATE TABLE eventInfo(
 	event_id SERIAL NOT NULL,
 	room_used INTEGER NOT NULL,
 	attendees INTEGER NOT NULL,
+	eventDay DATE DEFAULT CURRENT_DATE,
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
 	primary key(event_id)
@@ -39,6 +40,7 @@ CREATE TABLE schedule(
 	schedule_id SERIAL NOT NULL,
 	room_used INTEGER NOT NULL,
 	trainer_email VARCHAR(255) NOT NULL,
+	classDay DATE DEFAULT CURRENT_DATE,
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
 	type_session VARCHAR(15) NOT NULL, -- Group/solo

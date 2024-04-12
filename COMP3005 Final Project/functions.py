@@ -264,7 +264,7 @@ def setAvailability(connection, email, start_time, end_time):
     cursor = connection.cursor()
     try:
         # get trainer's current class list
-        query = "SELECT classDay, start_time, end_time FROM schedule WHERE trainer_email = %s"
+        query = "SELECT start_time, end_time FROM schedule WHERE trainer_email = %s"
         cursor.execute(query, (email, ))
         result = cursor.fetchall()
 

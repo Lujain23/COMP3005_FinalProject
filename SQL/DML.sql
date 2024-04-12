@@ -10,13 +10,15 @@ INSERT INTO trainer (email, first_name, passwd, start_time, end_time) VALUES
 	('LarryLobster@gmail.com', 'Larry', 'MuscleBeach', '6:00:00', '14:00:00');
 
 INSERT INTO trainerNotifications(trainer_email, notification) VALUES
-	('SandyCheeks@gmail.com', 'hip hip hooray'),
-	('Karen@Computer.com', 'yayayyaa'),
-	('LarryLobster@gmail.com', 'Gibbayyyy');
+	('SandyCheeks@gmail.com', 'Test notification'),
+	('Karen@Computer.com', 'Test notification'),
+	('LarryLobster@gmail.com', 'Test notification');
 
 -- Populate schedule table
 INSERT INTO schedule (schedule_id, room_used, trainer_email, classDay, start_time, end_time, type_session, class_type) VALUES 
-	(1, 1, 'LarryLobster@gmail.com', '2024-07-08','7:00:00', '8:00:00', 'solo', 'weight-lifting');
+	(1, 1, 'LarryLobster@gmail.com', '2024-07-08','7:00:00', '8:00:00', 'solo', 'weight-lifting'),
+	(2, 2, 'Karen@Computer.com', '2024-05-01','7:00:00', '8:00:00', 'group', 'cardio');
+
 
 INSERT INTO scheduleStudents (schedule_id, member_email) VALUES 
 	(1, 'spongebob@squarepants.com');

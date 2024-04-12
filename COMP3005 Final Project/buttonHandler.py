@@ -122,9 +122,9 @@ def addEquipment(equipmentName,insideRoom):
     con = function.connectToDatabase()
     function.addEquipment(con,equipmentName,insideRoom)
     return True
-def updateEquipment(equipmentName):
+def updateEquipment(equipmentName,roomID):
     con = function.connectToDatabase()
-    return function.equipmentMaintenenceMonitoring(con,equipmentName)
+    return function.equipmentMaintenenceMonitoring(con,equipmentName,roomID)
 
 def printAllMaintenance():
     con =function.connectToDatabase()

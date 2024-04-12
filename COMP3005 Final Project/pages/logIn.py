@@ -569,7 +569,7 @@ def modify_class(n_clicks,scheduleID,newStart,newEnd):
                 return True,dash.no_update,staff.mainLayout(globalFirstName)
             else:
                 #failed reschedule
-                return False,'Reschdule Failed. There is an overlap. Please Try again.',dash.no_update
+                return False,'Error: Reschdule Failed. Please Try again.',dash.no_update
         #if all 3 values arent filled
         else:
             return False,dash.no_update,dash.no_update
@@ -589,37 +589,26 @@ def printMaintenance(n_clicks):
     else:
         return dash.no_update
 
-#generate a update equipment check layout
-@callback(
-    Output('buttonsTable', 'children', allow_duplicate=True),
-    Input('updateMaintenanceButton', 'n_clicks'),
-    prevent_initial_call=True
-)
-def updateMaintenance(n_clicks):
-    if n_clicks:
-        return staff.generateUpdateEquipmentLayout()
-    else:
-        return dash.no_update 
-
 #update Equipment functionality
 @callback(
     Output('staffUpdateEquipmentSuccessful','displayed',allow_duplicate=True),
     Output('staffUpdateEquipmentOutcome','children'),
     Output('page-content','children',allow_duplicate=True),
     Input('staffUpdateEquipmentButton','n_clicks'),
+    State('roomInput','value'),
     State('equipmentNameInput','value'),
     prevent_initial_call = True
 )
 
-def update_equipment(n_clicks,equipmentName):
+def update_equipment(n_clicks,roomID,equipmentName):
     if (n_clicks):
-        if(equipmentName):
-            if(handler.updateEquipment(equipmentName)):
+        if(equipmentName and roomID):
+            if(handler.updateEquipment(equipmentName,roomID)):
                 #successful update
                 return True,dash.no_update,staff.mainLayout(globalFirstName)
             else:
                 #failed update
-                return False,'Error Updating equipment!',dash.no_update
+                return False,'Error: Can not update equipment. Please Try Again.',dash.no_update
        
         #if values arent filled
         else:
@@ -788,7 +777,7 @@ def modifyRoomBooking(n_clicks,eventID,startTime,endTime):
                 return True,staff.mainLayout(globalFirstName),dash.no_update
             else:
                 #modify failed
-                return False,dash.no_update,'Error: cannot modify room booking. Please Try again,'
+                return False,dash.no_update,'Error: Can not modify room booking. Please Try again,'
         else:
             return False,dash.no_update,dash.no_update
     else:
@@ -871,7 +860,7 @@ def update_payment(n_clicks,payment_id,newStatus):
             if(handler.changePaymentStatus(payment_id,newStatus)):
                 return True,staff.mainLayout(globalFirstName),dash.no_update
             else:
-                return False,dash.no_update,'Error Changing Status. Please try again.'
+                return False,dash.no_update,'Error: Can not change Status. Please try again.'
         
     else:
         return False,dash.no_update,dash.no_update
@@ -907,7 +896,7 @@ def update_payment(n_clicks,amountID,memberEmail,date,desc):
             if(handler.addPayment(amountID,memberEmail,date,'PENDING',desc)):
                 return True,staff.mainLayout(globalFirstName),dash.no_update
             else:
-                return False,dash.no_update,'Error Adding Payment. Please try again.'
+                return False,dash.no_update,'Error: Can not adding Payment. Please try again.'
         
     else:
         return False,dash.no_update,dash.no_update    

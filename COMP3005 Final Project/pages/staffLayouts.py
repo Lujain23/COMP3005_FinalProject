@@ -35,15 +35,15 @@ def mainLayout(name):
                 html.Tr([
                     html.Td(html.Button('Print & Update Maintenance Checks',id='printMaintenanceButton',n_clicks=0, style=rowStyle)),
                     html.Td(html.Button('Add Equipment Check', id='addEquipmentButton', n_clicks=0, style=rowStyle)),
+                    html.Td(html.Button('Print History Of Payments', id='printReceiptButton', n_clicks=0, style=rowStyle)),
+
                 ]),   
                 html.Tr([
-                    html.Td(html.Button('Print History Of Payments', id='printReceiptButton', n_clicks=0, style=rowStyle)),
                     html.Td( html.Button('Add a new Payment', id='addNewPaymentButton', n_clicks=0, style = rowStyle)),
                     html.Td(html.Button('Update A Member Payment', id='updatePaymentButton', n_clicks=0, style=rowStyle)),
-                ]),   
-                html.Tr([
                     html.Td( html.Button('Go Back To Log In Page', id='typeMemberReturnButton', n_clicks=0, style = rowStyle),colSpan=3,style={'textAlign': 'center'})
-                ]),                
+
+                ]),                   
             ], style = {'margin':'auto'}
             ) #end of table
         ])#end of div

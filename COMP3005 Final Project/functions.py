@@ -6,8 +6,8 @@ import math
 def connectToDatabase():
     try:
         #would change depending on the user
-        #password = "admin" #trista
-        password = "comp3005" #lujain
+        password = "admin" #trista
+        #password = "comp3005" #lujain
         database = "GymManagementSystem"
 
         connection = psycopg2.connect( database = database,
@@ -106,7 +106,7 @@ def printDashboard(connection, email):
         isOverweight = BMI > 24.9
         weightChange = abs(weight[0][0] - target_weight[0][0])
         if weightChange == 0:
-            achievement = "Congrats! You're achieved your target weight"
+            achievement = "Congrats! You've achieved your target weight"
         else:
             achievement = "No achievement"
 

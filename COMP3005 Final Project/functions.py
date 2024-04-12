@@ -159,6 +159,9 @@ def rescheduleClass(connection, schedule_id, start_time, end_time):
         query = "SELECT trainer_email FROM schedule WHERE schedule_id = %s"
         cursor.execute(query, (schedule_id, ))
         result = cursor.fetchall()
+        if (len(result) == 0):
+            return False
+        
         trainer_email = result[0][0]
 
         # check that it falls under trainer availability
@@ -480,6 +483,8 @@ def modifyRoomBooking(connection, event_id, start_time, end_time):
         query = "SELECT room_used FROM eventInfo WHERE event_id = %s"
         cursor.execute(query, (event_id, ))
         result = cursor.fetchall()
+        if (len(result) == 0):
+            return False
         room_used = result[0][0]
 
         # if there's no overlaps with the new time, we can reschedule
@@ -511,6 +516,12 @@ def equipmentMaintenenceMonitoring(connection, equipment_name, room_id):
     cursor = connection.cursor()
     # Just update date in equipment
     try:
+        query = "SELECT * FROM equipment_maintenence WHERE equipment_name = %s AND room_id = %s"
+        cursor.execute(query, (equipment_name, room_id))
+        result = cursor.fetchall()
+        if (len(result) == 0):
+            return False
+        
         query = "UPDATE equipment_maintenence SET last_checked = %s WHERE equipment_name = %s AND room_id = %s"
         cursor.execute(query, (date.today(), equipment_name, room_id))
         connection.commit()
@@ -638,4 +649,5 @@ def main():
     #print(trainerViewClasses(connection, "LarryLobster@gmail.com"))
     #print(viewNotifications(connection, "LarryLobster@gmail.com"))
     #print(viewMemberPayments(connection, "spongebob@squarepants.com"))
-#main()
+    #print(equipmentMaintenenceMonitoring(connection, "Me", 23))
+main()

@@ -1,6 +1,6 @@
 # COMP3005_FinalProject
 COMP3005 Final Project 
-Group: Treesta Wang, Lujain Sharafeldin
+Group: Trista Wang, Lujain Sharafeldin
 
 # Import:
 - pip install dash

@@ -1,7 +1,7 @@
 # COMP3005 Final Project
 Group 73: Trista Wang, Lujain Sharafeldin
 
-#Files Included
+# Files Included
 1.  _src_ directory - contains web application 
 2. _SQL_ directory - contains the DDL & DML file
 3. COMP3005FinalProjectReport - Report

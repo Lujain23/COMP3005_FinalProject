@@ -17,7 +17,7 @@ Group 73: Trista Wang, Lujain Sharafeldin
 - click on the link shown
 
 # Important Notes
-- Suggested iDE: VS Code
+- Suggested IDE: VS Code
 - make sure to change the password in src/function.py function connectToDatabase()
 
 # Video demo

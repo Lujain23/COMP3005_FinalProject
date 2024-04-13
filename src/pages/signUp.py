@@ -102,12 +102,12 @@ def registerMember(n_clicks,email,password,firstName,age,gender,height,weight,ta
         else:
             return False,True,'signup'
 
+#go bcack to main page button
 @callback(
     Output('url','pathname',allow_duplicate=True),
     Input('signUpReturnButton','n_clicks'),
     prevent_initial_call = True
 )   
-
 def backToMain(n_clicks):
     if n_clicks:
         return '/'

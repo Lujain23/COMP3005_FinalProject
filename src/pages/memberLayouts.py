@@ -1,16 +1,5 @@
 from dash import  html,dcc
-import buttonHandler as handler
 
-#this is the welcome page for the member
-
-#should create buttons for these
-'''
-def updateMemberInformation():
-def printDashboard(): -> sh
-def joinClass():
-def rescheduleClass():
-def cancelClass():
-'''
 
 rowStyle = {'fontSize':'20px','textAlign': 'center', 'width':'200px','height':'100px'}
 dataStyle = {'fontSize':'18px', 'color': 'blue'}
@@ -66,7 +55,6 @@ def mainLayout(name):
 
 #layout for "join class"
 def joinClassLayout(data):
-    print("in")
     tableRows =[]
 
     for currClass in data:
@@ -128,7 +116,6 @@ def joinClassLayout(data):
 
 #layout for cancel class
 def cancelClassLayout(data):
-    print(data)
     tableRows =[]
 
     for currClass in data:
@@ -380,53 +367,6 @@ def generateRescheduleClassLayout(data):
     ]#children ends
     )
     return rescheduleClassLayout
-
-def generateViewPayments(data):
-    tableRows =[]
-
-    for currPayment in data:
-        amount, transaction_date, stat,descript = currPayment
-        currRow = html.Tr([     html.Td(amount,style=dataStyle), 
-                               html.Td(transaction_date,style=dataStyle),
-                               html.Td(stat,style=dataStyle),
-                               html.Td(descript,style=dataStyle),
-                                ])
-        tableRows.append(currRow)
-
-        layout = html.Div(
-                id='tableContainer',
-                children=[
-                    html.Br(),
-                    html.Br(),
-                    html.H1('My Payments', style={'fontSize': '24px', 'color': '#52489C'}),
-                    html.Br(),
-                    html.Br(),
-                    html.Table([
-                        html.Thead(html.Tr([ 
-                            html.Th('Amount ($)', style=columnStyle),
-                            html.Th('Transaction Date', style=columnStyle),
-                            html.Th('Status', style=columnStyle),
-                            html.Th('Description', style=columnStyle),
-                        ])),
-                        html.Tbody(id='classTableBody',children=tableRows),
-                        ],
-
-                        style={'margin': 'auto', 'border': '2px solid #ddd', 'textAlign': 'center', 'width': '100%'}  
-                    ),
-                    html.Div(
-                        children=[
-                            html.Br(),
-                            html.Br(),                            
-                            html.Button('Go Back', id='goBackButton', n_clicks=0, style={'font-size': '16px', 'padding': '10px 20px'})
-
-                        ]
-                    )#second div end
-                ],
-                style={'textAlign': 'center'}  
-            ),  #div end
-
-    
-    return layout    
 
 def generateDesignViewPayments(data):
     allReceiptsList = []

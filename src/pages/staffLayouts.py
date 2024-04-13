@@ -869,7 +869,7 @@ def generateAddPaymentLayout():
                                             min_date_allowed='2020-12-01',
                                             max_date_allowed='2026-12-31',
                                             initial_visible_month='2024-04-01',
-                                            display_format='YYYY-MM-DD',  # Set the display format to YYYY-MM-DD
+                                            display_format='YYYY-MM-DD',  
                                         )),
                             ]),  
 

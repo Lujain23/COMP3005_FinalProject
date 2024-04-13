@@ -72,7 +72,6 @@ layout = html.Div(
     prevent_initial_call = True,
     
 )
-
 def validateUser(n_clicks,username,password,memberType):
     #if we're in the login page
         if n_clicks:
@@ -85,6 +84,7 @@ def validateUser(n_clicks,username,password,memberType):
             #need to create like a statement thing of whcih "welcome" it opens to  TO DO
             outcome,globalFirstName = handler.validateUser(username,password,memberType)
             if (outcome):
+                print("current user: ", globalUsername) 
                 
                 if(memberType == 'members'):
                     new_url = 'members'
@@ -101,13 +101,13 @@ def validateUser(n_clicks,username,password,memberType):
             else:
                 return dash.no_update,"Incorrect. Please try again." ,'/login'
 
+#goes back to main page (the two buttons log in and sign up)
 @callback(
     Output('url','pathname',allow_duplicate=True),
     Output('page-content','children',allow_duplicate=True),
     Input('logInReturnButton','n_clicks'),
     prevent_initial_call = True
 )   
-
 def backToMain(n_clicks):
     if n_clicks:
         return '/',mainPageLayout
@@ -150,7 +150,6 @@ def join_class(n_clicks):
     State('scheduleIdInput', 'value'),
     prevent_initial_call = True
 )
-
 def joinClass(n_clicks,scheduleID):
     if n_clicks:
         if(scheduleID):
@@ -184,7 +183,6 @@ def cancel_class(n_clicks):
     State('scheduleIdInput','value'),
     prevent_initial_call = True
 )
-
 def cancelClass(n_clicks,scheduleID):
     if (n_clicks):
         if(scheduleID):
@@ -196,17 +194,14 @@ def cancelClass(n_clicks,scheduleID):
         
         return False,dash.no_update  
 
-#first function to generate the textfields
+#first function to generate the layout for update
 @callback(
      Output('buttonsTable','children',allow_duplicate=True),
      Input('updateInfoButton','n_clicks'),
      prevent_initial_call = True
 )
-
 def update_information(n_clicks):
     if n_clicks:
-        print("current user: ", globalUsername) #would have to change by getting the username value being used
-
         values = handler.selectMember(globalUsername)
  
         return member.generateLayout(values)
@@ -214,7 +209,7 @@ def update_information(n_clicks):
     else:
         return dash.no_update
     
-# second function for when the update is called
+# second function for when the update submit button is clicked
 @callback(
     Output('confirmUpdate','displayed'),
     Output('page-content', 'children',allow_duplicate=True),
@@ -230,7 +225,6 @@ def update_information(n_clicks):
     State('exerciseRoutineInput', 'value'),
     prevent_initial_call = True
 )
-
 def update_information_done(n_clicks,email,password,firstName,age,gender,height,weight,target,exceriseRoutine):
     if n_clicks:
         #will have to call the function that updates the values //SQL
@@ -250,7 +244,7 @@ def printDashboard(n_clicks):
         exercise_routine, height, weight, target_weight, BMI, isOverweight, weightChange, achievement = handler.printDashboard(globalUsername)
         return member.generatePrintDashboardLayout(exercise_routine, height, weight, target_weight, BMI, isOverweight, weightChange, achievement)
         
-#to generate the reschedule template
+#to generate the reschedule layout
 @callback(
     Output('buttonsTable', 'children', allow_duplicate=True),
     Input('rescheduleClassButton', 'n_clicks'),
@@ -273,7 +267,6 @@ def reschedule_class(n_clicks):
     State('endInput','value'),
     prevent_initial_call = True
 )
-
 def reschedule_class(n_clicks,scheduleID,newStart,newEnd):
     if (n_clicks):
         if(scheduleID and newStart and newEnd):
@@ -298,12 +291,11 @@ def reschedule_class(n_clicks,scheduleID,newStart,newEnd):
 )
 def viewMyPayments(n_clicks):
     if n_clicks:
-        #member.generateViewPayments(handler.printMyPayments(globalUsername))
         return member.generateDesignViewPayments(handler.printMyPayments(globalUsername))
     else:
         return dash.no_update
 
-#functionality to payment
+#functionality of payment
 @callback(
     Output('memberPaySuccessful','displayed'),
     Output('payReceiptOutcome','children'),
@@ -381,13 +373,13 @@ def submitGetMember(n_clicks,memberToSearch):
     Input('updateAvailabilityButton', 'n_clicks'),
     prevent_initial_call=True
 )
-def getMember(n_clicks):
+def changeAvailabilityLayout(n_clicks):
     if n_clicks:
         return trainer.updateAvailabilityLayout
     else:
         return dash.no_update
     
-#function that deals with "submit being clicked"
+#function that deals with change availability submit being clicked
 @callback(
     Output('updateAvailabilitySuccessful', 'displayed',allow_duplicate=True),
     Output('page-content', 'children', allow_duplicate=True),
@@ -520,6 +512,7 @@ def removeClass(n_clicks):
         return staff.generateRemoveClassLayout(handler.printAllClasses())
     else:
         return dash.no_update
+
 #remove class functionality 
 @callback(
     Output('staffRemoveClassSuccessful', 'displayed',allow_duplicate=True),
@@ -560,7 +553,6 @@ def modifyClass(n_clicks):
     State('StaffendInput','value'),
     prevent_initial_call = True
 )
-
 def modify_class(n_clicks,scheduleID,newStart,newEnd):
     if (n_clicks):
         if(scheduleID and newStart and newEnd):
@@ -599,7 +591,6 @@ def printMaintenance(n_clicks):
     State('equipmentNameInput','value'),
     prevent_initial_call = True
 )
-
 def update_equipment(n_clicks,roomID,equipmentName):
     if (n_clicks):
         if(equipmentName and roomID):
@@ -639,7 +630,6 @@ def addEquipment(n_clicks):
     State('equipmentInRoomInput','value'),
     prevent_initial_call = True
 )
-
 def add_equipment(n_clicks,equipmentName,inRoom):
     if (n_clicks):
         if(equipmentName and inRoom):
@@ -684,7 +674,6 @@ def addRoomBooking(n_clicks):
     State('endInput','value'),    
     prevent_initial_call = True
 )
-
 def add_roomBooking(n_clicks,roomToUse,attendees,day,startTime,endTime):
 
     if (n_clicks):
@@ -725,7 +714,6 @@ def removeRoomBooking(n_clicks):
     State('eventToRemoveInput','value'), 
     prevent_initial_call = True
 )
-
 def remove_roomBooking(n_clicks,eventToRemove):
 
     if (n_clicks):
@@ -750,7 +738,6 @@ def remove_roomBooking(n_clicks,eventToRemove):
     Input('modifyRoomBookingButton', 'n_clicks'),
     prevent_initial_call=True
 )
-
 def modifyRoomBooking(n_clicks):
     if n_clicks:
         #has to change to be print all room bookings COME BACK
@@ -782,7 +769,6 @@ def modifyRoomBooking(n_clicks,eventID,startTime,endTime):
             return False,dash.no_update,dash.no_update
     else:
         return dash.no_update
-
 
 #generate a PRINT HISTORY OF ALL PAYMENTS layout
 @callback(

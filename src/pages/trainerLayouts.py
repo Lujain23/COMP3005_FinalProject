@@ -1,8 +1,5 @@
 from dash import  html,dcc
-'''
-setAvailiability() -> update availability of CURRENT trainer
-getMember() -> select specific member (they have the name in their heads)
-'''
+
 rowStyle = {'fontSize':'20px','textAlign': 'center', 'width':'200px','height':'100px'}
 textFieldStyle ={'width': '100%', 'height': '30px','fontSize': '20px'}
 columnStyle = {'fontSize':'20px','padding': '15px'}

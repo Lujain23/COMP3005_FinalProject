@@ -343,7 +343,7 @@ def generateAddEquipmentLayout():
 
             dcc.ConfirmDialog(
             id='staffaddEquipmentSuccessful',
-            message='Addinge of equipment was successful. Will return back to main menu.',
+            message='Adding of equipment was successful. Will return back to main menu.',
             ),    
     
     ]#children ends
@@ -864,7 +864,13 @@ def generateAddPaymentLayout():
                             ]),                            
                             html.Tr([
                                 html.Td(html.Label('Transaction Date (YYYY-MM-DD): ',style={'fontSize':'20px'})),
-                                html.Td(dcc.Input(id='dateInput', type='text',style=textFieldStyle2)),
+                                html.Td(dcc.DatePickerSingle(
+                                            id='dateInput',
+                                            min_date_allowed='2020-12-01',
+                                            max_date_allowed='2026-12-31',
+                                            initial_visible_month='2024-04-01',
+                                            display_format='YYYY-MM-DD',  # Set the display format to YYYY-MM-DD
+                                        )),
                             ]),  
 
                             html.Tr([

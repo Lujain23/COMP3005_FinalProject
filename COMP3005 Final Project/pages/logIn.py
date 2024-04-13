@@ -885,7 +885,7 @@ def addPayment(n_clicks):
         Input('submitStaffAddPaymentButton','n_clicks'),
         [State('amountInput','value'),
         State('memberInput','value'),
-        State('dateInput','value'),
+        State('dateInput','date'),
         State('descriptionInput','value')   
         ],
         prevent_initial_call =  True

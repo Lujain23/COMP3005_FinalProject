@@ -17,7 +17,7 @@ INSERT INTO trainerNotifications(trainer_email, notification) VALUES
 -- Populate schedule table
 INSERT INTO schedule (schedule_id, room_used, trainer_email, classDay, start_time, end_time, type_session, class_type) VALUES 
 	(1, 1, 'LarryLobster@gmail.com', '2024-07-08','7:00:00', '8:00:00', 'solo', 'weight-lifting'),
-	(2, 2, 'Karen@Computer.com', '2024-05-01','7:00:00', '8:00:00', 'group', 'cardio');
+	(2, 2, 'Karen@Computer.com', '2024-05-01','9:00:00', '10:00:00', 'group', 'cardio');
 
 
 INSERT INTO scheduleStudents (schedule_id, member_email) VALUES 

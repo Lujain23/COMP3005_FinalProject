@@ -9,3 +9,6 @@ Group 73: Trista Wang, Lujain Sharafeldin
 # Important Notes
 - make sure to change password in COMP3005 Final Project/function.py
 
+# Video demo
+- https://www.youtube.com/watch?v=hVus4-FlDaU
+

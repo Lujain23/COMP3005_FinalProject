@@ -23,4 +23,4 @@ Group 73: Trista Wang, Lujain Sharafeldin
 # Video demo
 - https://www.youtube.com/watch?v=hVus4-FlDaU
   
-# _Thanks!_
+# Thanks!
